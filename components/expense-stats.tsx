@@ -29,7 +29,7 @@ export function ExpenseStats({ expenses }: ExpenseStatsProps) {
             {formatNumber(totalToman)} تومان
           </p>
           <p className="text-lg text-zinc-600 dark:text-zinc-400">
-            ${formatNumber(totalUsd)} USD
+            ${totalUsd.toFixed(2)} USD
           </p>
         </div>
       </div>
@@ -60,7 +60,7 @@ export function ExpenseStats({ expenses }: ExpenseStatsProps) {
             {formatNumber(avgToman)} تومان
           </p>
           <p className="text-lg text-zinc-600 dark:text-zinc-400">
-            ${formatNumber(avgUsd)} USD
+            ${avgUsd.toFixed(2)} USD
           </p>
         </div>
       </div>

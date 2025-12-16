@@ -4,12 +4,38 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveCo
 import { PieChartIcon, BarChart3, TrendingUp } from 'lucide-react';
 import { type Expense } from '@/lib/types/expense';
 import { formatNumber, getCategoryLabel } from '@/lib/utils';
+import { tomanToUsd } from '@/lib/constants';
 
 interface ExpenseChartsProps {
   expenses: Expense[];
 }
 
 const COLORS = ['#7c6aef', '#4ecdc4', '#f7b731', '#c56cf0', '#5ac8fa', '#ff6b6b', '#a3de83', '#ff9ff3'];
+
+// Custom tooltip component - defined outside render to avoid React warnings
+const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ value: number; payload: { nameFa?: string } }> }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0];
+    // Convert from full toman (DB) to k format for USD conversion
+    const usdValue = tomanToUsd(data.value / 1000);
+    return (
+      <div className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 p-3 rounded-lg shadow-lg">
+        <p className="text-zinc-900 dark:text-zinc-100 font-medium" dir="rtl">
+          {formatNumber(data.value)} تومان
+        </p>
+        <p className="text-zinc-600 dark:text-zinc-400 text-sm">
+          ${usdValue.toFixed(2)} USD
+        </p>
+        {data.payload.nameFa && (
+          <p className="text-zinc-600 dark:text-zinc-400 text-sm" dir="rtl">
+            {data.payload.nameFa}
+          </p>
+        )}
+      </div>
+    );
+  }
+  return null;
+};
 
 export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
   // Calculate category totals
@@ -43,28 +69,6 @@ export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
   }, [] as Array<{ date: string; amount: number }>);
 
   dailyTotals.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ value: number; payload: { nameFa?: string } }> }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0];
-      return (
-        <div className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 p-3 rounded-lg shadow-lg">
-          <p className="text-zinc-900 dark:text-zinc-100 font-medium" dir="rtl">
-            {formatNumber(data.value)} تومان
-          </p>
-          <p className="text-zinc-600 dark:text-zinc-400 text-sm">
-            ${formatNumber(Math.round(data.value / 60000))} USD
-          </p>
-          {data.payload.nameFa && (
-            <p className="text-zinc-600 dark:text-zinc-400 text-sm" dir="rtl">
-              {data.payload.nameFa}
-            </p>
-          )}
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -124,7 +128,7 @@ export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
             <BarChart data={categoryTotals} layout="vertical" margin={{ left: 0, right: 20 }}>
               <XAxis
                 type="number"
-                tickFormatter={(value) => `${Math.round(value / 1000000)}M`}
+                tickFormatter={(value: number) => `${Math.round(value / 1_000_000)}M`}
                 stroke="#666"
                 tick={{ fill: '#999', fontSize: 12 }}
               />
@@ -168,12 +172,12 @@ export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
                 dataKey="date"
                 stroke="#666"
                 tick={{ fill: '#999', fontSize: 12 }}
-                tickFormatter={(value) => value.slice(5)}
+                tickFormatter={(value: string) => value.slice(5)}
               />
               <YAxis
                 stroke="#666"
                 tick={{ fill: '#999', fontSize: 12 }}
-                tickFormatter={(value) => `${Math.round(value / 1000000)}M`}
+                tickFormatter={(value: number) => `${Math.round(value / 1_000_000)}M`}
               />
               <Tooltip content={<CustomTooltip />} />
               <Area

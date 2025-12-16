@@ -1,16 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Trash2, FileText } from 'lucide-react';
+import { Trash2, FileText, Edit } from 'lucide-react';
 import { type Expense } from '@/lib/types/expense';
 import { formatNumber, formatToFarsiDate, getCategoryLabel } from '@/lib/utils';
 
 interface ExpenseListProps {
   refreshTrigger: number;
   onDelete: () => void;
+  onEdit: (expense: Expense) => void;
 }
 
-export function ExpenseList({ refreshTrigger, onDelete }: ExpenseListProps) {
+export function ExpenseList({ refreshTrigger, onDelete, onEdit }: ExpenseListProps) {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -112,7 +113,9 @@ export function ExpenseList({ refreshTrigger, onDelete }: ExpenseListProps) {
               <th className="px-4 py-3 text-right text-sm font-semibold text-zinc-600 dark:text-zinc-400">
                 Amount / مبلغ
               </th>
-              <th className="px-4 py-3 w-[50px]" />
+              <th className="px-4 py-3 text-center text-sm font-semibold text-zinc-600 dark:text-zinc-400 w-[100px]">
+                Actions / عملیات
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
@@ -150,19 +153,28 @@ export function ExpenseList({ refreshTrigger, onDelete }: ExpenseListProps) {
                         {formatNumber(expense.price_toman)} تومان
                       </span>
                       <span className="text-zinc-600 dark:text-zinc-400 text-xs">
-                        ${formatNumber(expense.price_usd)} USD
+                        ${expense.price_usd.toFixed(2)} USD
                       </span>
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <button
-                      onClick={() => handleDelete(expense.id)}
-                      disabled={deletingId === expense.id}
-                      className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => onEdit(expense)}
+                        className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                        title="Edit"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(expense.id)}
+                        disabled={deletingId === expense.id}
+                        className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 transition-colors"
+                        title="Delete"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );
