@@ -4,7 +4,6 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveCo
 import { PieChartIcon, BarChart3, TrendingUp } from 'lucide-react';
 import { type Expense } from '@/lib/types/expense';
 import { formatNumber, getCategoryLabel } from '@/lib/utils';
-import { tomanToUsd } from '@/lib/constants';
 
 interface ExpenseChartsProps {
   expenses: Expense[];
@@ -13,11 +12,11 @@ interface ExpenseChartsProps {
 const COLORS = ['#7c6aef', '#4ecdc4', '#f7b731', '#c56cf0', '#5ac8fa', '#ff6b6b', '#a3de83', '#ff9ff3'];
 
 // Custom tooltip component - defined outside render to avoid React warnings
-const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ value: number; payload: { nameFa?: string } }> }) => {
+const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ value: number; payload: { nameFa?: string; usdValue?: number } }> }) => {
   if (active && payload && payload.length) {
     const data = payload[0];
-    // Convert from full toman (DB) to USD using full toman values
-    const usdValue = tomanToUsd(data.value);
+    // Display stored USD values directly from aggregated data
+    const usdValue = data.payload.usdValue || 0;
     return (
       <div className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 p-3 rounded-lg shadow-lg">
         <p className="text-zinc-900 dark:text-zinc-100 font-medium" dir="rtl">
@@ -38,11 +37,12 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<
 };
 
 export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
-  // Calculate category totals
+  // Calculate category totals - sum both currencies separately
   const categoryTotals = expenses.reduce((acc, exp) => {
     const existing = acc.find(item => item.category === exp.category);
     if (existing) {
       existing.value += exp.price_toman;
+      existing.usdValue += exp.price_usd;
     } else {
       const labels = getCategoryLabel(exp.category);
       acc.push({
@@ -50,23 +50,25 @@ export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
         name: labels.en,
         nameFa: labels.fa,
         value: exp.price_toman,
+        usdValue: exp.price_usd,
       });
     }
     return acc;
-  }, [] as Array<{ category: string; name: string; nameFa: string; value: number }>);
+  }, [] as Array<{ category: string; name: string; nameFa: string; value: number; usdValue: number }>);
 
   categoryTotals.sort((a, b) => b.value - a.value);
 
-  // Calculate daily totals for area chart
+  // Calculate daily totals for area chart - sum both currencies separately
   const dailyTotals = expenses.reduce((acc, exp) => {
     const existing = acc.find(item => item.date === exp.date);
     if (existing) {
       existing.amount += exp.price_toman;
+      existing.usdValue += exp.price_usd;
     } else {
-      acc.push({ date: exp.date, amount: exp.price_toman });
+      acc.push({ date: exp.date, amount: exp.price_toman, usdValue: exp.price_usd });
     }
     return acc;
-  }, [] as Array<{ date: string; amount: number }>);
+  }, [] as Array<{ date: string; amount: number; usdValue: number }>);
 
   dailyTotals.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 

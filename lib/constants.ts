@@ -1,7 +1,7 @@
-// Default exchange rate: full Toman value (e.g., 1,301,020 Toman per USD)
-// This is a fallback value. The actual rate is fetched from API daily.
-export const DEFAULT_USD_TO_TOMAN_RATE = 1_301_020;
-// Todo: Update this rate periodically based on real exchange rates.
+// Default exchange rate: only used as fallback when API fails to fetch live rate
+// The actual rate is fetched from Navasan API daily.
+// Charts and displays use stored price_toman and price_usd directly (no conversion needed).
+export const DEFAULT_USD_TO_TOMAN_RATE = 130_000;
 
 // Helper function to convert Toman to USD with custom rate
 // Both values use full Toman amounts (e.g., 60,000 toman / 1,301,020 rate = 0.046 USD)
