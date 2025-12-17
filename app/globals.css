@@ -33,3 +33,9 @@ select,
 textarea {
   font-family: var(--font-geist-sans), sans-serif !important;
 }
+
+input[type="date"] {
+    -webkit-appearance: none; /* or 'none' for full control */
+    display: block;
+    box-sizing: border-box;
+}
