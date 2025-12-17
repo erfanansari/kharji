@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Plus, X } from 'lucide-react';
 import { type CreateExpenseInput } from '@/lib/types/expense';
 import { categories } from '@/lib/utils';
-import { tomanToUsd, usdToToman, DEFAULT_USD_TO_TOMAN_RATE } from '@/lib/constants';
+import { tomanToUsd, usdToToman } from '@/lib/constants';
 
 interface ExpenseFormProps {
   onExpenseAdded: () => void;
@@ -20,16 +20,15 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
     price_toman: 0,
     price_usd: 0,
   });
-  const [exchangeRate, setExchangeRate] = useState(DEFAULT_USD_TO_TOMAN_RATE);
+  const [exchangeRate, setExchangeRate] = useState(0);
   const [lastChanged, setLastChanged] = useState<'toman' | 'usd'>('toman');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [isFetchingRate, setIsFetchingRate] = useState(false);
+  const [isFetchingRate, setIsFetchingRate] = useState(true);
 
   // Fetch latest exchange rate on mount
   useEffect(() => {
     const fetchExchangeRate = async () => {
-      setIsFetchingRate(true);
       try {
         const response = await fetch('/api/exchange-rate');
         if (response.ok) {
@@ -37,10 +36,11 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
           const rate = parseInt(data.usd.value, 10);
           setExchangeRate(rate);
           console.log(`Exchange rate fetched: ${rate.toLocaleString()} Toman per USD (${data.usd.date})`);
+        } else {
+          console.error('Failed to fetch exchange rate: API returned error');
         }
       } catch (error) {
         console.error('Failed to fetch exchange rate:', error);
-        // Keep default rate if fetch fails
       } finally {
         setIsFetchingRate(false);
       }
@@ -129,7 +129,7 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
           price_toman: 0,
           price_usd: 0,
         });
-        setExchangeRate(DEFAULT_USD_TO_TOMAN_RATE);
+        // Keep the fetched exchange rate (don't reset it)
         onExpenseAdded();
         if (editingExpense && onCancelEdit) {
           onCancelEdit();
@@ -153,7 +153,7 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
       price_toman: 0,
       price_usd: 0,
     });
-    setExchangeRate(DEFAULT_USD_TO_TOMAN_RATE);
+    // Keep the fetched exchange rate (don't reset it)
     if (onCancelEdit) {
       onCancelEdit();
     }
@@ -279,12 +279,12 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
             </label>
             <input
               type="number"
-              placeholder="4200"
+              placeholder="130100"
               required
               min="1"
               step="1"
               value={exchangeRate || ''}
-              onChange={(e) => handleRateChange(parseFloat(e.target.value) || DEFAULT_USD_TO_TOMAN_RATE)}
+              onChange={(e) => handleRateChange(parseFloat(e.target.value) || exchangeRate)}
               disabled={isFetchingRate}
               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-wait"
             />
@@ -295,11 +295,11 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
         <div className="flex gap-2">
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isFetchingRate || !exchangeRate}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-md transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             <Plus className="h-4 w-4" />
-            {isSubmitting ? 'Saving...' : (editingExpense ? 'Update / بروزرسانی' : 'Add / افزودن')}
+            {isFetchingRate ? 'Loading rate...' : isSubmitting ? 'Saving...' : (editingExpense ? 'Update / بروزرسانی' : 'Add / افزودن')}
           </button>
           {editingExpense && (
             <button
