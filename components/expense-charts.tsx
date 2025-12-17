@@ -16,8 +16,8 @@ const COLORS = ['#7c6aef', '#4ecdc4', '#f7b731', '#c56cf0', '#5ac8fa', '#ff6b6b'
 const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ value: number; payload: { nameFa?: string } }> }) => {
   if (active && payload && payload.length) {
     const data = payload[0];
-    // Convert from full toman (DB) to k format for USD conversion
-    const usdValue = tomanToUsd(data.value / 1000);
+    // Convert from full toman (DB) to USD using full toman values
+    const usdValue = tomanToUsd(data.value);
     return (
       <div className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 p-3 rounded-lg shadow-lg">
         <p className="text-zinc-900 dark:text-zinc-100 font-medium" dir="rtl">

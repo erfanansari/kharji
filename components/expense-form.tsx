@@ -24,6 +24,30 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
   const [lastChanged, setLastChanged] = useState<'toman' | 'usd'>('toman');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isFetchingRate, setIsFetchingRate] = useState(false);
+
+  // Fetch latest exchange rate on mount
+  useEffect(() => {
+    const fetchExchangeRate = async () => {
+      setIsFetchingRate(true);
+      try {
+        const response = await fetch('/api/exchange-rate');
+        if (response.ok) {
+          const data = await response.json();
+          const rate = parseInt(data.usd.value, 10);
+          setExchangeRate(rate);
+          console.log(`Exchange rate fetched: ${rate.toLocaleString()} Toman per USD (${data.usd.date})`);
+        }
+      } catch (error) {
+        console.error('Failed to fetch exchange rate:', error);
+        // Keep default rate if fetch fails
+      } finally {
+        setIsFetchingRate(false);
+      }
+    };
+
+    fetchExchangeRate();
+  }, []);
 
   // Load editing expense data
   useEffect(() => {
@@ -32,12 +56,12 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
         date: editingExpense.date,
         category: editingExpense.category,
         description: editingExpense.description,
-        price_toman: editingExpense.price_toman / 1000, // Convert to k format for display
+        price_toman: editingExpense.price_toman,
         price_usd: editingExpense.price_usd,
       });
-      // Calculate rate from existing data (in simplified format: divide by 1000)
+      // Calculate rate from existing data (full Toman value)
       if (editingExpense.price_toman && editingExpense.price_usd) {
-        setExchangeRate(Math.round(editingExpense.price_toman / editingExpense.price_usd / 1000));
+        setExchangeRate(Math.round(editingExpense.price_toman / editingExpense.price_usd));
       }
     }
   }, [editingExpense]);
@@ -85,18 +109,12 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
       const url = editingExpense ? `/api/expenses/${editingExpense.id}` : '/api/expenses';
       const method = editingExpense ? 'PUT' : 'POST';
 
-      // Convert k format to full toman for database storage
-      const submitData = {
-        ...formData,
-        price_toman: formData.price_toman * 1000,
-      };
-
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(submitData),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
@@ -223,14 +241,14 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
           {/* Toman */}
           <div>
             <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-              Price (k Toman) / مبلغ (هزار تومان)
+              Price (Toman) / مبلغ (تومان)
             </label>
             <input
               type="number"
-              placeholder="60"
+              placeholder="60000"
               required
               min="0"
-              step="0.01"
+              step="1"
               value={formData.price_toman || ''}
               onChange={(e) => handleTomanChange(parseFloat(e.target.value) || 0)}
               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -257,17 +275,18 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
           {/* Exchange Rate */}
           <div>
             <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-              Rate (k Toman/USD) / نرخ
+              Rate (Toman/USD) / نرخ {isFetchingRate && <span className="text-xs text-zinc-500">(fetching...)</span>}
             </label>
             <input
               type="number"
-              placeholder="130"
+              placeholder="4200"
               required
               min="1"
               step="1"
               value={exchangeRate || ''}
               onChange={(e) => handleRateChange(parseFloat(e.target.value) || DEFAULT_USD_TO_TOMAN_RATE)}
-              className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              disabled={isFetchingRate}
+              className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-wait"
             />
           </div>
         </div>
