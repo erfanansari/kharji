@@ -17,7 +17,7 @@ const persianFont = Vazirmatn({
 });
 
 export const metadata: Metadata = {
-  title: "Expense Tracker",
+  title: "Kharj / خرج",
   description: "Track your personal expenses",
 };
 
