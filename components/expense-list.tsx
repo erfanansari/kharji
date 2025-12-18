@@ -148,12 +148,17 @@ export function ExpenseList({ refreshTrigger, onDelete, onEdit }: ExpenseListPro
                     </div>
                   </td>
                   <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm text-right">
-                    <div className="flex flex-col">
+                    <div className="flex flex-col items-end">
                       <span className="text-zinc-900 dark:text-zinc-100 font-medium" dir="rtl">
                         {formatNumber(expense.price_toman)} تومان
                       </span>
-                      <span className="text-zinc-600 dark:text-zinc-400 text-[10px] sm:text-xs">
+                      <span className="relative group/amount text-zinc-600 dark:text-zinc-400 text-[10px] sm:text-xs cursor-help inline-block">
                         ${expense.price_usd.toFixed(2)} USD
+                        <span className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[calc(100%+0.5rem)] hidden group-hover/amount:inline-block whitespace-nowrap pointer-events-none">
+                          <span className="bg-zinc-900 dark:bg-zinc-700 text-white text-[10px] px-2 py-1 rounded shadow-lg inline-block">
+                            {formatNumber(Math.round(expense.price_toman / expense.price_usd))} Toman/USD
+                          </span>
+                        </span>
                       </span>
                     </div>
                   </td>
