@@ -1,4 +1,4 @@
-# Kharj / خرج
+# Kharji / خرجی
 
 A beautiful, bilingual expense tracker built with Next.js. Track your personal expenses in both Toman and USD with real-time exchange rates.
 
