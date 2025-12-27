@@ -6,6 +6,7 @@ import { ExpenseForm } from '@/components/expense-form';
 import { ExpenseList } from '@/components/expense-list';
 import { ExpenseStats } from '@/components/expense-stats';
 import { ExpenseCharts } from '@/components/expense-charts';
+import { ExchangeRateIndicator } from '@/components/exchange-rate-indicator';
 import { type Expense } from '@/lib/types/expense';
 
 export default function Home() {
@@ -59,9 +60,12 @@ export default function Home() {
               Track your personal expenses / هزینه‌های شخصی خود را ردیابی کنید
             </p>
           </div>
-          <div className="flex items-center gap-2 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
-            <Wallet className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
-            <span>Last 30 days / ۳۰ روز گذشته</span>
+          <div className="flex flex-col gap-2 sm:gap-3">
+            <ExchangeRateIndicator />
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+              <Wallet className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
+              <span>Last 30 days / ۳۰ روز گذشته</span>
+            </div>
           </div>
         </div>
 

@@ -43,10 +43,10 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
             console.log(`Exchange rate: ${rate.toLocaleString()} Toman/USD (${data.usd.date})`);
           }
         } else {
-          console.error('Failed to fetch exchange rate: API returned error');
+          console.warn('Exchange rate API unavailable, user must enter rate manually');
         }
       } catch (error) {
-        console.error('Failed to fetch exchange rate:', error);
+        console.warn('Failed to fetch exchange rate, user must enter rate manually:', error);
       } finally {
         setIsFetchingRate(false);
       }

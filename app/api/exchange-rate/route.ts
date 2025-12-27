@@ -4,9 +4,13 @@ const CACHE_DURATION_SECONDS = 24 * 60 * 60; // 24 hours
 
 export async function GET() {
   try {
+    const apiKey = process.env.NAVASAN_API_KEY;
 
-    // Fetch from Navasan API
-    const apiKey = process.env.NAVASAN_API_KEY || 'free';
+    if (!apiKey) {
+      console.error('[Exchange Rate] No API key configured');
+      return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
+    }
+
     console.log(`[Exchange Rate] Fetching data from Navasan API...`);
 
     const response = await fetch(`https://api.navasan.tech/latest/?item=usd&api_key=${apiKey}`, {
@@ -14,7 +18,8 @@ export async function GET() {
     });
 
     if (!response.ok) {
-      console.error('[Exchange Rate] API returned error:', response.status);
+      const errorText = await response.text();
+      console.error('[Exchange Rate] API returned error:', response.status, errorText);
       return NextResponse.json({ error: 'Failed to fetch from Navasan API' }, { status: 500 });
     }
 
