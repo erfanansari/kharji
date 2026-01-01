@@ -153,8 +153,11 @@ export default function DashboardPage() {
     const now = new Date();
     const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    endOfLastMonth.setHours(23, 59, 59, 999);
     return expenses.filter(exp => {
       const expDate = new Date(exp.date);
+      expDate.setHours(0, 0, 0, 0);
+      startOfLastMonth.setHours(0, 0, 0, 0);
       return expDate >= startOfLastMonth && expDate <= endOfLastMonth;
     });
   }, [expenses]);
@@ -480,6 +483,148 @@ export default function DashboardPage() {
               </div>
             </div>
           )}
+
+          {/* Enhanced Charts */}
+          <div className="mt-8 mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4">Enhanced Charts / نمودارهای پیشرفته</h2>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              {/* Comparison Chart - This Month vs Last Month */}
+              <div className="bg-zinc-900 rounded-xl p-4 sm:p-6 border border-zinc-800">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="p-2 bg-blue-500/10 rounded-lg">
+                    <BarChart3 className="h-5 w-5 text-blue-400" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-semibold">Month Comparison / مقایسه ماهانه</h3>
+                </div>
+                
+                <div className="space-y-4">
+                  {/* This Month Bar */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-zinc-300">
+                        {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                      </span>
+                      <span className="text-sm font-semibold text-white">{formatNumber(thisMonthTotalToman)} ت</span>
+                    </div>
+                    <div className="w-full bg-zinc-700 rounded-full h-2">
+                      <div
+                        className="h-full rounded-full bg-blue-500"
+                        style={{
+                          width: `${Math.max(thisMonthTotalToman, lastMonthTotalToman) > 0 ? (thisMonthTotalToman / Math.max(thisMonthTotalToman, lastMonthTotalToman)) * 100 : 0}%`
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Last Month Bar */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-zinc-300">
+                        {new Date(new Date().getFullYear(), new Date().getMonth() - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                      </span>
+                      <span className="text-sm font-semibold text-white">{formatNumber(lastMonthTotalToman)} ت</span>
+                    </div>
+                    <div className="w-full bg-zinc-700 rounded-full h-2">
+                      <div
+                        className="h-full rounded-full bg-zinc-500"
+                        style={{
+                          width: `${Math.max(thisMonthTotalToman, lastMonthTotalToman) > 0 ? (lastMonthTotalToman / Math.max(thisMonthTotalToman, lastMonthTotalToman)) * 100 : 0}%`
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Difference */}
+                  <div className="pt-2 border-t border-zinc-700">
+                    {thisMonthTotalToman > 0 && lastMonthTotalToman > 0 ? (
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-zinc-400">Difference</span>
+                        <div className="flex items-center gap-2">
+                          {thisMonthTotalToman > lastMonthTotalToman ? (
+                            <TrendingUp className="h-4 w-4 text-red-400" />
+                          ) : (
+                            <TrendingDown className="h-4 w-4 text-green-400" />
+                          )}
+                          <span className={`text-sm font-semibold ${
+                            thisMonthTotalToman > lastMonthTotalToman ? 'text-red-400' : 'text-green-400'
+                          }`}>
+                            {formatNumber(Math.abs(thisMonthTotalToman - lastMonthTotalToman))} ت
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-xs text-zinc-400">
+                        {thisMonthTotalToman === 0 && lastMonthTotalToman > 0 ? (
+                          <p>No spending recorded in {new Date().toLocaleDateString('en-US', { month: 'long' })} yet</p>
+                        ) : lastMonthTotalToman === 0 ? (
+                          <p>No data to compare</p>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Spending Heatmap Calendar */}
+              <div className="bg-zinc-900 rounded-xl p-4 sm:p-6 border border-zinc-800">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="p-2 bg-purple-500/10 rounded-lg">
+                    <BarChart3 className="h-5 w-5 text-purple-400" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-semibold">Daily Activity / فعالیت روزانه</h3>
+                </div>
+
+                <div className="space-y-3">
+                  {(() => {
+                    // Get last 7 days of spending
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const last7Days = [];
+
+                    for (let i = 6; i >= 0; i--) {
+                      const date = new Date(today);
+                      date.setDate(date.getDate() - i);
+                      const dateStr = date.toISOString().split('T')[0];
+                      const dayExpenses = expenses.filter(exp => exp.date === dateStr);
+                      const dayTotal = dayExpenses.reduce((sum, exp) => sum + exp.price_toman, 0);
+                      last7Days.push({
+                        date: dateStr,
+                        dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
+                        total: dayTotal,
+                        count: dayExpenses.length
+                      });
+                    }
+
+                    const maxSpending = Math.max(...last7Days.map(d => d.total), 1);
+
+                    return (
+                      <div className="space-y-2">
+                        {last7Days.map((day) => (
+                          <div key={day.date}>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-xs text-zinc-400">{day.dayName} ({day.date.split('-')[2]})</span>
+                              <span className="text-xs font-semibold text-white">{day.count} {day.count === 1 ? 'transaction' : 'transactions'}</span>
+                            </div>
+                            <div className="w-full bg-zinc-700 rounded-full h-1.5">
+                              <div
+                                className="h-full rounded-full transition-all"
+                                style={{
+                                  width: `${maxSpending > 0 ? (day.total / maxSpending) * 100 : 0}%`,
+                                  backgroundColor: day.total === 0 ? '#52525b' : day.total > maxSpending * 0.7 ? '#ef4444' : day.total > maxSpending * 0.4 ? '#f97316' : '#3b82f6'
+                                }}
+                              />
+                            </div>
+                            <span className="text-xs text-zinc-500">{day.total > 0 ? formatNumber(day.total) + ' ت' : '-'}</span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </DashboardLayout>
