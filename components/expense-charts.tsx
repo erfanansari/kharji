@@ -7,6 +7,7 @@ import { formatNumber, getCategoryLabel } from '@/lib/utils';
 
 interface ExpenseChartsProps {
   expenses: Expense[];
+  granularity?: 'daily' | 'weekly' | 'monthly';
 }
 
 const COLORS = ['#7c6aef', '#4ecdc4', '#f7b731', '#c56cf0', '#5ac8fa', '#ff6b6b', '#a3de83', '#ff9ff3'];
@@ -36,7 +37,7 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<
   return null;
 };
 
-export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
+export function ExpenseCharts({ expenses, granularity = 'daily' }: ExpenseChartsProps) {
   // Calculate category totals - sum both currencies separately
   const categoryTotals = expenses.reduce((acc, exp) => {
     const existing = acc.find(item => item.category === exp.category);
@@ -58,42 +59,57 @@ export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
 
   categoryTotals.sort((a, b) => b.value - a.value);
 
-  // Calculate daily totals for area chart - sum both currencies separately
-  const dailyExpenses = expenses.reduce((acc, exp) => {
-    const existing = acc.find(item => item.date === exp.date);
-    if (existing) {
-      existing.amount += exp.price_toman;
-      existing.usdValue += exp.price_usd;
-    } else {
-      acc.push({ date: exp.date, amount: exp.price_toman, usdValue: exp.price_usd });
-    }
-    return acc;
-  }, [] as Array<{ date: string; amount: number; usdValue: number }>);
+  // Helper functions for date formatting
+  const getWeekKey = (date: Date): string => {
+    const year = date.getFullYear();
+    const firstDayOfYear = new Date(year, 0, 1);
+    const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
+    const weekNum = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+    return `${year}-W${weekNum.toString().padStart(2, '0')}`;
+  };
 
-  // Fill in missing dates with zero values for complete timeline
-  const dailyTotals: Array<{ date: string; amount: number; usdValue: number }> = [];
+  const getMonthKey = (date: Date): string => {
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+  };
 
-  if (dailyExpenses.length > 0) {
-    dailyExpenses.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  // Aggregate expenses based on granularity
+  const aggregateExpenses = () => {
+    if (expenses.length === 0) return [];
 
-    const firstDate = new Date(dailyExpenses[0].date);
-    const lastDate = new Date(dailyExpenses[dailyExpenses.length - 1].date);
+    const aggregated = new Map<string, { amount: number; usdValue: number }>();
 
-    // Generate all dates from first to last
-    const currentDate = new Date(firstDate);
-    while (currentDate <= lastDate) {
-      const dateStr = currentDate.toISOString().split('T')[0];
-      const existing = dailyExpenses.find(item => item.date === dateStr);
+    expenses.forEach(exp => {
+      const date = new Date(exp.date);
+      let key: string;
 
-      dailyTotals.push({
-        date: dateStr,
-        amount: existing ? existing.amount : 0,
-        usdValue: existing ? existing.usdValue : 0,
-      });
+      switch (granularity) {
+        case 'weekly':
+          key = getWeekKey(date);
+          break;
+        case 'monthly':
+          key = getMonthKey(date);
+          break;
+        case 'daily':
+        default:
+          key = exp.date;
+          break;
+      }
 
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-  }
+      const existing = aggregated.get(key);
+      if (existing) {
+        existing.amount += exp.price_toman;
+        existing.usdValue += exp.price_usd;
+      } else {
+        aggregated.set(key, { amount: exp.price_toman, usdValue: exp.price_usd });
+      }
+    });
+
+    return Array.from(aggregated.entries())
+      .map(([date, data]) => ({ date, ...data }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+  };
+
+  const timeSeriesTotals = aggregateExpenses();
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
@@ -175,17 +191,19 @@ export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
         </div>
       </div>
 
-      {/* Area Chart - Daily Spending */}
+      {/* Area Chart - Spending Trend */}
       <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-md border border-zinc-200 dark:border-zinc-800 p-4 sm:p-6 lg:col-span-2">
         <div className="flex items-center gap-2 mb-3 sm:mb-4">
           <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" />
           <h3 className="text-base sm:text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-            Daily Spending Trend / روند هزینه روزانه
+            {granularity === 'daily' && 'Daily Spending Trend / روند هزینه روزانه'}
+            {granularity === 'weekly' && 'Weekly Spending Trend / روند هزینه هفتگی'}
+            {granularity === 'monthly' && 'Monthly Spending Trend / روند هزینه ماهانه'}
           </h3>
         </div>
         <div className="h-[200px] sm:h-[250px]">
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-            <AreaChart data={dailyTotals} margin={{ left: 0, right: 20, top: 10, bottom: 0 }}>
+            <AreaChart data={timeSeriesTotals} margin={{ left: 0, right: 20, top: 10, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#7c6aef" stopOpacity={0.4} />
@@ -197,7 +215,14 @@ export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
                 dataKey="date"
                 stroke="#666"
                 tick={{ fill: '#999', fontSize: 12 }}
-                tickFormatter={(value: string) => value.slice(5)}
+                tickFormatter={(value: string) => {
+                  if (granularity === 'monthly') {
+                    return value.slice(5); // Show MM
+                  } else if (granularity === 'weekly') {
+                    return value.split('-W')[1]; // Show week number
+                  }
+                  return value.slice(5); // Show MM-DD for daily
+                }}
               />
               <YAxis
                 stroke="#666"

@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Wallet } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
 import { ExpenseForm } from '@/components/expense-form';
 import { ExpenseList } from '@/components/expense-list';
 import { ExpenseStats } from '@/components/expense-stats';
 import { ExpenseCharts } from '@/components/expense-charts';
 import { ExchangeRateIndicator } from '@/components/exchange-rate-indicator';
+import { DateRangeSelector, type DateRange, filterExpensesByDateRange, getChartGranularity } from '@/components/date-range-selector';
 import { type Expense } from '@/lib/types/expense';
 
 export default function Home() {
@@ -14,6 +14,7 @@ export default function Home() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [editingExpense, setEditingExpense] = useState<Expense | undefined>(undefined);
+  const [dateRange, setDateRange] = useState<DateRange>('ALL_TIME');
 
   const fetchExpenses = async () => {
     setIsLoading(true);
@@ -47,6 +48,16 @@ export default function Home() {
     setEditingExpense(undefined);
   };
 
+  // Filter expenses based on selected date range
+  const filteredExpenses = useMemo(() => {
+    return filterExpensesByDateRange(expenses, dateRange);
+  }, [expenses, dateRange]);
+
+  // Get chart granularity based on date range
+  const chartGranularity = useMemo(() => {
+    return getChartGranularity(dateRange);
+  }, [dateRange]);
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans">
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-7xl">
@@ -62,15 +73,12 @@ export default function Home() {
           </div>
           <div className="flex flex-col gap-2 sm:gap-3">
             <ExchangeRateIndicator />
-            <div className="flex items-center gap-2 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
-              <Wallet className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
-              <span>Last 30 days / ۳۰ روز گذشته</span>
-            </div>
+            <DateRangeSelector value={dateRange} onChange={setDateRange} />
           </div>
         </div>
 
         {/* Statistics Cards */}
-        {!isLoading && <ExpenseStats expenses={expenses} />}
+        {!isLoading && <ExpenseStats expenses={filteredExpenses} />}
 
         {/* Add New Expense Form */}
         <div className="mt-4 sm:mt-6">
@@ -82,9 +90,9 @@ export default function Home() {
         </div>
 
         {/* Charts */}
-        {!isLoading && expenses.length > 0 && (
+        {!isLoading && filteredExpenses.length > 0 && (
           <div className="mt-4 sm:mt-6">
-            <ExpenseCharts expenses={expenses} />
+            <ExpenseCharts expenses={filteredExpenses} granularity={chartGranularity} />
           </div>
         )}
 
