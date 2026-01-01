@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { Plus, X } from 'lucide-react';
-import { type CreateExpenseInput } from '@/lib/types/expense';
+import { type CreateExpenseInput, type Tag } from '@/lib/types/expense';
 import { categories } from '@/lib/utils';
 import { tomanToUsd, usdToToman } from '@/lib/constants';
+import { TagInput } from './tag-input';
 
 interface ExpenseFormProps {
   onExpenseAdded: () => void;
-  editingExpense?: { id: number } & CreateExpenseInput;
+  editingExpense?: { id: number; tags?: Tag[] } & CreateExpenseInput;
   onCancelEdit?: () => void;
 }
 
@@ -19,7 +20,9 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
     description: '',
     price_toman: 0,
     price_usd: 0,
+    tagIds: []
   });
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [exchangeRate, setExchangeRate] = useState(0);
   const [lastChanged, setLastChanged] = useState<'toman' | 'usd'>('toman');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,7 +67,9 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
         description: editingExpense.description,
         price_toman: editingExpense.price_toman,
         price_usd: editingExpense.price_usd,
+        tagIds: editingExpense.tags?.map(t => t.id) || []
       });
+      setSelectedTags(editingExpense.tags || []);
       // Calculate rate from existing data (full Toman value)
       if (editingExpense.price_toman && editingExpense.price_usd) {
         setExchangeRate(Math.round(editingExpense.price_toman / editingExpense.price_usd));
@@ -115,12 +120,18 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
       const url = editingExpense ? `/api/expenses/${editingExpense.id}` : '/api/expenses';
       const method = editingExpense ? 'PUT' : 'POST';
 
+      // Sync tagIds with selectedTags
+      const dataToSubmit = {
+        ...formData,
+        tagIds: selectedTags.map(t => t.id)
+      };
+
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSubmit),
       });
 
       if (response.ok) {
@@ -134,7 +145,9 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
           description: '',
           price_toman: 0,
           price_usd: 0,
+          tagIds: []
         });
+        setSelectedTags([]);
         // Keep the fetched exchange rate (don't reset it)
         onExpenseAdded();
         if (editingExpense && onCancelEdit) {
@@ -240,6 +253,14 @@ export function ExpenseForm({ onExpenseAdded, editingExpense, onCancelEdit }: Ex
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
           />
+        </div>
+
+        {/* Tags */}
+        <div>
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+            Tags / برچسب‌ها
+          </label>
+          <TagInput selectedTags={selectedTags} onTagsChange={setSelectedTags} />
         </div>
 
         {/* Prices and Rate */}

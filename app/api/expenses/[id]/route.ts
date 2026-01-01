@@ -43,6 +43,21 @@ export async function PUT(
       ]
     });
 
+    // Update tags - delete existing and insert new ones
+    await db.execute({
+      sql: 'DELETE FROM expense_tags WHERE expense_id = ?',
+      args: [Number(id)]
+    });
+
+    if (body.tagIds && body.tagIds.length > 0) {
+      for (const tagId of body.tagIds) {
+        await db.execute({
+          sql: 'INSERT INTO expense_tags (expense_id, tag_id) VALUES (?, ?)',
+          args: [Number(id), tagId]
+        });
+      }
+    }
+
     return NextResponse.json(
       { message: 'Expense updated successfully' },
       { status: 200 }

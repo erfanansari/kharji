@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Trash2, FileText, Edit } from 'lucide-react';
+import { Trash2, FileText, Edit, Tag } from 'lucide-react';
 import { type Expense } from '@/lib/types/expense';
 import { formatNumber, formatToFarsiDate, getCategoryLabel } from '@/lib/utils';
 
@@ -129,7 +129,22 @@ export function ExpenseList({ refreshTrigger, onDelete, onEdit }: ExpenseListPro
                   className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
                 >
                   <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                    {expense.description}
+                    <div className="flex flex-col gap-1">
+                      <span>{expense.description}</span>
+                      {expense.tags && expense.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {expense.tags.map(tag => (
+                            <div
+                              key={tag.id}
+                              className="flex items-center gap-1 px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded text-[10px] font-medium"
+                            >
+                              <Tag className="h-2.5 w-2.5" />
+                              <span>{tag.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </td>
                   <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">
                     <div className="flex flex-col">

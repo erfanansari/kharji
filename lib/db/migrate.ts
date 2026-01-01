@@ -17,15 +17,8 @@ async function migrate() {
 
     const schema = readFileSync(join(__dirname, 'schema.sql'), 'utf-8');
 
-    // Split by semicolon and execute each statement separately
-    const statements = schema
-      .split(';')
-      .map(s => s.trim())
-      .filter(s => s.length > 0 && !s.startsWith('--'));
-
-    for (const statement of statements) {
-      await client.execute(statement);
-    }
+    // Execute the entire schema at once
+    await client.executeMultiple(schema);
 
     console.log('Migration completed successfully!');
   } catch (error) {
