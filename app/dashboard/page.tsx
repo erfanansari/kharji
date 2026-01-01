@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { DashboardLayout } from '@/components/dashboard-layout';
 import { DateRangeSelector, type DateRange, filterExpensesByDateRange } from '@/components/date-range-selector';
 import { type Expense } from '@/lib/types/expense';
-import { TrendingUp, TrendingDown, DollarSign, Hash, BarChart3, Plus, MoreVertical, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Hash, BarChart3, Plus, MoreVertical, Minus, Lightbulb } from 'lucide-react';
 import { formatNumber, getCategoryLabel } from '@/lib/utils';
 
 // Exchange Rate Card Component
@@ -139,28 +139,30 @@ export default function DashboardPage() {
   const totalUsd = filteredExpenses.reduce((sum, exp) => sum + exp.price_usd, 0);
   const transactionCount = filteredExpenses.length;
 
-  // Calculate expenses this month vs last month for trend
+  // Calculate expenses this month vs last month for trend (using ALL expenses, not filtered)
   const thisMonthExpenses = useMemo(() => {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    return filteredExpenses.filter(exp => {
+    return expenses.filter(exp => {
       const expDate = new Date(exp.date);
       return expDate >= startOfMonth;
     });
-  }, [filteredExpenses]);
+  }, [expenses]);
 
   const lastMonthExpenses = useMemo(() => {
     const now = new Date();
     const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-    return filteredExpenses.filter(exp => {
+    return expenses.filter(exp => {
       const expDate = new Date(exp.date);
       return expDate >= startOfLastMonth && expDate <= endOfLastMonth;
     });
-  }, [filteredExpenses]);
+  }, [expenses]);
 
   const thisMonthTotal = thisMonthExpenses.reduce((sum, exp) => sum + exp.price_usd, 0);
   const lastMonthTotal = lastMonthExpenses.reduce((sum, exp) => sum + exp.price_usd, 0);
+  const thisMonthTotalToman = thisMonthExpenses.reduce((sum, exp) => sum + exp.price_toman, 0);
+  const lastMonthTotalToman = lastMonthExpenses.reduce((sum, exp) => sum + exp.price_toman, 0);
   const monthOverMonthChange = lastMonthTotal > 0
     ? ((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100
     : 0;
@@ -295,6 +297,143 @@ export default function DashboardPage() {
             {/* Exchange Rate */}
             <ExchangeRateCard />
 
+          </div>
+
+          {/* Insights Dashboard */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+            {/* Top 3 Categories */}
+            <div className="bg-zinc-900 rounded-xl p-4 sm:p-6 border border-zinc-800 min-w-0">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2 bg-yellow-500/10 rounded-lg">
+                  <Lightbulb className="h-5 w-5 text-yellow-400" />
+                </div>
+                <MoreVertical className="h-4 w-4 text-zinc-400 cursor-pointer" />
+              </div>
+              <h3 className="text-xs sm:text-sm text-zinc-400 mb-3 sm:mb-4">Top 3 Spending Categories / ۳ دسته بندی برتر</h3>
+              {(() => {
+                const now = new Date();
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                const thisMonthExpenses = filteredExpenses.filter(exp => {
+                  const expDate = new Date(exp.date);
+                  return expDate >= startOfMonth;
+                });
+                
+                // Use this month's expenses if available, otherwise use all filtered expenses
+                const dataToUse = thisMonthExpenses.length > 0 ? thisMonthExpenses : filteredExpenses;
+                
+                const monthCategoryTotals = dataToUse.reduce((acc, exp) => {
+                  const existing = acc.find(item => item.category === exp.category);
+                  if (existing) {
+                    existing.value += exp.price_toman;
+                  } else {
+                    const labels = getCategoryLabel(exp.category);
+                    acc.push({
+                      category: exp.category,
+                      name: labels.en,
+                      nameFa: labels.fa,
+                      value: exp.price_toman,
+                    });
+                  }
+                  return acc;
+                }, [] as Array<{ category: string; name: string; nameFa: string; value: number }>);
+
+                const topThree = monthCategoryTotals.sort((a, b) => b.value - a.value).slice(0, 3);
+
+                return topThree.length > 0 ? (
+                  <div className="space-y-2">
+                    <p className="text-xs text-zinc-500 mb-2">{thisMonthExpenses.length > 0 ? 'This Month' : 'Overall'}</p>
+                    {topThree.map((cat, index) => (
+                      <div key={cat.category} className="flex items-center justify-between text-xs sm:text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-yellow-400">{index + 1}.</span>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-white font-medium truncate">{cat.name}</span>
+                            <span className="text-zinc-400 text-xs truncate">{cat.nameFa}</span>
+                          </div>
+                        </div>
+                        <span className="font-semibold text-white whitespace-nowrap ml-2">{formatNumber(cat.value)}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-zinc-400">No expense data available</p>
+                );
+              })()}
+            </div>
+
+            {/* Highest Single Expense */}
+            <div className="bg-zinc-900 rounded-xl p-4 sm:p-6 border border-zinc-800 min-w-0">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2 bg-amber-500/10 rounded-lg">
+                  <TrendingUp className="h-5 w-5 text-amber-400" />
+                </div>
+                <MoreVertical className="h-4 w-4 text-zinc-400 cursor-pointer" />
+              </div>
+              <h3 className="text-xs sm:text-sm text-zinc-400 mb-3 sm:mb-4">Highest Single Expense / بالاترین هزینه تکی</h3>
+              {(() => {
+                const highestExpense = filteredExpenses.reduce((max, exp) => 
+                  exp.price_toman > max.price_toman ? exp : max
+                , filteredExpenses[0]);
+
+                return highestExpense ? (
+                  <>
+                    <p className="text-2xl sm:text-3xl font-bold text-amber-400 mb-1">
+                      {formatNumber(highestExpense.price_toman)}
+                    </p>
+                    <p className="text-sm sm:text-base text-white mb-2 sm:mb-3" dir="rtl">تومان</p>
+                    <p className="text-xs text-zinc-400 mb-1">
+                      ${highestExpense.price_usd.toFixed(2)} USD
+                    </p>
+                    <p className="text-xs text-zinc-400 mb-1">
+                      {new Date(highestExpense.date).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric'
+                      })}
+                    </p>
+                    <p className="text-xs text-zinc-400">{getCategoryLabel(highestExpense.category).en} / {getCategoryLabel(highestExpense.category).fa}</p>
+                  </>
+                ) : (
+                  <p className="text-xs text-zinc-400">No expenses yet</p>
+                );
+              })()}
+            </div>
+
+            {/* Month over Month Change */}
+            <div className="bg-zinc-900 rounded-xl p-4 sm:p-6 border border-zinc-800 min-w-0">
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-2 rounded-lg ${
+                  monthOverMonthChange >= 0 
+                    ? 'bg-red-500/10' 
+                    : 'bg-green-500/10'
+                }`}>
+                  {monthOverMonthChange >= 0 ? (
+                    <TrendingUp className="h-5 w-5 text-red-400" />
+                  ) : (
+                    <TrendingDown className="h-5 w-5 text-green-400" />
+                  )}
+                </div>
+                <MoreVertical className="h-4 w-4 text-zinc-400 cursor-pointer" />
+              </div>
+              <h3 className="text-xs sm:text-sm text-zinc-400 mb-3 sm:mb-4">Spending vs Last Month / هزینه درمقابل ماه گذشته</h3>
+              {lastMonthTotal > 0 ? (
+                <>
+                  <p className={`text-2xl sm:text-3xl font-bold mb-2 ${
+                    monthOverMonthChange >= 0 
+                      ? 'text-red-400' 
+                      : 'text-green-400'
+                  }`}>
+                    {monthOverMonthChange >= 0 ? '+' : ''}{monthOverMonthChange.toFixed(1)}%
+                  </p>
+                  <p className="text-xs sm:text-sm text-zinc-400 mb-2">
+                    You're spending <span className="text-white font-medium">{monthOverMonthChange >= 0 ? 'more' : 'less'}</span> than last month
+                  </p>
+                  <p className="text-xs text-zinc-400 mb-1">This Month: {formatNumber(thisMonthTotalToman)} ت</p>
+                  <p className="text-xs text-zinc-400">Last Month: {formatNumber(lastMonthTotalToman)} ت</p>
+                </>
+              ) : (
+                <p className="text-xs text-zinc-400">Not enough data to compare</p>
+              )}
+            </div>
           </div>
 
           {/* Expenses by Category - Full Width */}
