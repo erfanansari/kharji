@@ -19,15 +19,15 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<
     // Display stored USD values directly from aggregated data
     const usdValue = data.payload.usdValue || 0;
     return (
-      <div className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 p-3 rounded-lg shadow-lg">
-        <p className="text-zinc-900 dark:text-zinc-100 font-medium" dir="rtl">
+      <div className="bg-zinc-800 border border-zinc-700 p-3 rounded-lg shadow-lg">
+        <p className="text-white font-medium" dir="rtl">
           {formatNumber(data.value)} تومان
         </p>
-        <p className="text-zinc-600 dark:text-zinc-400 text-sm">
+        <p className="text-zinc-400 text-sm">
           ${usdValue.toFixed(2)} USD
         </p>
         {data.payload.nameFa && (
-          <p className="text-zinc-600 dark:text-zinc-400 text-sm" dir="rtl">
+          <p className="text-zinc-400 text-sm" dir="rtl">
             {data.payload.nameFa}
           </p>
         )}
@@ -170,15 +170,15 @@ export function ExpenseCharts({ expenses, granularity = 'daily' }: ExpenseCharts
               <XAxis
                 type="number"
                 tickFormatter={(value: number) => `${Math.round(value / 1_000_000)}M`}
-                stroke="#666"
-                tick={{ fill: '#999', fontSize: 12 }}
+                stroke="#71717a"
+                tick={{ fill: '#a1a1aa', fontSize: 12 }}
               />
               <YAxis
                 type="category"
                 dataKey="nameFa"
                 width={80}
-                stroke="#666"
-                tick={{ fill: '#999', fontSize: 12 }}
+                stroke="#71717a"
+                tick={{ fill: '#a1a1aa', fontSize: 12 }}
               />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="value" radius={[0, 4, 4, 0]}>
@@ -210,11 +210,11 @@ export function ExpenseCharts({ expenses, granularity = 'daily' }: ExpenseCharts
                   <stop offset="95%" stopColor="#7c6aef" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.1} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" opacity={0.2} />
               <XAxis
                 dataKey="date"
-                stroke="#666"
-                tick={{ fill: '#999', fontSize: 12 }}
+                stroke="#71717a"
+                tick={{ fill: '#a1a1aa', fontSize: 12 }}
                 tickFormatter={(value: string) => {
                   if (granularity === 'monthly') {
                     return value.slice(5); // Show MM
@@ -225,8 +225,8 @@ export function ExpenseCharts({ expenses, granularity = 'daily' }: ExpenseCharts
                 }}
               />
               <YAxis
-                stroke="#666"
-                tick={{ fill: '#999', fontSize: 12 }}
+                stroke="#71717a"
+                tick={{ fill: '#a1a1aa', fontSize: 12 }}
                 tickFormatter={(value: number) => `${Math.round(value / 1_000_000)}M`}
               />
               <Tooltip content={<CustomTooltip />} />

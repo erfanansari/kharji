@@ -25,7 +25,7 @@ export function DateRangeSelector({ value, onChange }: DateRangeSelectorProps) {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as DateRange)}
-        className="bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm rounded-md px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="bg-zinc-800 border border-zinc-700 text-white text-xs sm:text-sm rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
