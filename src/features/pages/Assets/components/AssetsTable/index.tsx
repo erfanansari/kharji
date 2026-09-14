@@ -20,7 +20,13 @@ import { useAssetCategoryLabel } from '@hooks/use-constant-labels';
 import { useDrawerStore } from '@stores/drawer';
 
 import type { AssetsTableProps } from '../../@types';
-import { ASSETS_TABLE_MIN_WIDTH, buildAssetColumns, CATEGORY_ICONS } from '../../constants';
+import {
+  ASSETS_TABLE_MIN_WIDTH,
+  buildAssetColumns,
+  buildAssetMobileCard,
+  buildAssetRowActions,
+  CATEGORY_ICONS,
+} from '../../constants';
 
 const CATEGORY_COLORS = ASSET_CATEGORY_COLORS as Record<AssetCategory, string>;
 
@@ -70,6 +76,13 @@ const AssetsTable = ({
   const assetColumns = useMemo(
     () => buildAssetColumns(tTables, categoryLabel, onEdit, onDelete, deletingId),
     [tTables, categoryLabel, onEdit, onDelete, deletingId]
+  );
+
+  const assetMobileCard = useMemo(() => buildAssetMobileCard(tTables), [tTables]);
+
+  const assetRowActions = useMemo(
+    () => buildAssetRowActions(tTables, onEdit, onDelete, deletingId),
+    [tTables, onEdit, onDelete, deletingId]
   );
 
   if (isLoading) {
@@ -122,6 +135,9 @@ const AssetsTable = ({
                 columns={assetColumns}
                 minWidth={ASSETS_TABLE_MIN_WIDTH}
                 getRowId={(row) => String(row.id)}
+                mobileCard={assetMobileCard}
+                rowActions={assetRowActions}
+                rowActionTitle={(row) => row.name}
               />
             </div>
           );

@@ -14,10 +14,11 @@ import {
   type RowData,
   useReactTable,
 } from '@tanstack/react-table';
-import { Inbox, X } from 'lucide-react';
+import { Inbox, MoreVertical, X } from 'lucide-react';
 
 import DatePicker from '@components/DatePicker';
 import EmptyState from '@components/EmptyState';
+import RowActionSheet, { type RowAction } from '@components/RowActionSheet';
 import Select, { type SelectOption } from '@components/Select';
 
 // ─── Module augmentation for typed column meta & custom filter fns ────────────
@@ -65,6 +66,18 @@ export interface DataTableProps<TData extends RowData> {
    * widths from table-fixed layout align automatically with the data columns.
    */
   filterRow?: React.ReactNode;
+  /**
+   * Card body for one row, rendered instead of the table below `sm`. Supply
+   * data only — the ⋮ button and its sheet are this component's job.
+   *
+   * Omit it (along with `rowActions`) and the table behaves exactly as before,
+   * horizontal scroll and all. That's what the Overview mini tables want.
+   */
+  mobileCard?: (row: TData) => React.ReactNode;
+  /** Actions offered by a card's ⋮ button. Without these the ⋮ is hidden. */
+  rowActions?: (row: TData) => RowAction[];
+  /** Title shown at the top of the action sheet — usually the row's name. */
+  rowActionTitle?: (row: TData) => string;
 }
 
 // ─── Custom filter functions ──────────────────────────────────────────────────
@@ -217,9 +230,14 @@ const DataTable = <TData extends RowData>({
   header,
   filterBar,
   filterRow,
+  mobileCard,
+  rowActions,
+  rowActionTitle,
 }: DataTableProps<TData>) => {
   const t = useTranslations('common');
+  const tTables = useTranslations('tables');
   const [filterState, setFilterState] = useState<FilterState>({});
+  const [actionRow, setActionRow] = useState<TData | null>(null);
 
   const table = useReactTable({
     data,
@@ -253,8 +271,79 @@ const DataTable = <TData extends RowData>({
         {/* Filter bar (external slot — above scroll area, mobile-friendly) */}
         {filterBar}
 
+        {/* Cards — phones only.
+            Below `sm` a table can't shrink past `minWidth`, so it scrolls
+            sideways and takes the amount, the date and the action buttons
+            off-screen with it. Cards stack instead, and the ⋮ keeps the
+            actions reachable.
+
+            Both trees render from the one row model and are switched by CSS,
+            not a media-query hook: a hook disagrees with the server on first
+            paint, which flashes the wrong layout. The hidden tree costs some
+            DOM, but `display:none` keeps it out of the accessibility tree. */}
+        {mobileCard && (
+          <div className="sm:hidden">
+            {table.getRowModel().rows.length === 0 ? (
+              <div className="px-4 py-6">{emptyState ?? <EmptyState icon={Inbox} title={t('noResults')} />}</div>
+            ) : (
+              <ul className="flex flex-col gap-2 p-3">
+                {table.getRowModel().rows.map((row) => {
+                  const actions = rowActions?.(row.original) ?? [];
+                  // The body opens details where a table has them, and falls
+                  // back to the sheet where it doesn't — income and assets have
+                  // no details drawer, and a card that ignores taps reads broken.
+                  let activate: (() => void) | undefined;
+                  if (onRowClick) activate = () => onRowClick(row.original);
+                  else if (actions.length > 0) activate = () => setActionRow(row.original);
+
+                  return (
+                    <li key={row.id}>
+                      <div
+                        role={activate ? 'button' : undefined}
+                        tabIndex={activate ? 0 : undefined}
+                        onClick={activate}
+                        onKeyDown={
+                          activate
+                            ? (e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault();
+                                  activate();
+                                }
+                              }
+                            : undefined
+                        }
+                        className={`border-border-subtle bg-background flex items-start gap-1 rounded-xl border p-3 transition-colors ${
+                          activate
+                            ? 'active:bg-background-elevated focus-visible:ring-accent cursor-pointer focus-visible:ring-2 focus-visible:outline-none'
+                            : ''
+                        }`}
+                      >
+                        {actions.length > 0 && (
+                          <button
+                            type="button"
+                            aria-label={tTables('rowActions')}
+                            data-testid="row-actions-trigger"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActionRow(row.original);
+                            }}
+                            className="text-text-muted hover:bg-background-elevated hover:text-text-primary -ms-1 shrink-0 rounded-lg p-2 transition-colors"
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </button>
+                        )}
+                        <div className="min-w-0 flex-1">{mobileCard(row.original)}</div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        )}
+
         {/* Table */}
-        <div className="overflow-x-auto">
+        <div className={`overflow-x-auto ${mobileCard ? 'hidden sm:block' : ''}`}>
           <table className={`w-full table-fixed border-collapse ${minWidth ?? ''}`}>
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -309,6 +398,17 @@ const DataTable = <TData extends RowData>({
 
       {/* Footer slot (outside card) */}
       {footer}
+
+      {/* One sheet per table, not per card — a full expenses page would
+          otherwise mount fifty of them. */}
+      {mobileCard && rowActions && (
+        <RowActionSheet
+          isOpen={actionRow !== null}
+          onClose={() => setActionRow(null)}
+          title={actionRow ? rowActionTitle?.(actionRow) : undefined}
+          actions={actionRow ? rowActions(actionRow) : []}
+        />
+      )}
     </>
   );
 };

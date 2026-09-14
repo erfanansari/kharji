@@ -36,7 +36,12 @@ import type { AppLocale } from '@utils';
 import type { Tag } from '@/@types/expense';
 
 import type { ExpensesTableProps } from '../../@types';
-import { buildExpenseColumns, EXPENSE_TABLE_MIN_WIDTH } from '../../constants';
+import {
+  buildExpenseColumns,
+  buildExpenseMobileCard,
+  buildExpenseRowActions,
+  EXPENSE_TABLE_MIN_WIDTH,
+} from '../../constants';
 
 // ─── TagFilterSelect ──────────────────────────────────────────────────────────
 
@@ -239,6 +244,13 @@ const ExpensesTable = ({
     [tTables, onEdit, onDelete, deletingId]
   );
 
+  const expenseMobileCard = useMemo(() => buildExpenseMobileCard(tTables), [tTables]);
+
+  const expenseRowActions = useMemo(
+    () => buildExpenseRowActions(tTables, onEdit, onDelete, deletingId),
+    [tTables, onEdit, onDelete, deletingId]
+  );
+
   if (isLoading && expenses.length === 0) {
     return <ExpensesSkeleton />;
   }
@@ -265,6 +277,9 @@ const ExpensesTable = ({
       getRowId={(row) => String(row.id)}
       minimal={true}
       minWidth={EXPENSE_TABLE_MIN_WIDTH}
+      mobileCard={expenseMobileCard}
+      rowActions={expenseRowActions}
+      rowActionTitle={(expense) => expense.description}
       filterBar={
         <div className="border-border-subtle border-b">
           {/* Row 1: Search */}

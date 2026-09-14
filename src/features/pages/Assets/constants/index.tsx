@@ -1,12 +1,13 @@
 import type { useTranslations } from 'next-intl';
 
 import { type ColumnDef } from '@tanstack/react-table';
-import { Banknote, Bitcoin, Building2, Gem, Landmark, TrendingUp, Wallet } from 'lucide-react';
+import { Banknote, Bitcoin, Building2, Edit2, Gem, Landmark, Trash2, TrendingUp, Wallet } from 'lucide-react';
 
 import type { Asset, AssetCategory } from '@types';
 
 import ActionButtons from '@components/ActionButtons';
 import Money from '@components/Money';
+import type { RowAction } from '@components/RowActionSheet';
 
 export const CATEGORY_ICONS: Record<AssetCategory, typeof Wallet> = {
   cash: Banknote,
@@ -31,6 +32,56 @@ export const ASSETS_COLUMN_WIDTHS = {
   value: 'w-[32%]',
   actions: 'w-[15%]',
 } as const;
+
+// ─── Mobile card ──────────────────────────────────────────────────────────────
+// Assets tables are already split into one table per category with the category
+// as its heading, so the card drops the category caption the name column carries
+// and gives the row to name / value / quantity.
+
+export function buildAssetMobileCard(t: ReturnType<typeof useTranslations<'tables'>>) {
+  return function AssetMobileCard(asset: Asset) {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-start justify-between gap-3">
+          <span className="text-text-primary truncate text-sm font-medium">{asset.name}</span>
+          <Money
+            amount={asset.amount}
+            currency={asset.currency}
+            date={asset.lastValuedAt?.slice(0, 10)}
+            entryRate={asset.entryRate}
+            className="shrink-0 items-end"
+            primaryClassName="text-text-primary text-sm font-semibold tabular-nums whitespace-nowrap"
+            secondaryClassName="text-text-muted text-xs tabular-nums whitespace-nowrap"
+          />
+        </div>
+        <span className="text-text-secondary text-xs">
+          {asset.quantity} {asset.unit || t('unit')}
+        </span>
+      </div>
+    );
+  };
+}
+
+// Assets call editing "update value", not "edit" — the same distinction the
+// table's ActionButtons already makes via editTitle.
+export function buildAssetRowActions(
+  t: ReturnType<typeof useTranslations<'tables'>>,
+  handleEdit: (asset: Asset) => void,
+  openDeleteModal: (asset: Asset) => void,
+  deletingId: number | null
+) {
+  return (asset: Asset): RowAction[] => [
+    { id: 'edit', icon: Edit2, label: t('updateValue'), onSelect: () => handleEdit(asset) },
+    {
+      id: 'delete',
+      icon: Trash2,
+      label: t('delete'),
+      danger: true,
+      busy: deletingId === asset.id,
+      onSelect: () => openDeleteModal(asset),
+    },
+  ];
+}
 
 // ─── Column definitions ───────────────────────────────────────────────────────
 

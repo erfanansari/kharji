@@ -542,7 +542,8 @@
       "asset": "دارایی",
       "quantity": "مقدار",
       "value": "ارزش"
-    }
+    },
+    "rowActions": "عملیات ردیف"
   },
   "landing": {
     "header": {

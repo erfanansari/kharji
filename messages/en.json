@@ -542,7 +542,8 @@
       "asset": "Asset",
       "quantity": "Quantity",
       "value": "Value"
-    }
+    },
+    "rowActions": "Row actions"
   },
   "landing": {
     "header": {

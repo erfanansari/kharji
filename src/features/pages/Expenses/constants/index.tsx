@@ -1,13 +1,14 @@
 import type { useTranslations } from 'next-intl';
 
 import { type ColumnDef } from '@tanstack/react-table';
-import { Landmark, Repeat, Tag } from 'lucide-react';
+import { Edit2, Landmark, Repeat, Tag, Trash2 } from 'lucide-react';
 
 import type { Expense } from '@types';
 
 import ActionButtons from '@components/ActionButtons';
 import CategoryBadge from '@components/CategoryBadge';
 import Money from '@components/Money';
+import type { RowAction } from '@components/RowActionSheet';
 
 import { useAppDate } from '@hooks/use-app-date';
 
@@ -44,6 +45,64 @@ export const EXPENSE_COLUMN_WIDTHS = {
   amount: 'w-[24%]',
   actions: 'w-[10%]',
 } as const;
+
+// ─── Mobile card ──────────────────────────────────────────────────────────────
+// Below `sm` the table becomes a list of these. Only the four things worth
+// scanning survive: what it was, how much, which category, when. Tags, the
+// account and the exchange rate stay in the details drawer a tap away — a card
+// that reprints the whole row is just the table with extra steps.
+
+export function buildExpenseMobileCard(t: ReturnType<typeof useTranslations<'tables'>>) {
+  return function ExpenseMobileCard(expense: Expense) {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-start justify-between gap-3">
+          <span className="flex min-w-0 items-center gap-1.5">
+            <span className="text-text-primary truncate text-sm font-medium">{expense.description}</span>
+            {expense.recurringId !== null && (
+              <Repeat className="text-text-muted h-3.5 w-3.5 shrink-0" aria-label={t('expenses.generated')} />
+            )}
+            {expense.paidFrom && (
+              <Landmark className="text-text-muted h-3.5 w-3.5 shrink-0" aria-label={expense.paidFrom.name} />
+            )}
+          </span>
+          <Money
+            amount={expense.amount}
+            currency={expense.currency}
+            date={expense.date}
+            entryRate={expense.entryRate}
+            className="shrink-0 items-end"
+            primaryClassName="text-text-primary text-sm font-semibold tabular-nums whitespace-nowrap"
+            secondaryClassName="text-text-muted text-xs tabular-nums whitespace-nowrap"
+          />
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <CategoryBadge category={expense.category} className="min-w-0" />
+          <ExpenseDateCell date={expense.date} />
+        </div>
+      </div>
+    );
+  };
+}
+
+export function buildExpenseRowActions(
+  t: ReturnType<typeof useTranslations<'tables'>>,
+  handleEdit: (expense: Expense) => void,
+  openDeleteModal: (expense: Expense) => void,
+  deletingId: number | null
+) {
+  return (expense: Expense): RowAction[] => [
+    { id: 'edit', icon: Edit2, label: t('edit'), onSelect: () => handleEdit(expense) },
+    {
+      id: 'delete',
+      icon: Trash2,
+      label: t('delete'),
+      danger: true,
+      busy: deletingId === expense.id,
+      onSelect: () => openDeleteModal(expense),
+    },
+  ];
+}
 
 // ─── Column definitions ───────────────────────────────────────────────────────
 

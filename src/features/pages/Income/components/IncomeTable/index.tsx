@@ -20,7 +20,12 @@ import { formatYear } from '@utils';
 import type { NumberLocale } from '@utils';
 
 import type { IncomeTableProps } from '../../@types';
-import { buildIncomeColumns, INCOME_TABLE_MIN_WIDTH } from '../../constants';
+import {
+  buildIncomeColumns,
+  buildIncomeMobileCard,
+  buildIncomeRowActions,
+  INCOME_TABLE_MIN_WIDTH,
+} from '../../constants';
 
 function IncomeSkeleton() {
   return (
@@ -85,6 +90,13 @@ const IncomeTable = ({
     [tTables, incomeTypeLabel, onEdit, onDelete, deletingId]
   );
 
+  const incomeMobileCard = useMemo(() => buildIncomeMobileCard(incomeTypeLabel), [incomeTypeLabel]);
+
+  const incomeRowActions = useMemo(
+    () => buildIncomeRowActions(tTables, onEdit, onDelete, deletingId),
+    [tTables, onEdit, onDelete, deletingId]
+  );
+
   if (isLoading) {
     return <IncomeSkeleton />;
   }
@@ -126,6 +138,9 @@ const IncomeTable = ({
             columns={incomeColumns}
             minWidth={INCOME_TABLE_MIN_WIDTH}
             getRowId={(row) => String(row.id)}
+            mobileCard={incomeMobileCard}
+            rowActions={incomeRowActions}
+            rowActionTitle={(row) => incomeTypeLabel(row.incomeType)}
           />
         </div>
       ))}

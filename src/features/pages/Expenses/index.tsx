@@ -143,7 +143,13 @@ const ExpensesPage = () => {
         />
 
         {/* Expense Details Drawer */}
-        <ExpenseDetailsDrawer expense={selectedExpense} isOpen={isModalOpen} onClose={handleCloseModal} />
+        <ExpenseDetailsDrawer
+          expense={selectedExpense}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onEdit={openExpenseDrawer}
+          onDelete={openDeleteModal}
+        />
 
         {/* Delete Confirmation Modal */}
         <DeleteConfirmModal

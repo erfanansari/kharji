@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useLocale, useTranslations } from 'next-intl';
 
-import { ArrowLeftRight, Calendar, Coins, Landmark, Repeat, Tag as TagIcon, X } from 'lucide-react';
+import { ArrowLeftRight, Calendar, Coins, Edit2, Landmark, Repeat, Tag as TagIcon, Trash2, X } from 'lucide-react';
 import { Drawer } from 'vaul';
 
 import { formatMoney } from '@features/ExchangeRate/utils/currency';
@@ -25,6 +25,10 @@ interface ExpenseDetailsDrawerProps {
   expense: Expense | null;
   isOpen: boolean;
   onClose: () => void;
+  /** Closes the drawer, then opens the expense form. */
+  onEdit?: (expense: Expense) => void;
+  /** Closes the drawer, then opens the delete confirmation. */
+  onDelete?: (expense: Expense) => void;
 }
 
 interface MetaCellProps {
@@ -80,7 +84,7 @@ function expenseRate(
   return { base: primaryCurrency, quote: counterpart, rate };
 }
 
-const ExpenseDetailsDrawer = ({ expense, isOpen, onClose }: ExpenseDetailsDrawerProps) => {
+const ExpenseDetailsDrawer = ({ expense, isOpen, onClose, onEdit, onDelete }: ExpenseDetailsDrawerProps) => {
   // Customs
   const t = useTranslations();
   const locale = useLocale() as 'en' | 'fa';
@@ -307,6 +311,40 @@ const ExpenseDetailsDrawer = ({ expense, isOpen, onClose }: ExpenseDetailsDrawer
               </div>
             )}
           </div>
+
+          {/* Actions — pinned, outside the scroll area.
+              Opening this drawer used to be a dead end: on a phone the table's
+              action buttons sit off-screen, so a row tap led here and there was
+              nothing to do. Shown at every width, since the dead end existed on
+              desktop too. */}
+          {expense && (onEdit || onDelete) && (
+            <div className="border-border-subtle bg-background flex shrink-0 gap-2 border-t px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:px-8">
+              {onDelete && (
+                <button
+                  onClick={() => {
+                    handleClose();
+                    onDelete(expense);
+                  }}
+                  className="border-button-outline-border bg-background text-button-outline-text hover:border-danger hover:text-danger flex flex-1 items-center justify-center gap-2 rounded-full border px-4 py-3 text-sm font-medium transition-colors"
+                >
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
+                  {t('tables.delete')}
+                </button>
+              )}
+              {onEdit && (
+                <button
+                  onClick={() => {
+                    handleClose();
+                    onEdit(expense);
+                  }}
+                  className="bg-button-primary-bg hover:bg-button-primary-bg-hover text-button-primary-text flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium transition-colors"
+                >
+                  <Edit2 className="h-4 w-4" aria-hidden="true" />
+                  {t('tables.edit')}
+                </button>
+              )}
+            </div>
+          )}
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

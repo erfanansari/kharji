@@ -1,11 +1,13 @@
 import type { useTranslations } from 'next-intl';
 
 import { type ColumnDef } from '@tanstack/react-table';
+import { Edit2, Trash2 } from 'lucide-react';
 
 import type { Income } from '@types';
 
 import ActionButtons from '@components/ActionButtons';
 import Money from '@components/Money';
+import type { RowAction } from '@components/RowActionSheet';
 
 import { useMonthYearDisplay } from '@hooks/use-month-year-display';
 
@@ -41,6 +43,55 @@ export const INCOME_COLUMN_WIDTHS = {
   amount: 'w-[32%]',
   actions: 'w-[11%]',
 } as const;
+
+// ─── Mobile card ──────────────────────────────────────────────────────────────
+// The table is already grouped by year under its own heading, so the card leads
+// with the month and drops the year caption's redundancy onto the second line
+// alongside the source.
+
+export function buildIncomeMobileCard(incomeTypeLabel: (value: string) => string) {
+  return function IncomeMobileCard(income: Income) {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-start justify-between gap-3">
+          <IncomeMonthCell month={income.month} year={income.year} />
+          <Money
+            amount={income.amount}
+            currency={income.currency}
+            date={`${income.year}-${String(income.month).padStart(2, '0')}-01`}
+            entryRate={income.entryRate}
+            className="shrink-0 items-end"
+            primaryClassName="text-success text-sm font-semibold tabular-nums whitespace-nowrap"
+            secondaryClassName="text-text-muted text-xs tabular-nums whitespace-nowrap"
+          />
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-text-secondary truncate text-xs">{incomeTypeLabel(income.incomeType)}</span>
+          {income.source && <span className="text-text-muted truncate text-xs">{income.source}</span>}
+        </div>
+      </div>
+    );
+  };
+}
+
+export function buildIncomeRowActions(
+  t: ReturnType<typeof useTranslations<'tables'>>,
+  handleEdit: (income: Income) => void,
+  openDeleteModal: (income: Income) => void,
+  deletingId: number | null
+) {
+  return (income: Income): RowAction[] => [
+    { id: 'edit', icon: Edit2, label: t('edit'), onSelect: () => handleEdit(income) },
+    {
+      id: 'delete',
+      icon: Trash2,
+      label: t('delete'),
+      danger: true,
+      busy: deletingId === income.id,
+      onSelect: () => openDeleteModal(income),
+    },
+  ];
+}
 
 // ─── Column definitions ───────────────────────────────────────────────────────
 
