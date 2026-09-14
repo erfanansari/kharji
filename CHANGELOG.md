@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.6.0](https://github.com/erfanansari/kharji/compare/v1.5.0...v1.6.0) (2026-09-14)
+
+### Features
+
+- make expenses, income and assets editable on a phone ([97357e8](https://github.com/erfanansari/kharji/commit/97357e8eab09935138eb9453843166e84c76754d))
+
 ## [1.5.0](https://github.com/erfanansari/kharji/compare/v1.4.1...v1.5.0) (2026-09-06)
 
 ### Features
