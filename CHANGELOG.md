@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.6.1](https://github.com/erfanansari/kharji/compare/v1.6.0...v1.6.1) (2026-09-19)
+
+### Bug Fixes
+
+- apply Vazirmatn and Geist font variables to <html>, not <body> ([6357189](https://github.com/erfanansari/kharji/commit/6357189f0671fd6c4cd93a8a46e4e25cedb3dd6f))
+
 ## [1.6.0](https://github.com/erfanansari/kharji/compare/v1.5.0...v1.6.0) (2026-09-14)
 
 ### Features
