@@ -56,7 +56,7 @@ export const expenseSchema: z.ZodType<Expense> = z.object({
 
 export const expenseFiltersSchema = z.object({
   description: z.string().optional(),
-  categoryId: z.number().optional(),
+  categoryIds: z.array(z.number().int().positive()).optional(),
   dateFrom: z.string().optional(),
   dateTo: z.string().optional(),
   tagIds: z.array(z.number()).optional(),

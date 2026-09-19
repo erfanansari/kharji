@@ -37,8 +37,13 @@ export const GET = withAuth(async (user, request) => {
   const limitParam = searchParams.get('limit');
   const cursor = searchParams.get('cursor');
   const description = searchParams.get('description')?.trim() || null;
-  const categoryIdParam = searchParams.get('categoryId')?.trim() || null;
-  const categoryId = categoryIdParam ? Number(categoryIdParam) : null;
+  const categoryIdsParam = searchParams.get('categoryIds')?.trim() || searchParams.get('categoryId')?.trim() || null;
+  const categoryIds = categoryIdsParam
+    ? categoryIdsParam
+        .split(',')
+        .map(Number)
+        .filter((id) => Number.isInteger(id) && id > 0)
+    : [];
   const dateFrom = searchParams.get('dateFrom')?.trim() || null;
   const dateTo = searchParams.get('dateTo')?.trim() || null;
   const tagIdsParam = searchParams.get('tagIds')?.trim() || null;
@@ -85,9 +90,9 @@ export const GET = withAuth(async (user, request) => {
     whereSql += ' AND description LIKE ?';
     filterArgs.push(`%${description}%`);
   }
-  if (categoryId) {
-    whereSql += ' AND category_id = ?';
-    filterArgs.push(categoryId);
+  if (categoryIds.length > 0) {
+    whereSql += ` AND category_id IN (${categoryIds.map(() => '?').join(',')})`;
+    filterArgs.push(...categoryIds);
   }
   if (dateFrom) {
     whereSql += ' AND date >= ?';
@@ -120,8 +125,6 @@ export const GET = withAuth(async (user, request) => {
     GROUP BY date, currency, entryRate
   `;
 
-  // Infinite-query pages after the first reuse the first page's summary. Do
-  // not resend the aggregate groups with every 20-row page.
   const [result, summaryResult] = await Promise.all([
     db.execute({ sql, args }),
     cursor ? Promise.resolve(null) : db.execute({ sql: summarySql, args: filterArgs }),

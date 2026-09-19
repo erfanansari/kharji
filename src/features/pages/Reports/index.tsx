@@ -36,6 +36,9 @@ import { buildExportFilename, downloadFile, expensesToCsvString } from '@/utils/
 import ReportsCharts from './components/ReportsCharts';
 import ReportsFilterPopover from './components/ReportsFilterPopover';
 import ReportsStats from './components/ReportsStats';
+import { buildExpensesHref } from './utils';
+
+const EMPTY_EXPENSES: Expense[] = [];
 
 function ReportsSkeleton() {
   return (
@@ -74,12 +77,13 @@ const ReportsPage = () => {
   const locale = useLocale() as 'en' | 'fa';
   const { prefs: localePrefs } = useLocalePreferences();
   const calendar = resolveCalendar(localePrefs.calendar, locale);
+  const { showToast } = useToast();
+
   // States
   const [dateRange, setDateRange] = useState<DateRange>('ALL_TIME');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filterTags, setFilterTags] = useState<Tag[]>([]);
   const [filterCategoryIds, setFilterCategoryIds] = useState<number[]>([]);
-  const { showToast } = useToast();
 
   // Queries
   const {
@@ -92,7 +96,7 @@ const ReportsPage = () => {
   });
 
   // Variables
-  const expenses: Expense[] = expensesData ?? [];
+  const expenses = expensesData ?? EMPTY_EXPENSES;
   // 401 means the auth redirect is already in flight; don't flash an error banner.
   const loadError = error instanceof ApiError && error.status === 401 ? null : error;
   const activeFilterCount = filterTags.length + filterCategoryIds.length;
@@ -111,6 +115,16 @@ const ReportsPage = () => {
   }, [expenses, dateRange, calendar, filterCategoryIds, filterTags]);
 
   const chartGranularity = useMemo(() => getChartGranularity(dateRange, calendar), [dateRange, calendar]);
+  const expensesHref = useMemo(
+    () =>
+      buildExpensesHref({
+        dateRange,
+        calendar,
+        categoryIds: filterCategoryIds,
+        tagIds: filterTags.map((tag) => tag.id),
+      }),
+    [calendar, dateRange, filterCategoryIds, filterTags]
+  );
 
   const handleResetFilters = () => {
     setFilterTags([]);
@@ -191,7 +205,7 @@ const ReportsPage = () => {
             </div>
           ) : (
             <>
-              <ReportsStats expenses={filteredExpenses} />
+              <ReportsStats expenses={filteredExpenses} expensesHref={expensesHref} />
               <ReportsCharts
                 expenses={filteredExpenses}
                 granularity={chartGranularity}

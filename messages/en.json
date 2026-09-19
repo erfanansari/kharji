@@ -813,6 +813,7 @@
         "total": "Total Expenses",
         "count": "Expenses",
         "dailyAverage": "Daily Average",
+        "viewExpenses": "View expenses",
         "ledgerCount": "Across {count, plural, one {# expense} other {# expenses}}"
       },
       "details": {
