@@ -42,6 +42,7 @@ import {
   buildExpenseRowActions,
   EXPENSE_TABLE_MIN_WIDTH,
 } from '../../constants';
+import ExpensesTotal from '../ExpensesTotal';
 
 // ─── TagFilterSelect ──────────────────────────────────────────────────────────
 
@@ -185,6 +186,7 @@ function ExpensesSkeleton() {
 
 const ExpensesTable = ({
   expenses,
+  summary,
   isLoading,
   error,
   filters,
@@ -280,6 +282,7 @@ const ExpensesTable = ({
       mobileCard={expenseMobileCard}
       rowActions={expenseRowActions}
       rowActionTitle={(expense) => expense.description}
+      header={<ExpensesTotal summary={summary} />}
       filterBar={
         <div className="border-border-subtle border-b">
           {/* Row 1: Search */}

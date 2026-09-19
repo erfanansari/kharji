@@ -70,6 +70,19 @@ const responseSchema = z.object({
   expenses: z.array(expenseSchema),
   nextCursor: z.string().nullable(),
   hasMore: z.boolean(),
+  summary: z
+    .object({
+      count: z.number(),
+      items: z.array(
+        z.object({
+          amount: z.number(),
+          currency: z.string(),
+          date: z.string(),
+          entryRate: z.number(),
+        })
+      ),
+    })
+    .nullable(),
 });
 
 type Response = z.infer<typeof responseSchema>;
@@ -85,4 +98,5 @@ client.registerEndpoint<RequestData, Response>(keyGenerator, {
 });
 
 export { keyGenerator as getExpenseListKeyGenerator };
+export type ExpenseSummary = NonNullable<Response['summary']>;
 export type { RequestData as GetExpenseListRequestData, Response as ExpensesPage };

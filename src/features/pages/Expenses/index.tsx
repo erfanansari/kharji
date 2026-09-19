@@ -89,6 +89,7 @@ const ExpensesPage = () => {
 
   // Variables
   const expenses: Expense[] = data?.pages.flatMap((p) => p.expenses) ?? [];
+  const summary = data?.pages[0]?.summary ?? { count: 0, items: [] };
 
   // Effects
   useEffect(() => {
@@ -126,6 +127,7 @@ const ExpensesPage = () => {
         {/* Expenses Table */}
         <ExpensesTable
           expenses={expenses}
+          summary={summary}
           isLoading={isLoading}
           error={error}
           filters={filters}
