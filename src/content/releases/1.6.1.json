@@ -1,0 +1,15 @@
+{
+  "version": "1.6.1",
+  "date": "2026-09-19",
+  "title": {
+    "en": "Fixed the app's font",
+    "fa": "فونت اپ درست شد"
+  },
+  "highlights": [
+    {
+      "type": "fix",
+      "en": "A styling bug was quietly making every page fall back to your browser's default font instead of Kharji's actual typeface, in both English and Persian. It's fixed — you're now seeing the app the way it was designed.",
+      "fa": "یه باگ ظاهری باعث می‌شد همهٔ صفحه‌ها به‌جای فونت اصلی خرجی، فونت پیش‌فرض مرورگرت رو نشون بدن؛ هم تو انگلیسی هم فارسی. درست شد — حالا اپ رو همون‌طوری می‌بینی که طراحی شده."
+    }
+  ]
+}
