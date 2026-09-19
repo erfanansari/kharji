@@ -118,11 +118,21 @@ export default async function RootLayout({
   const locale = await getLocale();
 
   return (
-    <html lang={locale} dir={locale === 'fa' ? 'rtl' : 'ltr'} className="bg-background" suppressHydrationWarning>
+    <html
+      lang={locale}
+      dir={locale === 'fa' ? 'rtl' : 'ltr'}
+      // Font variables live here, not on <body>: globals.css reads them via
+      // --app-font-sans on the <html>/html[lang] selectors, and CSS custom
+      // properties don't inherit upward from a child to its parent. Moving
+      // these to <body> makes --app-font-sans (and everything built on it)
+      // silently resolve to the browser default font — see globals.css.
+      className={twMerge(geistSans.variable, persianFont.variable, 'bg-background')}
+      suppressHydrationWarning
+    >
       <head>
         <AppleSplashScreens />
       </head>
-      <body className={twMerge(geistSans.variable, persianFont.variable, 'bg-background antialiased')}>
+      <body className="bg-background antialiased">
         <NextIntlClientProvider>
           <SerwistProvider swUrl="/sw.js" disable={process.env.NODE_ENV === 'development'}>
             <Providers>

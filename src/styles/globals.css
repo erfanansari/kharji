@@ -424,7 +424,13 @@ html {
   min-height: 100%;
   min-height: 100dvh;
   /* en: Geist first (Latin), Vazirmatn covers any Persian glyphs.
-     fa: Vazirmatn first, Geist as a Latin fallback (codes, numbers). */
+     fa: Vazirmatn first, Geist as a Latin fallback (codes, numbers).
+     --font-geist-sans / --font-persian come from next/font's `.variable`
+     classNames in layout.tsx, which MUST be on this <html> element (or an
+     ancestor). CSS variables don't inherit upward, so if they end up on
+     <body> instead, both vars are undefined here, --app-font-sans becomes
+     guaranteed-invalid, and the whole app silently falls back to the
+     browser's default sans-serif — with no error anywhere. */
   --app-font-sans: var(--font-geist-sans), var(--font-persian), ui-sans-serif, sans-serif;
 }
 
