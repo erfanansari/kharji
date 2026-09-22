@@ -51,6 +51,7 @@
     "@vercel/analytics": "^2.0.1",
     "better-auth": "^1.6.23",
     "date-fns": "^4.2.1",
+    "geist": "^1.7.2",
     "jalaali-js": "^2.0.0",
     "kbar": "0.1.0-beta.48",
     "lucide-react": "^1.16.0",
@@ -67,6 +68,7 @@
     "resend": "^6.12.4",
     "tailwind-merge": "^3.6.0",
     "vaul": "^1.1.2",
+    "vazirmatn": "^33.0.3",
     "xlsx": "^0.18.5",
     "zod": "^4.4.3",
     "zustand": "^5.0.14"

@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
-import { Geist, Vazirmatn } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import { SerwistProvider } from '@serwist/next/react';
 import { Analytics } from '@vercel/analytics/next';
+import { GeistSans as geistSans } from 'geist/font/sans';
 import { twMerge } from 'tailwind-merge';
 
 import Providers from '@features/Providers';
@@ -16,18 +17,30 @@ import '@/styles/globals.css';
 
 import AppleSplashScreens from './AppleSplashScreens';
 
-const geistSans = Geist({
-  display: 'swap',
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-});
-
-const persianFont = Vazirmatn({
+// Both fonts are self-hosted — no next/font/google, no live fetch to Google
+// Fonts at dev-server boot. Turbopack's resolver for that path has a known,
+// sporadic upstream bug (vercel/next.js#81697, discussion #61886: "Can't
+// resolve '@vercel/turbopack-next/internal/font/google/font'") that this
+// sidesteps entirely rather than works around.
+//
+// Geist comes from Vercel's own `geist` package — it's still next/font, just
+// pointed at a local file instead of fetched from Google; the CSS variable
+// name it exports (--font-geist-sans) already matches what globals.css reads.
+//
+// Vazirmatn has no such first-party package, so its variable-weight woff2 is
+// vendored at src/assets/fonts/ from the official `vazirmatn` npm package
+// (OFL-licensed, same upstream source Google Fonts itself subsets from — see
+// node_modules/vazirmatn for the full family and licence). Update it by
+// bumping the `vazirmatn` dependency and re-copying that one file; see the
+// comment on `persianFont` below.
+const persianFont = localFont({
+  src: '../assets/fonts/Vazirmatn-Variable.woff2',
   display: 'swap',
   variable: '--font-persian',
-  subsets: ['arabic', 'latin'],
-  weight: ['300', '400', '500', '600', '700'],
+  // A single variable file covering the whole weight axis, unlike the five
+  // discrete cuts the old next/font/google config requested — a strict
+  // superset, so every existing font-weight utility still resolves.
+  weight: '100 900',
 });
 
 const APP_URL = 'https://kharji.app';
