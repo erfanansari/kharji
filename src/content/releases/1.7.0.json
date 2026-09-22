@@ -1,0 +1,39 @@
+{
+  "version": "1.7.0",
+  "date": "2026-09-20",
+  "title": {
+    "en": "Money you owe, and money you're owed",
+    "fa": "پولی که بدهکاری، و پولی که طلبکاری"
+  },
+  "summary": {
+    "en": "There's a new Debts section. Write down the bill you haven't paid yet, or the money you lent your brother, and mark it settled when it's sorted — with or without touching a real account balance.",
+    "fa": "یه بخش جدید داریم: طلب و بدهی. قبضی که هنوز پولش رو ندادی یا پولی که به برادرت قرض دادی رو بنویس، و وقتی حل شد بزن تسویه شد — چه بخوای موجودی یه حساب واقعی هم جابه‌جا بشه چه نه."
+  },
+  "highlights": [
+    {
+      "type": "feature",
+      "en": "Debts has its own tab. Record who it's with, how much, and when it's due — either direction: money you owe, or money owed to you.",
+      "fa": "طلب و بدهی تب خودش رو داره. بنویس با کی، چقدر و موعدش کیه — هر دو طرف: پولی که بدهکاری یا پولی که طلبکاری."
+    },
+    {
+      "type": "feature",
+      "en": "Settling is one tap. It can just tick the debt off as bookkeeping, or you can pick a cash or bank account and the balance moves too — down when you pay, up when you're paid back. Change your mind and undo it, and the balance goes back exactly.",
+      "fa": "تسویه یه کلیکه. می‌تونه فقط بدهی رو برای حساب‌کتاب تیک بزنه، یا یه حساب نقدی یا بانکی انتخاب کنی که موجودیش هم جابه‌جا بشه — وقتی می‌پردازی کم می‌شه، وقتی پولت رو پس می‌گیری زیاد می‌شه. نظرت عوض شد برش گردون، موجودی دقیقاً برمی‌گرده."
+    },
+    {
+      "type": "improvement",
+      "en": "Net worth on the Overview now counts what you owe and what you're owed, so it's no longer just the sum of your assets. If you have any debts open, a small note under it shows what it's adjusted by. The Assets page still shows your total assets, now labelled that way.",
+      "fa": "دارایی خالص تو نمای کلی حالا بدهی‌ها و طلب‌هات رو هم حساب می‌کنه، پس دیگه فقط جمع دارایی‌هات نیست. اگه بدهی باز داری، یه یادداشت کوچیک زیرش نشون می‌ده چقدر تعدیل شده. صفحهٔ دارایی‌ها هنوز کل دارایی‌هات رو نشون می‌ده، فقط حالا اسمش همینه."
+    },
+    {
+      "type": "improvement",
+      "en": "One tap between light and dark, from the profile menu on any page.",
+      "fa": "با یه کلیک از منوی پروفایل، از هر صفحه‌ای بین روشن و تاریک عوض کن."
+    },
+    {
+      "type": "fix",
+      "en": "Deleting your account now also clears your repeating expenses, feedback and language settings, which used to be left behind.",
+      "fa": "حذف حساب حالا خرج‌های تکرارشونده، بازخوردها و تنظیمات زبانت رو هم پاک می‌کنه؛ قبلاً اینا جا می‌موندن."
+    }
+  ]
+}
