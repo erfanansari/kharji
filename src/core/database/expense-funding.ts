@@ -1,5 +1,5 @@
 /**
- * Moves an account's balance when an expense is paid out of it.
+ * Paying an expense out of an account.
  *
  * Funding is a side-effect of saving an expense, never something the user
  * manages on its own — the same shape as `expense-repeat.ts`. What it exposes
@@ -8,38 +8,36 @@
  * balance write in one `db.batch(..., 'write')`. An expense that disagrees with
  * the balance it moved is the one failure mode worth designing the API around.
  *
- * ── The invariant this file must never break ───────────────────────────────
- * `assets.amount` is the denormalized current balance. Migration 020 exists
- * because it once drifted from the valuation history, so every write here:
- *
- *   1. moves `assets.amount` **relatively** (`amount = ROUND(amount - ?, ?)`),
- *      never read-modify-write, so two expenses landing on one account in the
- *      same materializer run compose instead of losing an update; and
- *   2. appends an `assetValuations` row **selected back out of the row it just
- *      wrote**, so `assets.amount == newest valuation.amount` and
- *      `assets.lastValuedAt == newest valuation.valuedAt` hold by construction
- *      rather than by two code paths agreeing.
- *
- * ── Rate policy ───────────────────────────────────────────────────────────
- * The account leg always uses **today's** rate (`getEntryRate`), on every path
- * including the materializer's backdated catch-ups. Pinning it to the expense's
- * date would make the delta's pivot value line up exactly with the expense's —
- * prettier — but the same write re-snapshots `assets.entryRate`, and that rate
- * has to agree with `assets.lastValuedAt`, which is *now*. A past-dated rate
- * beside a present-dated `lastValuedAt` is precisely the drift 020 repaired.
+ * ── Where the balance arithmetic lives ────────────────────────────────────
+ * The statements that actually move `assets.amount` and snapshot it are in
+ * `account-balance.ts`, because debt settlement moves balances too and both
+ * must obey the same invariant (relative UPDATE + INSERT…SELECT back out of
+ * the row just written — see that file's header, and migration 020). This file
+ * keeps the expense-shaped API over them: the wrappers below bind
+ * `source: 'expense'` so every caller here labels its valuation rows correctly
+ * without having to remember to.
  */
 import type { InStatement, InValue } from '@libsql/client';
 
-import { currencyDecimals, fundingDelta, resyncOps, wouldOverdraw } from '@core/accounts/balance';
+import { currencyDecimals, fundingDelta, wouldOverdraw } from '@core/accounts/balance';
 import type { FundingState, MoneyRecord } from '@core/accounts/balance';
 import { getEntryRate } from '@core/rates';
 
 import type { ExpensePaidFrom } from '@/@types/expense';
 import { isSpendableAssetCategory } from '@/constants/assets';
 
+import {
+  buildBalanceStatements,
+  buildResyncStatements as buildResyncStatementsFor,
+  buildReversalStatements as buildReversalStatementsFor,
+} from './account-balance';
+import type { BalanceStatementOp } from './account-balance';
 import { db } from './client';
+import { buildDebtAccountCleanupStatements } from './debt-settlement';
 
 export type { FundingState } from '@core/accounts/balance';
+/** @deprecated Prefer `BalanceStatementOp` from `account-balance.ts`. */
+export type FundingStatementOp = BalanceStatementOp;
 
 // ---------------------------------------------------------------------------
 // Plan
@@ -138,65 +136,15 @@ export async function planFunding(args: {
 // Statements
 // ---------------------------------------------------------------------------
 
-/** One balance movement. Positive delta = money leaves the account. */
-export interface FundingStatementOp {
-  assetId: number;
-  delta: number;
-  decimals: number;
-  /** Written to `assets.entryRate` so it stays consistent with lastValuedAt. */
-  entryRate: number;
-}
-
 /**
- * The statements that move balances and snapshot them.
+ * The statements that move balances and snapshot them, labelled `'expense'`.
  *
  * Callers MUST run these inside one `db.batch(..., 'write')` together with the
- * expense-row write they belong to. `valuedAt` is a single timestamp bound to
- * every op, so an account switch produces two snapshots sharing one moment.
- *
- * Both statements are scoped `WHERE id = ? AND userId = ?`. If the asset was
- * deleted between planning and committing, the UPDATE matches nothing and the
- * INSERT…SELECT selects nothing — under-applied, never phantom.
+ * expense-row write they belong to. See `account-balance.ts` for the invariant
+ * these statements exist to uphold.
  */
-export function buildFundingStatements(userId: number, ops: FundingStatementOp[], valuedAt: string): InStatement[] {
-  const statements: InStatement[] = [];
-
-  for (const op of ops) {
-    statements.push({
-      // SQLite evaluates every SET right-hand side against the pre-update row,
-      // so `amount - ?` inside the CASE still refers to the old balance.
-      //
-      // unitValue is recomputed only for unlinked assets that actually carry
-      // one: a linked asset's unitValue is owned by the price feed (see
-      // /api/assets/revalue), and an account with a null unitValue should keep
-      // it null rather than acquire a meaningless price-per-unit.
-      sql: `UPDATE assets
-               SET amount       = ROUND(amount - ?, ?),
-                   unitValue    = CASE
-                                    WHEN linkedItem IS NULL AND unitValue IS NOT NULL AND quantity > 0
-                                    THEN ROUND((amount - ?) / quantity, ?)
-                                    ELSE unitValue
-                                  END,
-                   entryRate    = ?,
-                   lastValuedAt = ?,
-                   updatedAt    = CURRENT_TIMESTAMP
-             WHERE id = ? AND userId = ?`,
-      args: [op.delta, op.decimals, op.delta, op.decimals, op.entryRate, valuedAt, op.assetId, userId],
-    });
-
-    statements.push({
-      // Selected back out of the row the previous statement just wrote, in the
-      // same transaction — that is what makes the snapshot unable to disagree
-      // with the balance. Do not "simplify" this to VALUES with JS-computed
-      // numbers; that is exactly the shape migration 020 had to repair.
-      sql: `INSERT INTO assetValuations (assetId, quantity, unitValue, amount, currency, entryRate, valuedAt, source)
-            SELECT id, quantity, unitValue, amount, currency, entryRate, lastValuedAt, 'expense'
-              FROM assets WHERE id = ? AND userId = ?`,
-      args: [op.assetId, userId],
-    });
-  }
-
-  return statements;
+export function buildFundingStatements(userId: number, ops: BalanceStatementOp[], valuedAt: string): InStatement[] {
+  return buildBalanceStatements(userId, ops, valuedAt, 'expense');
 }
 
 /**
@@ -229,85 +177,23 @@ export function readFunding(row: Record<string, unknown>): FundingState | null {
   return { assetId, delta, currency };
 }
 
-interface AccountRow {
-  currency: string;
-  entryRate: number;
-}
-
-async function loadAccount(userId: number, assetId: number): Promise<AccountRow | null> {
-  const res = await db.execute({
-    sql: 'SELECT currency, entryRate FROM assets WHERE id = ? AND userId = ?',
-    args: [assetId, userId],
-  });
-  const row = res.rows[0];
-  return row ? { currency: row.currency as string, entryRate: row.entryRate as number } : null;
-}
-
 /**
- * Turn signed balance ops into statements, resolving each account's currency
- * and today's rate.
- *
- * A missing rate must never block a *credit* — refusing to give money back
- * because an API is down would be strictly worse than a slightly stale rate. So
- * the account's own stored `entryRate` is the fallback, which preserves its
- * pivot value exactly.
- */
-async function opsToStatements(
-  userId: number,
-  ops: { assetId: number; delta: number }[],
-  valuedAt: string
-): Promise<InStatement[]> {
-  const resolved: FundingStatementOp[] = [];
-
-  for (const op of ops) {
-    const account = await loadAccount(userId, op.assetId);
-    if (!account) continue; // Deleted underneath us — nothing left to move.
-
-    const rate = (await getEntryRate(account.currency)) ?? account.entryRate;
-    resolved.push({
-      assetId: op.assetId,
-      delta: op.delta,
-      decimals: currencyDecimals(account.currency),
-      entryRate: rate,
-    });
-  }
-
-  return buildFundingStatements(userId, resolved, valuedAt);
-}
-
-/**
- * Statements that give a recorded deduction back.
- *
- * Returns nothing when the account is gone, and nothing when its currency has
- * changed since the deduction was applied — crediting a dollar figure into a
- * toman balance would silently corrupt it, so refuse and say so rather than
- * guess. This is what `paidFromCurrency` is stored for.
+ * Statements that give a recorded deduction back. See `account-balance.ts`;
+ * this binds `source: 'expense'` and keeps the original positional signature.
  */
 export async function buildReversalStatements(
   userId: number,
   funding: FundingState | null,
   valuedAt: string
 ): Promise<InStatement[]> {
-  if (!funding) return [];
-
-  const account = await loadAccount(userId, funding.assetId);
-  if (!account) return [];
-
-  if (account.currency !== funding.currency) {
-    console.warn(
-      `[funding] refusing to reverse ${funding.delta} ${funding.currency} into asset ${funding.assetId}, now held in ${account.currency}`
-    );
-    return [];
-  }
-
-  return opsToStatements(userId, [{ assetId: funding.assetId, delta: -funding.delta }], valuedAt);
+  return buildReversalStatementsFor({ userId, funding, valuedAt, source: 'expense' });
 }
 
 /**
  * Statements taking an expense's funding from `before` to `after`.
  *
- * Same-account edits net into one movement, so changing 500,000 to 700,000
- * writes a single −200,000 rather than a credit-back plus a re-debit.
+ * Takes a `FundingPlanOk` rather than a bare `FundingState` because that is
+ * what the expense routes have in hand straight out of `planFunding`.
  */
 export async function buildResyncStatements(args: {
   userId: number;
@@ -321,24 +207,7 @@ export async function buildResyncStatements(args: {
     ? { assetId: after.assetId, delta: after.delta, currency: after.currency }
     : null;
 
-  // A stale delta in a currency the account no longer holds can't be credited
-  // back (see buildReversalStatements). Drop the credit half but keep the new
-  // debit, so the edit still does the right thing going forward.
-  if (before) {
-    const account = await loadAccount(userId, before.assetId);
-    if (!account || account.currency !== before.currency) {
-      if (account && account.currency !== before.currency) {
-        console.warn(
-          `[funding] skipping reversal of ${before.delta} ${before.currency} on asset ${before.assetId}, now held in ${account.currency}`
-        );
-      }
-      return afterState
-        ? opsToStatements(userId, [{ assetId: afterState.assetId, delta: afterState.delta }], valuedAt)
-        : [];
-    }
-  }
-
-  return opsToStatements(userId, resyncOps(before, afterState), valuedAt);
+  return buildResyncStatementsFor({ userId, before, after: afterState, valuedAt, source: 'expense' });
 }
 
 /**
@@ -405,8 +274,12 @@ export async function fetchPaidFromForExpenses(expenseIds: InValue[]): Promise<R
 /** Clear every reference to an account that is about to be deleted.
  *
  *  Not a convenience: `PRAGMA foreign_keys` defaults OFF in SQLite and nothing
- *  turns it on, so the `ON DELETE SET NULL` in migration 021 may never fire.
- *  Balances are deliberately NOT restored — that money was genuinely spent. */
+ *  turns it on, so the `ON DELETE SET NULL` in migrations 021 and 022 may never
+ *  fire. Balances are deliberately NOT restored — that money genuinely moved.
+ *
+ *  Debt settlements are cleaned up here too, rather than from a second call in
+ *  `DELETE /api/assets/[id]`, so that route stays the single place accounts are
+ *  torn down and no future entity can be forgotten by only half of it. */
 export function buildAccountCleanupStatements(userId: number, assetId: number): InStatement[] {
   return [
     {
@@ -418,5 +291,6 @@ export function buildAccountCleanupStatements(userId: number, assetId: number): 
       sql: 'UPDATE recurringExpenses SET paidFromAssetId = NULL WHERE paidFromAssetId = ? AND userId = ?',
       args: [assetId, userId],
     },
+    ...buildDebtAccountCleanupStatements(userId, assetId),
   ];
 }

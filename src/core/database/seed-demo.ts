@@ -365,6 +365,7 @@ export async function seedDemo() {
           args: [userId],
         },
         { sql: 'DELETE FROM assets WHERE userId = ?', args: [userId] },
+        { sql: 'DELETE FROM debts WHERE userId = ?', args: [userId] },
       ],
       'write'
     );
@@ -665,6 +666,68 @@ export async function seedDemo() {
 
     await executeBatch(client, valuationStatements);
     console.log(`  Created ${valuationCount} asset valuations`);
+
+    // 8b. Insert debts — one overdue payable, one receivable still to collect,
+    //     and one settled payable, so every state of the debts page is visible.
+    //
+    //     The settled one is bookkeeping-only (all three settled* columns NULL)
+    //     on purpose. Settling through an account would move a demo balance, and
+    //     the note above the asset loop explains why a demo whose asset rows
+    //     disagree with their own valuation history is worse than no demo.
+    console.log('Inserting debts...');
+    const dayMs = 24 * 60 * 60 * 1000;
+    const isoDay = (offsetDays: number) => new Date(NOW.getTime() + offsetDays * dayMs).toISOString().slice(0, 10);
+    const debtRate = getExchangeRate(END_YEAR, END_MONTH);
+    const DEBT_DEFS = [
+      // I owe the mechanic, and the agreed date has passed.
+      {
+        direction: 'payable',
+        counterparty: 'مکانیک',
+        amount: 150,
+        incurred: -14,
+        due: -5,
+        note: 'تعمیر موتور',
+        settled: false,
+      },
+      // My brother owes me; not due yet.
+      {
+        direction: 'receivable',
+        counterparty: 'برادرم',
+        amount: 300,
+        incurred: -30,
+        due: 10,
+        note: 'قرض',
+        settled: false,
+      },
+      // Already sorted out.
+      {
+        direction: 'payable',
+        counterparty: 'رضا',
+        amount: 80,
+        incurred: -60,
+        due: -45,
+        note: 'شام دورهمی',
+        settled: true,
+      },
+    ] as const;
+
+    const debtStatements: InStatement[] = DEBT_DEFS.map((d) => ({
+      sql: `INSERT INTO debts (userId, direction, counterparty, amount, currency, entryRate, incurredAt, dueDate, note, settledAt)
+            VALUES (?, ?, ?, ?, 'USD', ?, ?, ?, ?, ?)`,
+      args: [
+        userId,
+        d.direction,
+        d.counterparty,
+        d.amount,
+        debtRate,
+        isoDay(d.incurred),
+        isoDay(d.due),
+        d.note,
+        d.settled ? now : null,
+      ],
+    }));
+    await executeBatch(client, debtStatements);
+    console.log(`  Created ${DEBT_DEFS.length} debts`);
 
     // 9. Seed fabricated USD→IRT rows ONLY for periods older than all recorded
     //    rate data. currencyRates is shared app-wide, so fabricated demo rates

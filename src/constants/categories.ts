@@ -1,4 +1,6 @@
 import {
+  ArrowDownLeft,
+  ArrowUpRight,
   Banknote,
   Bike,
   BookOpen,
@@ -86,6 +88,9 @@ export const CATEGORY_ICONS: ReadonlyArray<CategoryIconOption> = [
   { value: 'Sparkles', Icon: Sparkles },
   { value: 'Package', Icon: Package },
   { value: 'Folder', Icon: Folder },
+  // Debt directions (src/constants/debts.ts) resolve through this registry.
+  { value: 'ArrowUpRight', Icon: ArrowUpRight },
+  { value: 'ArrowDownLeft', Icon: ArrowDownLeft },
 ];
 
 export const DEFAULT_CATEGORY_ICON = 'Folder';

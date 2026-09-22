@@ -1,4 +1,5 @@
 import type { Asset, AssetValuation } from '@/@types/asset';
+import type { Debt, DebtSettledFrom } from '@/@types/debt';
 import type { Category, Expense, ExpensePaidFrom, Tag } from '@/@types/expense';
 import type { Income } from '@/@types/income';
 import type { ExpenseRepeat } from '@/@types/recurring';
@@ -38,6 +39,28 @@ export function mapRowToAsset(row: DbRow): Asset {
     linkedItem: (row.linkedItem as string | null) ?? null,
     notes: row.notes as string | null,
     lastValuedAt: row.lastValuedAt as string,
+    createdAt: row.createdAt as string,
+    updatedAt: row.updatedAt as string,
+  };
+}
+
+export function mapRowToDebt(row: DbRow, settledFrom?: DebtSettledFrom): Debt {
+  return {
+    id: row.id as number,
+    userId: row.userId as number,
+    direction: row.direction as Debt['direction'],
+    counterparty: row.counterparty as string,
+    amount: row.amount as number,
+    currency: row.currency as string,
+    entryRate: row.entryRate as number,
+    incurredAt: row.incurredAt as string,
+    dueDate: (row.dueDate as string | null) ?? null,
+    note: (row.note as string | null) ?? null,
+    settledAt: (row.settledAt as string | null) ?? null,
+    settledAssetId: (row.settledAssetId as number | null) ?? null,
+    settledDelta: (row.settledDelta as number | null) ?? null,
+    settledCurrency: (row.settledCurrency as string | null) ?? null,
+    settledFrom: settledFrom ?? null,
     createdAt: row.createdAt as string,
     updatedAt: row.updatedAt as string,
   };

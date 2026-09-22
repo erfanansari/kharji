@@ -66,9 +66,9 @@ const AssetsSummary = ({ assetsByCategory }: AssetsSummaryProps) => {
             <TrendingUp className="text-blue h-5 w-5" />
           </div>
         </div>
-        <p className="text-text-muted mb-2 text-xs font-medium tracking-wider uppercase">{t('netWorth')}</p>
+        <p className="text-text-muted mb-2 text-xs font-medium tracking-wider uppercase">{t('totalAssets')}</p>
         {totalAssetCount === 0 ? (
-          <StatZeroState caption={tZero('assetsNetWorth')} />
+          <StatZeroState caption={tZero('assetsTotal')} />
         ) : (
           <>
             {renderPair(net.p, net.s)}

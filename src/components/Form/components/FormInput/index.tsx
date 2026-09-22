@@ -12,9 +12,20 @@ import type { FormFieldBaseProps } from '../../@types';
 interface FormInputProps extends FormFieldBaseProps {
   type?: 'text' | 'email' | 'password';
   autoComplete?: string;
+  /** id of a <datalist> to offer as suggestions. */
+  list?: string;
 }
 
-const FormInput = ({ name, label, type = 'text', placeholder, disabled, autoComplete, className }: FormInputProps) => {
+const FormInput = ({
+  name,
+  label,
+  type = 'text',
+  placeholder,
+  disabled,
+  autoComplete,
+  list,
+  className,
+}: FormInputProps) => {
   const t = useTranslations('common');
   const { control } = useFormContext();
   const { field, fieldState } = useController({ name, control });
@@ -38,6 +49,7 @@ const FormInput = ({ name, label, type = 'text', placeholder, disabled, autoComp
           placeholder={placeholder}
           disabled={disabled}
           autoComplete={autoComplete}
+          list={list}
           aria-invalid={fieldState.invalid || undefined}
           className={`border-border-subtle bg-background text-text-primary placeholder:text-text-muted focus:border-primary w-full rounded-lg border px-3 py-2.5 text-sm focus:outline-none sm:px-4 sm:py-3 sm:text-base ${
             isPassword ? 'pe-10 sm:pe-12' : ''

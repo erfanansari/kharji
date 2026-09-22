@@ -36,6 +36,18 @@ export const DELETE = withAuth(async (user, request) => {
       { sql: 'DELETE FROM assets WHERE userId = ?', args: [userId] },
       { sql: 'DELETE FROM assetTypes WHERE userId = ?', args: [userId] },
       { sql: 'DELETE FROM incomes WHERE userId = ?', args: [userId] },
+      { sql: 'DELETE FROM debts WHERE userId = ?', args: [userId] },
+      // These four declare ON DELETE CASCADE but `PRAGMA foreign_keys` is OFF
+      // per connection and nothing turns it on, so the clause never fires and
+      // the rows outlived the account. Recurrence rules in particular kept
+      // being scanned by the materializer forever.
+      {
+        sql: 'DELETE FROM recurringExpenseTags WHERE recurringId IN (SELECT id FROM recurringExpenses WHERE userId = ?)',
+        args: [userId],
+      },
+      { sql: 'DELETE FROM recurringExpenses WHERE userId = ?', args: [userId] },
+      { sql: 'DELETE FROM userLocalePreferences WHERE userId = ?', args: [userId] },
+      { sql: 'DELETE FROM feedback WHERE userId = ?', args: [userId] },
       { sql: 'DELETE FROM session WHERE userId = ?', args: [userId] },
       { sql: 'DELETE FROM account WHERE userId = ?', args: [userId] },
       { sql: 'DELETE FROM userNotificationPreferences WHERE userId = ?', args: [userId] },

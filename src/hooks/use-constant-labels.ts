@@ -3,10 +3,12 @@
 import { useTranslations } from 'next-intl';
 
 import { ASSET_CATEGORIES } from '@constants/assets';
+import { DEBT_DIRECTIONS } from '@constants/debts';
 import { INCOME_TYPES } from '@constants/income';
 
 type AssetCategoryKey = (typeof ASSET_CATEGORIES)[number]['value'] | 'other';
 type IncomeTypeKey = (typeof INCOME_TYPES)[number]['value'];
+type DebtDirectionKey = (typeof DEBT_DIRECTIONS)[number]['value'];
 
 /** Localized asset-category label with a raw-value fallback for unknown data. */
 export function useAssetCategoryLabel() {
@@ -32,5 +34,14 @@ export function useMonthLabel() {
   return (month: number): string => {
     if (month < 1 || month > 12) return String(month);
     return t(String(month) as `${1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12}`);
+  };
+}
+
+/** Localized debt-direction label with a raw-value fallback for unknown data. */
+export function useDebtDirectionLabel() {
+  const t = useTranslations('constants.debtDirections');
+  return (value: string): string => {
+    const known = DEBT_DIRECTIONS.some((d) => d.value === value);
+    return known ? t(value as DebtDirectionKey) : value;
   };
 }

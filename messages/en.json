@@ -50,7 +50,8 @@
       "changeLanguage": "Change language / تغییر زبان",
       "swapCurrencies": "Swap Currencies",
       "toggleTheme": "Toggle Theme"
-    }
+    },
+    "addDebt": "Add Debt"
   },
   "errors": {
     "generic": {
@@ -76,7 +77,8 @@
     "forgotPassword": "Forgot Password",
     "resetPassword": "Reset Password",
     "login": "Login",
-    "offline": "Offline"
+    "offline": "Offline",
+    "debts": "Debts"
   },
   "zod": {
     "feedback": {
@@ -138,6 +140,14 @@
       "intervalMax": "Interval can't be more than 99",
       "endInvalid": "End date is invalid",
       "endBeforeStart": "The end date can't be before the expense date"
+    },
+    "debt": {
+      "counterpartyRequired": "Who is it with?",
+      "amountPositive": "Amount must be more than zero",
+      "dateInvalid": "Pick a valid date",
+      "dueInvalid": "Pick a valid due date",
+      "dueBeforeIncurred": "The due date can't be before the debt started",
+      "accountInvalid": "Pick a valid account"
     }
   },
   "dateRange": {
@@ -158,7 +168,9 @@
     "logout": "Log Out",
     "loggedOutToast": "Signed out. See you next time!",
     "sessionExpiredToast": "You've been signed out.",
-    "commandMenu": "Command Menu"
+    "commandMenu": "Command Menu",
+    "debts": "Debts",
+    "toggleTheme": "Toggle theme"
   },
   "auth": {
     "tagline": "Personal Finance Tracker",
@@ -344,11 +356,14 @@
       "incomeYtd": "Nothing recorded this year",
       "incomeLastMonth": "Nothing recorded last month",
       "incomeAverage": "Add income to see your monthly average",
-      "assetsNetWorth": "Add an asset to see your net worth",
       "assetCategoryPlaceholder": "Nothing tracked yet",
       "expensesTotal": "No expenses to show",
       "expensesCount": "No expenses to show",
-      "expensesDailyAverage": "Add expenses to see your daily average"
+      "expensesDailyAverage": "Add expenses to see your daily average",
+      "debtsOwedToMe": "Nothing owed to you right now",
+      "debtsIOwe": "You're all square",
+      "debtsNet": "Add a debt to see your net position",
+      "assetsTotal": "Add an asset to see your total"
     },
     "emptyStates": {
       "addExpense": "Add expense",
@@ -382,6 +397,15 @@
       "assetsTable": {
         "title": "No assets recorded yet",
         "description": "Track cash, gold, crypto, vehicles — anything you own."
+      },
+      "addDebt": "Add a debt",
+      "debtsPayable": {
+        "title": "Nothing owed",
+        "description": "Money you owe someone shows up here, so you don't have to remember it."
+      },
+      "debtsReceivable": {
+        "title": "Nothing to collect",
+        "description": "Lent someone money? Record it here and mark it settled when it comes back."
       }
     }
   },
@@ -416,6 +440,10 @@
       "10": "October",
       "11": "November",
       "12": "December"
+    },
+    "debtDirections": {
+      "payable": "I owe",
+      "receivable": "Owed to me"
     }
   },
   "forms": {
@@ -516,6 +544,23 @@
         "gregorian": "Gregorian",
         "jalali": "Jalali"
       }
+    },
+    "debt": {
+      "addTitle": "Add Debt",
+      "editTitle": "Edit Debt",
+      "direction": "Which way?",
+      "counterparty": "Who with?",
+      "counterpartyPlaceholder": "e.g. Reza, the mechanic",
+      "incurredAt": "Since when",
+      "dueDate": "Due date",
+      "dueDateNone": "No due date",
+      "note": "Note",
+      "notePlaceholder": "What was it for?",
+      "added": "Debt added.",
+      "updated": "Debt updated.",
+      "settleFrom": "Pay from",
+      "settleTo": "Deposit into",
+      "settleNone": "Don't track an account"
     }
   },
   "tables": {
@@ -543,7 +588,20 @@
       "quantity": "Quantity",
       "value": "Value"
     },
-    "rowActions": "Row actions"
+    "rowActions": "Row actions",
+    "debts": {
+      "counterparty": "With",
+      "incurredAt": "Since",
+      "dueDate": "Due",
+      "amount": "Amount",
+      "status": "Status",
+      "outstanding": "Outstanding",
+      "settled": "Settled",
+      "noDueDate": "No due date",
+      "overdue": "Overdue",
+      "settle": "Mark settled",
+      "unsettle": "Undo settle"
+    }
   },
   "landing": {
     "header": {
@@ -772,7 +830,8 @@
       "stats": {
         "netWorth": "Net Worth",
         "totalIncome": "Total Income",
-        "totalExpenses": "Total Expenses"
+        "totalExpenses": "Total Expenses",
+        "netWorthDebtNote": "after {payable} owed · {receivable} to collect"
       },
       "recentExpenses": {
         "title": "Recent Expenses",
@@ -850,8 +909,8 @@
       "deleteMessage": "Are you sure you want to delete this asset? All valuation history will be removed.",
       "loadError": "Couldn't load assets",
       "stats": {
-        "netWorth": "Net Worth",
-        "assetCount": "{count} {count, plural, one {asset} other {assets}}"
+        "assetCount": "{count} {count, plural, one {asset} other {assets}}",
+        "totalAssets": "Total Assets"
       },
       "distribution": {
         "title": "Asset Distribution",
@@ -859,7 +918,7 @@
         "emptyDescription": "Add an asset to see how your wealth is split across categories."
       },
       "netWorthChart": {
-        "title": "Net Worth",
+        "title": "Asset value over time",
         "emptyTitle": "No history yet",
         "emptyDescription": "Add assets and update their values over time — each update records a snapshot on this chart.",
         "loadError": "Couldn't load net worth history",
@@ -935,6 +994,38 @@
         "previous": "Previous",
         "next": "Next",
         "pageLabel": "Page {page}"
+      }
+    },
+    "debts": {
+      "title": "Debts",
+      "subtitle": "Everything you owe and everything you're owed, in one place",
+      "addDebt": "Add Debt",
+      "deleted": "Debt deleted.",
+      "deleteTitle": "Delete debt",
+      "deleteMessage": "Are you sure you want to delete this debt?",
+      "deleteMessageSettled": "This debt was settled through {account}. Deleting it will put {amount} back into that account.",
+      "loadError": "Couldn't load debts",
+      "payableHeading": "I owe",
+      "receivableHeading": "Owed to me",
+      "stats": {
+        "owedToMe": "Owed to Me",
+        "iOwe": "I Owe",
+        "net": "Net Position"
+      },
+      "settle": {
+        "title": "Mark as settled",
+        "description": "Settle {amount} with {counterparty}.",
+        "accountHint": "Optional — pick an account and the balance moves too.",
+        "confirm": "Mark settled",
+        "confirming": "Settling...",
+        "done": "Debt settled!"
+      },
+      "unsettle": {
+        "title": "Undo settlement",
+        "description": "This will mark the debt outstanding again.",
+        "descriptionWithAccount": "This will mark the debt outstanding again and put {amount} back into {account}.",
+        "confirm": "Undo it",
+        "done": "Settlement undone."
       }
     }
   },

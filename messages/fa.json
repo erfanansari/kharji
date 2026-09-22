@@ -50,7 +50,8 @@
       "changeLanguage": "تغییر زبان / Change language",
       "swapCurrencies": "جابه‌جایی ارز اصلی و دوم",
       "toggleTheme": "تغییر تم"
-    }
+    },
+    "addDebt": "افزودن بدهی"
   },
   "errors": {
     "generic": {
@@ -76,7 +77,8 @@
     "forgotPassword": "فراموشی رمز عبور",
     "resetPassword": "تعیین رمز جدید",
     "login": "ورود",
-    "offline": "آفلاین"
+    "offline": "آفلاین",
+    "debts": "طلب و بدهی"
   },
   "zod": {
     "feedback": {
@@ -138,6 +140,14 @@
       "intervalMax": "بازه نمی‌تونه بیشتر از ۹۹ باشه",
       "endInvalid": "تاریخ پایان معتبر نیست",
       "endBeforeStart": "تاریخ پایان نمی‌تونه قبل از تاریخ هزینه باشه"
+    },
+    "debt": {
+      "counterpartyRequired": "با کی؟",
+      "amountPositive": "مبلغ باید بیشتر از صفر باشه",
+      "dateInvalid": "یه تاریخ درست انتخاب کن",
+      "dueInvalid": "یه موعد درست انتخاب کن",
+      "dueBeforeIncurred": "موعد نمی‌تونه قبل از شروع بدهی باشه",
+      "accountInvalid": "یه حساب درست انتخاب کن"
     }
   },
   "dateRange": {
@@ -158,7 +168,9 @@
     "logout": "خروج",
     "loggedOutToast": "خارج شدی. به امید دیدار!",
     "sessionExpiredToast": "از حسابت خارج شدی.",
-    "commandMenu": "منوی دستورات"
+    "commandMenu": "منوی دستورات",
+    "debts": "طلب و بدهی",
+    "toggleTheme": "تغییر تم"
   },
   "auth": {
     "tagline": "مدیریت مالی شخصی",
@@ -344,11 +356,14 @@
       "incomeYtd": "امسال هنوز چیزی ثبت نشده",
       "incomeLastMonth": "ماه قبل چیزی ثبت نشده",
       "incomeAverage": "درآمد ثبت کن تا میانگین ماهانه‌ت رو ببینی",
-      "assetsNetWorth": "یه دارایی اضافه کن تا دارایی خالصت رو ببینی",
       "assetCategoryPlaceholder": "هنوز چیزی ثبت نشده",
       "expensesTotal": "هزینه‌ای برای نمایش نیست",
       "expensesCount": "هزینه‌ای برای نمایش نیست",
-      "expensesDailyAverage": "هزینه ثبت کن تا میانگین روزانه‌ت رو ببینی"
+      "expensesDailyAverage": "هزینه ثبت کن تا میانگین روزانه‌ت رو ببینی",
+      "debtsOwedToMe": "فعلاً کسی بهت بدهکار نیست",
+      "debtsIOwe": "حسابت صافه",
+      "debtsNet": "یه بدهی اضافه کن تا خالصت رو ببینی",
+      "assetsTotal": "یه دارایی اضافه کن تا کل دارایی‌هات رو ببینی"
     },
     "emptyStates": {
       "addExpense": "ثبت هزینه",
@@ -382,6 +397,15 @@
       "assetsTable": {
         "title": "هنوز دارایی‌ای ثبت نشده",
         "description": "هر چی داری رو اینجا ثبت کن — کم یا زیاد فرقی نمی‌کنه، از حساب بانکی تا طلا و ماشین."
+      },
+      "addDebt": "افزودن بدهی",
+      "debtsPayable": {
+        "title": "بدهی‌ای نداری",
+        "description": "هر چی به کسی بدهکاری اینجا می‌آد که لازم نباشه یادت بمونه."
+      },
+      "debtsReceivable": {
+        "title": "طلبی نداری",
+        "description": "به کسی قرض دادی؟ اینجا ثبتش کن و وقتی برگشت بزن تسویه شد."
       }
     }
   },
@@ -416,6 +440,10 @@
       "10": "اکتبر",
       "11": "نوامبر",
       "12": "دسامبر"
+    },
+    "debtDirections": {
+      "payable": "بدهکارم",
+      "receivable": "طلبکارم"
     }
   },
   "forms": {
@@ -516,6 +544,23 @@
         "gregorian": "میلادی",
         "jalali": "شمسی"
       }
+    },
+    "debt": {
+      "addTitle": "افزودن بدهی",
+      "editTitle": "ویرایش بدهی",
+      "direction": "کدوم طرفه؟",
+      "counterparty": "با کی؟",
+      "counterpartyPlaceholder": "مثلاً رضا، مکانیک",
+      "incurredAt": "از کی",
+      "dueDate": "موعد",
+      "dueDateNone": "بدون موعد",
+      "note": "توضیح",
+      "notePlaceholder": "بابت چی بود؟",
+      "added": "بدهی اضافه شد.",
+      "updated": "بدهی ویرایش شد.",
+      "settleFrom": "پرداخت از",
+      "settleTo": "واریز به",
+      "settleNone": "حساب ثبت نشه"
     }
   },
   "tables": {
@@ -543,7 +588,20 @@
       "quantity": "مقدار",
       "value": "ارزش"
     },
-    "rowActions": "عملیات ردیف"
+    "rowActions": "عملیات ردیف",
+    "debts": {
+      "counterparty": "با",
+      "incurredAt": "از",
+      "dueDate": "موعد",
+      "amount": "مبلغ",
+      "status": "وضعیت",
+      "outstanding": "تسویه نشده",
+      "settled": "تسویه شده",
+      "noDueDate": "بدون موعد",
+      "overdue": "موعدش گذشته",
+      "settle": "تسویه شد",
+      "unsettle": "برگردون"
+    }
   },
   "landing": {
     "header": {
@@ -772,7 +830,8 @@
       "stats": {
         "netWorth": "دارایی خالص",
         "totalIncome": "مجموع درآمد",
-        "totalExpenses": "مجموع هزینه‌ها"
+        "totalExpenses": "مجموع هزینه‌ها",
+        "netWorthDebtNote": "بعد از {payable} بدهی و {receivable} طلب"
       },
       "recentExpenses": {
         "title": "هزینه‌های اخیر",
@@ -850,8 +909,8 @@
       "deleteMessage": "مطمئنی می‌خوای این دارایی رو حذف کنی؟ کل تاریخچهٔ ارزش‌گذاریش هم پاک می‌شه.",
       "loadError": "نشد دارایی‌ها رو بارگذاری کنیم",
       "stats": {
-        "netWorth": "دارایی خالص",
-        "assetCount": "{count} دارایی"
+        "assetCount": "{count} دارایی",
+        "totalAssets": "کل دارایی"
       },
       "distribution": {
         "title": "ترکیب دارایی‌ها",
@@ -859,7 +918,7 @@
         "emptyDescription": "یه دارایی اضافه کن تا ببینی دارایی‌هات چطوری بین دسته‌ها پخش شدن."
       },
       "netWorthChart": {
-        "title": "دارایی خالص",
+        "title": "روند دارایی‌ها",
         "emptyTitle": "هنوز تاریخچه‌ای نیست",
         "emptyDescription": "دارایی‌هات رو اضافه کن و هر بار ارزش‌شون رو به‌روز کن — هر به‌روزرسانی یه نقطه به این نمودار اضافه می‌کنه.",
         "loadError": "نشد تاریخچهٔ دارایی خالص رو بارگذاری کنیم",
@@ -935,6 +994,38 @@
         "previous": "قبلی",
         "next": "بعدی",
         "pageLabel": "صفحهٔ {page}"
+      }
+    },
+    "debts": {
+      "title": "طلب و بدهی",
+      "subtitle": "هر چی بدهکاری یا طلبکاری، یه‌جا",
+      "addDebt": "افزودن بدهی",
+      "deleted": "بدهی حذف شد.",
+      "deleteTitle": "حذف بدهی",
+      "deleteMessage": "مطمئنی می‌خوای این بدهی رو حذف کنی؟",
+      "deleteMessageSettled": "این بدهی از طریق {account} تسویه شده بود. با حذفش، {amount} برمی‌گرده به اون حساب.",
+      "loadError": "طلب و بدهی‌ها لود نشد",
+      "payableHeading": "بدهکارم",
+      "receivableHeading": "طلبکارم",
+      "stats": {
+        "owedToMe": "طلبم",
+        "iOwe": "بدهیم",
+        "net": "خالص"
+      },
+      "settle": {
+        "title": "تسویه شد",
+        "description": "تسویهٔ {amount} با {counterparty}.",
+        "accountHint": "اختیاری — یه حساب انتخاب کنی، موجودیش هم جابه‌جا می‌شه.",
+        "confirm": "تسویه شد",
+        "confirming": "در حال تسویه...",
+        "done": "بدهی تسویه شد!"
+      },
+      "unsettle": {
+        "title": "برگردوندن تسویه",
+        "description": "بدهی دوباره تسویه‌نشده می‌شه.",
+        "descriptionWithAccount": "بدهی دوباره تسویه‌نشده می‌شه و {amount} برمی‌گرده به {account}.",
+        "confirm": "برگردون",
+        "done": "تسویه برگردونده شد."
       }
     }
   },

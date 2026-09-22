@@ -184,3 +184,47 @@ describe('isSpendableAssetCategory', () => {
     expect(Object.keys(SPENDABLE_ASSET_TILE).sort()).toEqual(['bank', 'cash']);
   });
 });
+
+// Debts push a SIGNED delta through the same machinery as expenses: positive
+// when a payable is settled (money leaves), negative when a receivable is
+// collected (money arrives). Nothing in resyncOps was written with that in
+// mind, so these pin the claim the whole debts feature rests on — that it is
+// sign-agnostic and needs no debt-specific branch.
+describe('resyncOps — signed deltas', () => {
+  it('credits the account when a receivable settlement is first recorded', () => {
+    expect(resyncOps(null, funding(7, -300_000))).toEqual([{ assetId: 7, delta: -300_000 }]);
+  });
+
+  it('takes a collected receivable back out when it is un-settled', () => {
+    // Reversal negates the stored delta: -(-300,000) = +300,000, a debit.
+    expect(resyncOps(funding(7, -300_000), null)).toEqual([{ assetId: 7, delta: 300_000 }]);
+  });
+
+  it('nets a same-account amount edit on a receivable into one movement', () => {
+    // 300,000 collected, edited up to 500,000: one further credit of 200,000.
+    expect(resyncOps(funding(7, -300_000), funding(7, -500_000))).toEqual([{ assetId: 7, delta: -200_000 }]);
+  });
+
+  // Flipping a SETTLED debt from payable to receivable is the awkward case:
+  // it has to give back what was paid AND credit what is now received, which
+  // against one account is -d - d = -2d.
+  it('nets a payable → receivable flip on the same account to twice the amount, credited', () => {
+    expect(resyncOps(funding(7, 500_000), funding(7, -500_000))).toEqual([{ assetId: 7, delta: -1_000_000 }]);
+  });
+
+  it('and the reverse flip debits twice the amount', () => {
+    expect(resyncOps(funding(7, -500_000), funding(7, 500_000))).toEqual([{ assetId: 7, delta: 1_000_000 }]);
+  });
+
+  it('emits two signed ops when a settled receivable moves to a different account', () => {
+    expect(resyncOps(funding(7, -300_000), funding(9, -300_000))).toEqual([
+      { assetId: 7, delta: 300_000 },
+      { assetId: 9, delta: -300_000 },
+    ]);
+  });
+
+  it('emits nothing for a no-op edit, whichever sign', () => {
+    expect(resyncOps(funding(7, -300_000), funding(7, -300_000))).toEqual([]);
+    expect(resyncOps(funding(7, 300_000), funding(7, 300_000))).toEqual([]);
+  });
+});

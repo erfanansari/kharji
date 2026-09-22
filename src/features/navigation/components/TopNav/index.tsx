@@ -10,23 +10,15 @@ import { usePathname } from 'next/navigation';
 import { ChevronDown, CommandIcon, LayoutDashboard, LogOut, MessageSquare, Settings } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 
-import { ROUTES } from '@constants';
+import { NAV_ITEMS, ROUTES } from '@constants';
 
 import { useCommandPalette } from '@components/CommandPalette/CommandPaletteProvider';
 import Logo from '@components/Logo';
+import ThemeToggle from '@components/ThemeToggle';
 
 import { useAuth } from '@hooks/use-auth';
 
 import { useDrawerStore } from '@stores/drawer';
-
-const NAV_ITEMS = [
-  { href: '/overview', key: 'overview' },
-  { href: '/expenses', key: 'expenses' },
-  { href: '/income', key: 'income' },
-  { href: '/reports', key: 'reports' },
-  { href: '/assets', key: 'assets' },
-  { href: '/settings', key: 'settings' },
-] as const;
 
 const TopNav: FC = () => {
   // Customs
@@ -113,6 +105,7 @@ const TopNav: FC = () => {
                       <Settings className="h-4 w-4" />
                       {t('nav.settings')}
                     </Link>
+                    <ThemeToggle onSelect={() => setIsUserMenuOpen(false)} />
                     <button
                       onClick={() => {
                         setIsUserMenuOpen(false);

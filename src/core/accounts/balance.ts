@@ -87,10 +87,17 @@ export function wouldOverdraw(balance: number, delta: number): boolean {
   return balance - delta < 0;
 }
 
-/** The funding actually recorded against an expense. */
+/** The balance movement actually recorded against a record — an expense's
+ *  funding, or a debt's settlement. */
 export interface FundingState {
   assetId: number;
-  /** Positive, in `currency`. */
+  /**
+   * In `currency`. Positive = money left the account, negative = money
+   * arrived. Expenses only ever store a positive delta; a settled receivable
+   * stores a negative one (see src/core/debts/balance.ts). Nothing downstream
+   * clamps or takes an absolute value, which is what lets reversal and resync
+   * serve both directions.
+   */
   delta: number;
   /** The account's currency when the delta was applied. */
   currency: string;

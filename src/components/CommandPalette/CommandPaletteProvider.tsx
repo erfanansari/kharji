@@ -22,6 +22,7 @@ import {
 import {
   ArrowLeftRight,
   DollarSign,
+  HandCoins,
   Languages,
   LayoutDashboard,
   MessageSquare,
@@ -92,6 +93,7 @@ function CommandPalette({ toggleRef }: { toggleRef: ToggleRef }) {
   const openExpenseDrawer = useDrawerStore((state) => state.openExpenseDrawer);
   const openIncomeDrawer = useDrawerStore((state) => state.openIncomeDrawer);
   const openAssetDrawer = useDrawerStore((state) => state.openAssetDrawer);
+  const openDebtDrawer = useDrawerStore((state) => state.openDebtDrawer);
   const openFeedbackModal = useDrawerStore((state) => state.openFeedbackModal);
 
   const actions = useMemo<Action[]>(() => {
@@ -111,6 +113,7 @@ function CommandPalette({ toggleRef }: { toggleRef: ToggleRef }) {
       },
       { id: 'nav-income', name: goTo(t('nav.income')), path: '/income', icon: <DollarSign className="h-4 w-4" /> },
       { id: 'nav-assets', name: goTo(t('nav.assets')), path: '/assets', icon: <TrendingUp className="h-4 w-4" /> },
+      { id: 'nav-debts', name: goTo(t('nav.debts')), path: '/debts', icon: <HandCoins className="h-4 w-4" /> },
       { id: 'nav-reports', name: goTo(t('nav.reports')), path: '/reports', icon: <PieChart className="h-4 w-4" /> },
       {
         id: 'nav-settings',
@@ -159,6 +162,16 @@ function CommandPalette({ toggleRef }: { toggleRef: ToggleRef }) {
         shortcut: ['KeyA'],
         keywords: 'add new asset wealth investment افزودن دارایی سرمایه',
         perform: () => openAssetDrawer(),
+      },
+      {
+        id: 'create-debt',
+        name: t('common.addDebt'),
+        section: t('common.commandPalette.sectionCreate'),
+        icon: <Plus className="h-4 w-4" />,
+        // D is free: E, I, A and the palette's own $mod+K are the taken ones.
+        shortcut: ['KeyD'],
+        keywords: 'add new debt loan owe lend borrow credit افزودن بدهی طلب قرض وام دین',
+        perform: () => openDebtDrawer(),
       },
     ];
 
@@ -228,6 +241,7 @@ function CommandPalette({ toggleRef }: { toggleRef: ToggleRef }) {
     openExpenseDrawer,
     openIncomeDrawer,
     openAssetDrawer,
+    openDebtDrawer,
     openFeedbackModal,
   ]);
 

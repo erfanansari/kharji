@@ -6,7 +6,7 @@ import { getAssetListKeyGenerator } from '@api/getAssetListQuery';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight } from 'lucide-react';
 
-import { applyDelta, roundToCurrency, wouldOverdraw } from '@core/accounts/balance';
+import { applyDelta, reverseDelta, roundToCurrency, wouldOverdraw } from '@core/accounts/balance';
 
 import { useCurrency } from '@hooks/use-currency';
 
@@ -14,20 +14,31 @@ import type { Asset } from '@/@types/asset';
 
 interface AccountBalancePreviewProps {
   assetId: number | null;
+  /** Always positive, as typed. `flow` decides which way it moves. */
   amount: number;
   currency: string;
+  /**
+   * Which way the money goes. 'out' (the default) is the expense case and
+   * settling a debt you owe; 'in' is collecting a debt owed to you.
+   *
+   * An inflow can never overdraw, so the warning is suppressed entirely rather
+   * than merely evaluating false — `wouldOverdraw` would happily fire on an
+   * already-negative balance that is being *repaired* by the credit.
+   */
+  flow?: 'out' | 'in';
 }
 
 /**
  * The before→after line under the account picker.
  *
- * Reuses `applyDelta` from `@core/accounts/balance` — the same function the
- * server's SQL mirrors — so the number shown here and the number written to the
- * database agree by construction rather than because two people wrote the same
- * formula. Conversion goes through `useCurrency().convert` with no date, i.e.
- * today's rate, matching the server's rate policy for the account leg.
+ * Reuses `applyDelta`/`reverseDelta` from `@core/accounts/balance` — the same
+ * functions the server's SQL mirrors — so the number shown here and the number
+ * written to the database agree by construction rather than because two people
+ * wrote the same formula. Conversion goes through `useCurrency().convert` with
+ * no date, i.e. today's rate, matching the server's rate policy for the
+ * account leg.
  */
-const AccountBalancePreview = ({ assetId, amount, currency }: AccountBalancePreviewProps) => {
+const AccountBalancePreview = ({ assetId, amount, currency, flow = 'out' }: AccountBalancePreviewProps) => {
   const t = useTranslations('forms.expense');
   const { data: assets = [] } = useQuery<Asset[]>({ queryKey: getAssetListKeyGenerator() });
   const { convert, formatFull } = useCurrency();
@@ -39,8 +50,9 @@ const AccountBalancePreview = ({ assetId, amount, currency }: AccountBalancePrev
   if (converted === null) return null;
 
   const delta = roundToCurrency(converted, asset.currency);
-  const after = applyDelta(asset.amount, delta, asset.currency);
-  const overdraws = wouldOverdraw(asset.amount, delta);
+  const after =
+    flow === 'in' ? reverseDelta(asset.amount, delta, asset.currency) : applyDelta(asset.amount, delta, asset.currency);
+  const overdraws = flow === 'out' && wouldOverdraw(asset.amount, delta);
 
   return (
     <div className="space-y-0.5">

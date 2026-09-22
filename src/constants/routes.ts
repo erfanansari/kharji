@@ -10,6 +10,7 @@ export const ROUTES = {
   INCOME: '/income',
   REPORTS: '/reports',
   ASSETS: '/assets',
+  DEBTS: '/debts',
   SETTINGS: '/settings',
 } as const;
 
@@ -19,5 +20,6 @@ export const NAV_ITEMS = [
   { key: 'income', href: ROUTES.INCOME },
   { key: 'reports', href: ROUTES.REPORTS },
   { key: 'assets', href: ROUTES.ASSETS },
+  { key: 'debts', href: ROUTES.DEBTS },
   { key: 'settings', href: ROUTES.SETTINGS },
 ] as const;
