@@ -1,0 +1,19 @@
+# Kharji
+
+> Personal finance tracker for logging expenses, income, and assets in one place, with multi-currency support and a bilingual Persian/English interface.
+
+Kharji lets people track daily expenses by category, monthly income by type, and a wealth
+portfolio across cash, crypto, commodities, vehicles, property, bank accounts, and investments.
+Amounts can be entered in six currencies (Iranian Toman, US Dollar, Euro, British Pound, UAE
+Dirham, Turkish Lira) with live exchange rates and historical per-date conversion. It also
+includes spending reports, a net worth chart, recurring expenses, and a debts/credits ledger for
+tracking money owed and money owed to you. The interface is available in Persian (default,
+right-to-left) and English.
+
+## Pages
+
+- [Kharji](https://kharji.app): Product overview and sign-up
+- [Changelog](https://kharji.app/changelog): Release notes for every version, in Persian and English
+- [Contact](https://kharji.app/contact): Support and feedback
+- [Privacy Policy](https://kharji.app/privacy)
+- [Terms of Service](https://kharji.app/terms)
