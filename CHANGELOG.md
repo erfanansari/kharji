@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.7.0](https://github.com/erfanansari/kharji/compare/v1.6.1...v1.7.0) (2026-09-22)
+
+### Features
+
+- add debts tab for tracking money owed and owed to you ([bbaaeba](https://github.com/erfanansari/kharji/commit/bbaaeba07f67315f04023f0539db877a20aa8f8d))
+
+### Bug Fixes
+
+- self-host Geist and Vazirmatn instead of fetching from Google Fonts ([aeb9637](https://github.com/erfanansari/kharji/commit/aeb9637c4efb7efa904c401c0eee7cbe6bafe743)), references [vercel/next.js#81697](https://github.com/vercel/next.js/issues/81697) [#61886](https://github.com/erfanansari/kharji/issues/61886)
+
 ## [1.6.1](https://github.com/erfanansari/kharji/compare/v1.6.0...v1.6.1) (2026-09-19)
 
 ### Bug Fixes
