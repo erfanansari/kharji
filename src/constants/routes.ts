@@ -17,9 +17,9 @@ export const ROUTES = {
 export const NAV_ITEMS = [
   { key: 'overview', href: ROUTES.OVERVIEW },
   { key: 'expenses', href: ROUTES.EXPENSES },
-  { key: 'income', href: ROUTES.INCOME },
-  { key: 'reports', href: ROUTES.REPORTS },
   { key: 'assets', href: ROUTES.ASSETS },
+  { key: 'reports', href: ROUTES.REPORTS },
+  { key: 'income', href: ROUTES.INCOME },
   { key: 'debts', href: ROUTES.DEBTS },
   { key: 'settings', href: ROUTES.SETTINGS },
 ] as const;
