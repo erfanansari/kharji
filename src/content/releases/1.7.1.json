@@ -1,0 +1,15 @@
+{
+  "version": "1.7.1",
+  "date": "2026-09-22",
+  "title": {
+    "en": "Reordered the top tabs",
+    "fa": "ترتیب تب‌های بالا عوض شد"
+  },
+  "highlights": [
+    {
+      "type": "fix",
+      "en": "The tabs across the top are now ordered Dashboard, Expenses, Assets, Reports, Income, Debts, Settings — grouping the ones you check most often closer together.",
+      "fa": "ترتیب تب‌های بالای صفحه شد داشبورد، هزینه‌ها، دارایی‌ها، گزارش‌ها، درآمد، طلب و بدهی، تنظیمات — تب‌هایی که بیشتر بهشون سر می‌زنی، نزدیک‌تر به هم چیده شدن."
+    }
+  ]
+}
