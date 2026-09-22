@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.7.1](https://github.com/erfanansari/kharji/compare/v1.7.0...v1.7.1) (2026-09-22)
+
+### Bug Fixes
+
+- reorder top nav tabs to group frequently-used pages ([52cfaff](https://github.com/erfanansari/kharji/commit/52cfaff3ba0d088b46e23224740c21a4511ff6a0))
+
 ## [1.7.0](https://github.com/erfanansari/kharji/compare/v1.6.1...v1.7.0) (2026-09-22)
 
 ### Features
