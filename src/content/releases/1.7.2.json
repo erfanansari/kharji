@@ -1,0 +1,15 @@
+{
+  "version": "1.7.2",
+  "date": "2026-09-22",
+  "title": {
+    "en": "Better SEO groundwork",
+    "fa": "زیرساخت سئوی بهتر"
+  },
+  "highlights": [
+    {
+      "type": "fix",
+      "en": "robots.txt now keeps search engines out of every private page, including the new Debts tab, which had been missed. Added llms.txt so AI tools that read it get an accurate, up-to-date summary of what Kharji is.",
+      "fa": "فایل robots.txt حالا موتورهای جستجو رو از همهٔ صفحه‌های خصوصی دور نگه می‌داره، از جمله تب طلب و بدهی که قبلاً جا افتاده بود. فایل llms.txt هم اضافه شد تا ابزارهای هوش مصنوعی یه توضیح درست و به‌روز از خرجی داشته باشن."
+    }
+  ]
+}
