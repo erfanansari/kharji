@@ -18,12 +18,10 @@ import { ApiError } from '@core/errors';
 
 import Button from '@components/Button';
 import CategoryBadge from '@components/CategoryBadge';
-import CategoryTile from '@components/CategoryTile';
 import DataTable from '@components/DataTable';
 import DatePicker from '@components/DatePicker';
 import EmptyState from '@components/EmptyState';
 import ErrorState from '@components/ErrorState';
-import Select from '@components/Select';
 import Pulse from '@components/Skeleton';
 
 import { useLocalePreferences } from '@hooks/use-locale-preferences';
@@ -42,6 +40,8 @@ import {
   buildExpenseRowActions,
   EXPENSE_TABLE_MIN_WIDTH,
 } from '../../constants';
+import { CategoryFilterSelect } from '../CategorySelect';
+import ExpensesTotal from '../ExpensesTotal';
 
 // ─── TagFilterSelect ──────────────────────────────────────────────────────────
 
@@ -185,6 +185,7 @@ function ExpensesSkeleton() {
 
 const ExpensesTable = ({
   expenses,
+  summary,
   isLoading,
   error,
   filters,
@@ -225,7 +226,7 @@ const ExpensesTable = ({
   const activeFilterCount = useMemo(() => {
     let count = 0;
     if (descInput) count++;
-    if (filters.categoryId) count++;
+    count += (filters.categoryIds ?? []).length;
     if (filters.dateFrom || filters.dateTo) count++;
     count += (filters.tagIds ?? []).length;
     return count;
@@ -233,9 +234,12 @@ const ExpensesTable = ({
 
   const hasActiveFilter = activeFilterCount > 0;
 
-  const selectedCategory = useMemo(
-    () => (filters.categoryId ? allCategories.find((c) => c.id === filters.categoryId) : undefined),
-    [filters.categoryId, allCategories]
+  const selectedCategories = useMemo(
+    () =>
+      (filters.categoryIds ?? [])
+        .map((id) => allCategories.find((category) => category.id === id))
+        .filter(Boolean) as Category[],
+    [filters.categoryIds, allCategories]
   );
 
   // Memos
@@ -280,6 +284,7 @@ const ExpensesTable = ({
       mobileCard={expenseMobileCard}
       rowActions={expenseRowActions}
       rowActionTitle={(expense) => expense.description}
+      header={<ExpensesTotal summary={summary} />}
       filterBar={
         <div className="border-border-subtle border-b">
           {/* Row 1: Search */}
@@ -308,22 +313,19 @@ const ExpensesTable = ({
           {/* Row 2: Filter controls */}
           <div className="flex flex-wrap items-center gap-2 px-4 py-2.5">
             {/* Category */}
-            <Select
-              value={filters.categoryId ? String(filters.categoryId) : ''}
-              onChange={(val) => onFiltersChange((f) => ({ ...f, categoryId: val ? Number(val) : undefined }))}
-              options={[
-                { value: '', label: t('allCategories') },
-                ...allCategories.map((c) => ({ value: String(c.id), label: c.name })),
-              ]}
-              placeholder={t('allCategories')}
-              className="min-w-[130px] flex-1"
-              // Picking a category, so it gets the tile. The "all categories"
-              // row has no category behind it and stays plain text.
-              formatOptionLabel={(option) => {
-                const category = allCategories.find((c) => String(c.id) === option.value);
-                return category ? <CategoryTile category={category} /> : <span>{option.label}</span>;
-              }}
-            />
+            <div className="min-w-[130px] flex-1">
+              <CategoryFilterSelect
+                options={allCategories}
+                value={selectedCategories}
+                styles={tagSelectStyles}
+                onChange={(categories) =>
+                  onFiltersChange((f) => ({
+                    ...f,
+                    categoryIds: categories.length ? categories.map((category) => category.id) : undefined,
+                  }))
+                }
+              />
+            </div>
 
             {/* Date range */}
             <div className="border-border-subtle bg-background focus-within:border-blue flex min-w-[200px] flex-1 items-center gap-1 rounded-lg border px-2 py-1 transition-all">
@@ -390,21 +392,29 @@ const ExpensesTable = ({
 
           {/* Row 3: Active filter chips */}
           {hasActiveFilter &&
-            (selectedCategory || filters.dateFrom || filters.dateTo || selectedTagObjects.length > 0) && (
+            (selectedCategories.length > 0 || filters.dateFrom || filters.dateTo || selectedTagObjects.length > 0) && (
               <div className="flex flex-wrap items-center gap-1.5 px-4 pb-2.5">
                 {/* Category chip */}
-                {selectedCategory && (
-                  <span className="border-border-subtle bg-background-secondary flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs">
-                    <CategoryBadge category={selectedCategory} />
+                {selectedCategories.map((category) => (
+                  <span
+                    key={category.id}
+                    className="border-border-subtle bg-background-secondary flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs"
+                  >
+                    <CategoryBadge category={category} />
                     <button
-                      onClick={() => onFiltersChange((f) => ({ ...f, categoryId: undefined }))}
+                      onClick={() =>
+                        onFiltersChange((f) => ({
+                          ...f,
+                          categoryIds: f.categoryIds?.filter((id) => id !== category.id),
+                        }))
+                      }
                       className="text-text-muted hover:text-text-primary ms-0.5 transition-colors"
-                      aria-label={t('removeCategoryFilterAria', { name: selectedCategory.name })}
+                      aria-label={t('removeCategoryFilterAria', { name: category.name })}
                     >
                       <X className="h-3 w-3" />
                     </button>
                   </span>
-                )}
+                ))}
                 {/* Date chip */}
                 {(filters.dateFrom || filters.dateTo) && (
                   <span className="border-border-subtle bg-background-secondary text-text-secondary flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs">

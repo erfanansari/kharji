@@ -1,8 +1,9 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
-import { BarChart3, Hash, TrendingUp } from 'lucide-react';
+import { ArrowRight, BarChart3, Hash, TrendingUp } from 'lucide-react';
 
 import AnimatedMoney, { AnimatedCount } from '@components/AnimatedMoney';
 import StatZeroState from '@components/StatZeroState';
@@ -13,9 +14,10 @@ import { type Expense } from '@/@types/expense';
 
 interface ExpenseStatsProps {
   expenses: Expense[];
+  totalHref: string;
 }
 
-const ExpenseStats = ({ expenses }: ExpenseStatsProps) => {
+const ExpenseStats = ({ expenses, totalHref }: ExpenseStatsProps) => {
   const t = useTranslations('pages.expenses.stats');
   const tZero = useTranslations('onboarding.zeroCaptions');
   const { primaryCurrency, secondaryCurrency, sumTo, formatFull } = useCurrency();
@@ -41,11 +43,16 @@ const ExpenseStats = ({ expenses }: ExpenseStatsProps) => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
       {/* Total Expenses */}
-      <div className="border-border-subtle bg-background relative rounded-xl border p-5 shadow-sm transition-all duration-200 hover:shadow-md sm:p-6">
+      <Link
+        href={totalHref}
+        title={t('viewExpenses')}
+        className="border-border-subtle bg-background group hover:border-primary/40 focus-visible:ring-primary relative rounded-xl border p-5 text-start shadow-sm transition-all duration-200 hover:shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none sm:p-6"
+      >
         <div className="mb-4 flex items-center justify-between">
           <div className="border-border-subtle bg-background-secondary rounded-lg border p-2.5">
             <TrendingUp className="text-blue h-5 w-5" />
           </div>
+          <ArrowRight className="text-text-muted h-4 w-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" />
         </div>
 
         <div>
@@ -69,7 +76,7 @@ const ExpenseStats = ({ expenses }: ExpenseStatsProps) => {
             </p>
           )}
         </div>
-      </div>
+      </Link>
 
       {/* Number of Expenses */}
       <div className="border-border-subtle bg-background relative rounded-xl border p-5 shadow-sm transition-all duration-200 hover:shadow-md sm:p-6">

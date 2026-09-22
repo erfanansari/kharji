@@ -37,8 +37,13 @@ export const GET = withAuth(async (user, request) => {
   const limitParam = searchParams.get('limit');
   const cursor = searchParams.get('cursor');
   const description = searchParams.get('description')?.trim() || null;
-  const categoryIdParam = searchParams.get('categoryId')?.trim() || null;
-  const categoryId = categoryIdParam ? Number(categoryIdParam) : null;
+  const categoryIdsParam = searchParams.get('categoryIds')?.trim() || searchParams.get('categoryId')?.trim() || null;
+  const categoryIds = categoryIdsParam
+    ? categoryIdsParam
+        .split(',')
+        .map(Number)
+        .filter((id) => Number.isInteger(id) && id > 0)
+    : [];
   const dateFrom = searchParams.get('dateFrom')?.trim() || null;
   const dateTo = searchParams.get('dateTo')?.trim() || null;
   const tagIdsParam = searchParams.get('tagIds')?.trim() || null;
@@ -78,29 +83,32 @@ export const GET = withAuth(async (user, request) => {
   // Paginated response
   const limit = Math.min(parseInt(limitParam, 10), 100); // Max 100 items per request
 
-  let sql = 'SELECT * FROM expenses WHERE user_id = ?';
-  const args: (string | number)[] = [user.userId];
+  let whereSql = ' WHERE user_id = ?';
+  const filterArgs: (string | number)[] = [user.userId];
 
   if (description) {
-    sql += ' AND description LIKE ?';
-    args.push(`%${description}%`);
+    whereSql += ' AND description LIKE ?';
+    filterArgs.push(`%${description}%`);
   }
-  if (categoryId) {
-    sql += ' AND category_id = ?';
-    args.push(categoryId);
+  if (categoryIds.length > 0) {
+    whereSql += ` AND category_id IN (${categoryIds.map(() => '?').join(',')})`;
+    filterArgs.push(...categoryIds);
   }
   if (dateFrom) {
-    sql += ' AND date >= ?';
-    args.push(dateFrom);
+    whereSql += ' AND date >= ?';
+    filterArgs.push(dateFrom);
   }
   if (dateTo) {
-    sql += ' AND date <= ?';
-    args.push(dateTo);
+    whereSql += ' AND date <= ?';
+    filterArgs.push(dateTo);
   }
   if (tagIds.length > 0) {
-    sql += ` AND EXISTS (SELECT 1 FROM expense_tags et WHERE et.expense_id = expenses.id AND et.tag_id IN (${tagIds.map(() => '?').join(',')}))`;
-    args.push(...tagIds);
+    whereSql += ` AND EXISTS (SELECT 1 FROM expense_tags et WHERE et.expense_id = expenses.id AND et.tag_id IN (${tagIds.map(() => '?').join(',')}))`;
+    filterArgs.push(...tagIds);
   }
+
+  let sql = `SELECT * FROM expenses${whereSql}`;
+  const args = [...filterArgs];
 
   if (cursor) {
     const [cursorDate, cursorCreatedAt, cursorId] = cursor.split(':');
@@ -111,7 +119,16 @@ export const GET = withAuth(async (user, request) => {
   sql += ' ORDER BY date DESC, created_at DESC, id DESC LIMIT ?';
   args.push(limit + 1);
 
-  const result = await db.execute({ sql, args });
+  const summarySql = `
+    SELECT date, currency, entryRate, SUM(amount) AS amount, COUNT(*) AS count
+    FROM expenses${whereSql}
+    GROUP BY date, currency, entryRate
+  `;
+
+  const [result, summaryResult] = await Promise.all([
+    db.execute({ sql, args }),
+    cursor ? Promise.resolve(null) : db.execute({ sql: summarySql, args: filterArgs }),
+  ]);
 
   const hasMore = result.rows.length > limit;
   const expensesToReturn = hasMore ? result.rows.slice(0, limit) : result.rows;
@@ -147,6 +164,17 @@ export const GET = withAuth(async (user, request) => {
     expenses,
     nextCursor,
     hasMore,
+    summary: summaryResult
+      ? {
+          count: summaryResult.rows.reduce((total, row) => total + Number(row.count), 0),
+          items: summaryResult.rows.map((row) => ({
+            amount: Number(row.amount),
+            currency: String(row.currency),
+            date: String(row.date),
+            entryRate: Number(row.entryRate),
+          })),
+        }
+      : null,
   });
 }, 'Expenses');
 

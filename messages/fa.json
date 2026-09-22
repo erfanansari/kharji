@@ -871,7 +871,9 @@
       "stats": {
         "total": "مجموع هزینه‌ها",
         "count": "تعداد هزینه‌ها",
-        "dailyAverage": "میانگین روزانه"
+        "dailyAverage": "میانگین روزانه",
+        "viewExpenses": "مشاهده هزینه‌ها",
+        "ledgerCount": "{count} هزینه"
       },
       "details": {
         "title": "جزئیات هزینه",
