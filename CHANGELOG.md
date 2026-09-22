@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.7.2](https://github.com/erfanansari/kharji/compare/v1.7.1...v1.7.2) (2026-09-22)
+
+### Bug Fixes
+
+- add llms.txt and disallow all private routes in robots.txt ([b7f62d1](https://github.com/erfanansari/kharji/commit/b7f62d1c4b48bcf03148f766e225aa81134a8d6f))
+
 ## [1.7.1](https://github.com/erfanansari/kharji/compare/v1.7.0...v1.7.1) (2026-09-22)
 
 ### Bug Fixes
