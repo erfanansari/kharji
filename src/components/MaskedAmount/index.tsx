@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 
 import { useLocale, useTranslations } from 'next-intl';
@@ -64,18 +64,28 @@ const MaskedAmount = ({ currency, dots = 5, className, peek }: MaskedAmountProps
 
   // Rendered from the string maskMoney produces rather than assembled from
   // parts: it already carries the symbol side, the spacing rule and the bidi
-  // mark, so the dots land exactly where the real digits were. Laying the
+  // isolate, so the dots land exactly where the real digits were. Laying the
   // symbol and dots out as flex children instead put the symbol on the wrong
   // side under RTL, because flex reverses child order and text does not.
-  let dotIndex = 0;
-  const content = Array.from(maskMoney(currency, { locale, dots })).map((char, i) => {
-    if (char !== MASK_CHAR) return <Fragment key={i}>{char}</Fragment>;
-    return (
-      <span key={i} className="kh-mask-dot" style={{ animationDelay: `${dotIndex++ * 35}ms` }} aria-hidden="true">
-        {char}
-      </span>
-    );
-  });
+  //
+  // Only the dot run is broken into spans, and the text either side is left
+  // whole. Splitting every character — which is what animating them one by one
+  // invites — also splits تومان into five text nodes, and Persian is cursive:
+  // its letters stop joining and the word falls apart.
+  const text = maskMoney(currency, { locale, dots });
+  const firstDot = text.indexOf(MASK_CHAR);
+  const lastDot = text.lastIndexOf(MASK_CHAR);
+  const content = (
+    <>
+      {text.slice(0, firstDot)}
+      {Array.from(text.slice(firstDot, lastDot + 1)).map((char, i) => (
+        <span key={i} className="kh-mask-dot" style={{ animationDelay: `${i * 35}ms` }} aria-hidden="true">
+          {char}
+        </span>
+      ))}
+      {text.slice(lastDot + 1)}
+    </>
+  );
 
   return (
     <span

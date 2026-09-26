@@ -82,6 +82,23 @@ describe('MaskedAmount peek', () => {
     expect(text.endsWith('⁩')).toBe(true);
   });
 
+  // Persian is cursive: its letters join, and they only join within a single
+  // text node. Animating each character of the mask separately split تومان into
+  // five nodes and the word came apart on screen.
+  it('keeps the currency word in one text node so its letters still join', () => {
+    const { container } = render(
+      <NextIntlClientProvider locale="fa" messages={fa}>
+        <MaskedAmount currency="IRT" />
+      </NextIntlClientProvider>
+    );
+
+    const textNodes: string[] = [];
+    const walker = document.createTreeWalker(maskOf(container), NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) textNodes.push(walker.currentNode.textContent ?? '');
+
+    expect(textNodes).toContainEqual(expect.stringContaining('تومان'));
+  });
+
   it('puts a suffix currency after the dots', () => {
     const { container } = render(
       <NextIntlClientProvider locale="fa" messages={fa}>
