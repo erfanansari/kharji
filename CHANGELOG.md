@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.8.0](https://github.com/erfanansari/kharji/compare/v1.7.2...v1.8.0) (2026-09-26)
+
+### Features
+
+- hide amounts behind a privacy toggle ([b1abe28](https://github.com/erfanansari/kharji/commit/b1abe28d4c76728db18a4383f0dd13969ad1a339))
+
 ## [1.7.2](https://github.com/erfanansari/kharji/compare/v1.7.1...v1.7.2) (2026-09-22)
 
 ### Bug Fixes
