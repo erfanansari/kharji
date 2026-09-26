@@ -4,7 +4,7 @@ import { PieChart } from 'lucide-react';
 
 import EmptyState from '@components/EmptyState';
 
-import { useCurrency } from '@hooks/use-currency';
+import { useMoneyText } from '@hooks/use-money-text';
 
 import { PIVOT_CURRENCY } from '@/constants/currencies';
 
@@ -12,7 +12,7 @@ import type { AssetsDistributionProps } from '../../@types';
 
 const AssetsDistribution = ({ chartData, totalValue }: AssetsDistributionProps) => {
   const t = useTranslations('pages.assets.distribution');
-  const { display } = useCurrency();
+  const { display } = useMoneyText();
 
   if (chartData.length === 0) {
     return (

@@ -1,6 +1,7 @@
 // Currency conversion + formatting — the one place money math/formatting lives.
 // Replaces the old tomanToUsd/usdToToman helpers. Rates pivot through PIVOT_CURRENCY
 // (see src/constants/currencies.ts); Navasan only quotes foreign→IRR, so IRR is the base.
+import type { CurrencyDef } from '@/constants/currencies';
 import { getCurrency, PIVOT_CURRENCY } from '@/constants/currencies';
 
 /** A single day's rate: pivot units per 1 unit of the currency. */
@@ -82,7 +83,6 @@ export function formatMoney(
   const def = getCurrency(currencyCode);
   const isFa = opts?.locale === 'fa';
   const intlLocale = isFa ? 'fa-IR' : 'en-US';
-  const symbol = isFa ? def.symbolFa : def.symbol;
   const number = opts?.compact
     ? new Intl.NumberFormat(intlLocale, {
         notation: 'compact',
@@ -94,6 +94,16 @@ export function formatMoney(
         maximumFractionDigits: def.decimals,
       }).format(amount);
 
+  return placeSymbol(number, def, isFa);
+}
+
+/**
+ * Put the currency symbol on the correct side of an already-formatted number.
+ * Shared by formatMoney and maskMoney so a masked figure sits exactly where the
+ * real one did.
+ */
+function placeSymbol(number: string, def: CurrencyDef, isFa: boolean): string {
+  const symbol = isFa ? def.symbolFa : def.symbol;
   if (def.symbolPosition === 'suffix') return `${number} ${symbol}`;
 
   // Prefix: native fa-IR currency formatting always isolates a Latin symbol
@@ -104,4 +114,29 @@ export function formatMoney(
   const bidiMark = isFa ? '\u200E' : '';
   const gap = def.spacedSymbol ? ' ' : '';
   return `${bidiMark}${symbol}${gap}${number}`;
+}
+
+/** The glyph a withheld figure is drawn with. */
+export const MASK_CHAR = '\u2022';
+
+/**
+ * A figure with its digits withheld (privacy mode): a fixed run of dots where
+ * the number was, currency left in place so the surface still reads as money.
+ * The dot count never depends on the real amount \u2014 a mask whose width tracked
+ * magnitude would leak the very thing it is hiding.
+ *
+ * A prefix symbol gets wrapped in a bidi isolate. In the real figure the digits
+ * hold the symbol on their left even inside an RTL line, because they are
+ * numeric; bullets are *neutral*, so `$\u2022\u2022\u2022\u2022\u2022` has nothing strong to anchor
+ * against and the run inherits the paragraph's RTL, rendering as `\u2022\u2022\u2022\u2022\u2022$`. The
+ * isolate is what the digits were doing implicitly. It lives here rather than in
+ * a wrapper element so that call sites which only ever get a string \u2014 chart
+ * tooltips, select subtitles, sentences with an amount in them \u2014 are covered
+ * too. A suffix currency needs none of this: the currency word is itself
+ * strongly RTL and anchors its own run.
+ */
+export function maskMoney(currencyCode: string, opts?: { locale?: 'en' | 'fa'; dots?: number }): string {
+  const def = getCurrency(currencyCode);
+  const text = placeSymbol(MASK_CHAR.repeat(opts?.dots ?? 5), def, opts?.locale === 'fa');
+  return def.symbolPosition === 'prefix' ? `\u2066${text}\u2069` : text;
 }

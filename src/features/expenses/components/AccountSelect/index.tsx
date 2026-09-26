@@ -20,7 +20,7 @@ import { twMerge } from 'tailwind-merge';
 
 import CategoryTile from '@components/CategoryTile';
 
-import { useCurrency } from '@hooks/use-currency';
+import { useMoneyText } from '@hooks/use-money-text';
 
 import type { Asset } from '@/@types/asset';
 import { isSpendableAssetCategory, SPENDABLE_ASSET_TILE } from '@/constants/assets';
@@ -84,7 +84,7 @@ const Option = (props: OptionProps<AccountOption, false>) => {
   // An account's balance is shown in the account's OWN currency, not the user's
   // display currency: that number is the balance, and converting it would show
   // a figure that doesn't match what the deduction is about to do to it.
-  const { formatFull } = useCurrency();
+  const { formatFull } = useMoneyText();
 
   return (
     <div

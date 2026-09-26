@@ -2,11 +2,14 @@ import type { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
 import localFont from 'next/font/local';
+import { cookies } from 'next/headers';
 
 import { SerwistProvider } from '@serwist/next/react';
 import { Analytics } from '@vercel/analytics/next';
 import { GeistSans as geistSans } from 'geist/font/sans';
 import { twMerge } from 'tailwind-merge';
+
+import { isPrivacyHidden, PRIVACY_COOKIE } from '@core/privacy/cookie';
 
 import Providers from '@features/Providers';
 
@@ -129,6 +132,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getLocale();
+  // Resolved here rather than in the client so the first painted frame is
+  // already masked — reading it after hydration would flash the real figures.
+  const privacyHidden = isPrivacyHidden((await cookies()).get(PRIVACY_COOKIE)?.value);
 
   return (
     <html
@@ -148,7 +154,7 @@ export default async function RootLayout({
       <body className="bg-background antialiased">
         <NextIntlClientProvider>
           <SerwistProvider swUrl="/sw.js" disable={process.env.NODE_ENV === 'development'}>
-            <Providers>
+            <Providers privacyHidden={privacyHidden}>
               {children}
               <UpdatePrompt />
               <Analytics />

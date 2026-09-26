@@ -16,6 +16,8 @@ import {
   YAxis,
 } from 'recharts';
 
+import { usePrivacy } from '@features/privacy/PrivacyProvider';
+
 import AnimatedMoney from '@components/AnimatedMoney';
 import ChartTooltip from '@components/ChartTooltip';
 import EmptyState from '@components/EmptyState';
@@ -26,6 +28,7 @@ import Pulse from '@components/Skeleton';
 import { useCurrency } from '@hooks/use-currency';
 import type { MoneyItem } from '@hooks/use-currency';
 import { useLocalePreferences } from '@hooks/use-locale-preferences';
+import { useMoneyText } from '@hooks/use-money-text';
 import { type NetWorthRange, useNetWorthHistory } from '@hooks/use-net-worth-history';
 
 import { formatAxisNumber, formatChartAxisDate, formatChartTooltipDate, resolveCalendar } from '@utils';
@@ -54,7 +57,7 @@ function NetWorthTooltip({
   const locale = useLocale() as 'en' | 'fa';
   const { prefs } = useLocalePreferences();
   const calendar = resolveCalendar(prefs.calendar, locale);
-  const { sumDisplay } = useCurrency();
+  const { sumDisplay } = useMoneyText();
   if (!active || !payload?.length) return null;
   const point = payload[0].payload;
   const { primary, secondary } = sumDisplay(point.items ?? [], { compact: true });
@@ -100,6 +103,7 @@ const NetWorthChart = () => {
   const [range, setRange] = useState<NetWorthRange>('6M');
   const { data, isLoading, isError, error, refetch } = useNetWorthHistory(range);
   const { sumTo, primaryCurrency } = useCurrency();
+  const { hidden } = usePrivacy();
 
   const isShortRange = range === '1M' || range === '3M';
 
@@ -292,7 +296,7 @@ const NetWorthChart = () => {
                 axisLine={{ stroke: 'var(--color-border-subtle)' }}
                 tickLine={{ stroke: 'var(--color-border-subtle)' }}
                 width="auto"
-                tickFormatter={(value: number) => formatAxisNumber(value, locale)}
+                tickFormatter={(value: number) => (hidden ? '' : formatAxisNumber(value, locale))}
               />
               <RechartsTooltip
                 content={<NetWorthTooltip />}

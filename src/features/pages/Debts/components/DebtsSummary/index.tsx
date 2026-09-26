@@ -31,7 +31,7 @@ const toItem = (debt: Debt): MoneyItem => ({
 const DebtsSummary = ({ debts }: DebtsSummaryProps) => {
   const t = useTranslations('pages.debts.stats');
   const tZero = useTranslations('onboarding.zeroCaptions');
-  const { primaryCurrency, secondaryCurrency, sumTo, formatFull } = useCurrency();
+  const { primaryCurrency, secondaryCurrency, sumTo } = useCurrency();
   const showSecondary = !!secondaryCurrency && secondaryCurrency !== primaryCurrency;
 
   // Outstanding only — a settled debt has already done whatever it was going
@@ -55,11 +55,11 @@ const DebtsSummary = ({ debts }: DebtsSummaryProps) => {
   const renderPair = (p: number, s: number, primaryClass: string) =>
     hasOutstanding ? (
       <>
-        <p className={primaryClass} title={formatFull(p, primaryCurrency)}>
+        <p className={primaryClass}>
           <AnimatedMoney amount={p} currency={primaryCurrency} />
         </p>
         {showSecondary && secondaryCurrency && (
-          <p className="text-text-muted text-xs" title={formatFull(s, secondaryCurrency)}>
+          <p className="text-text-muted text-xs">
             <AnimatedMoney amount={s} currency={secondaryCurrency} />
           </p>
         )}

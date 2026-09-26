@@ -32,7 +32,7 @@ const IncomeSummary = ({ incomes }: IncomeSummaryProps) => {
   const monthYearDisplay = useMonthYearDisplay();
   const { prefs } = useLocalePreferences();
   const calendar = resolveCalendar(prefs.calendar, locale);
-  const { primaryCurrency, secondaryCurrency, sumTo, formatFull } = useCurrency();
+  const { primaryCurrency, secondaryCurrency, sumTo } = useCurrency();
   const showSecondary = !!secondaryCurrency && secondaryCurrency !== primaryCurrency;
 
   const currentYear = new Date().getFullYear();
@@ -75,11 +75,11 @@ const IncomeSummary = ({ incomes }: IncomeSummaryProps) => {
   const renderPair = (p: number, s: number, primaryClass: string) =>
     hasIncomes ? (
       <>
-        <p className={primaryClass} title={formatFull(p, primaryCurrency)}>
+        <p className={primaryClass}>
           <AnimatedMoney amount={p} currency={primaryCurrency} />
         </p>
         {showSecondary && secondaryCurrency && (
-          <p className="text-text-muted text-xs" title={formatFull(s, secondaryCurrency)}>
+          <p className="text-text-muted text-xs">
             <AnimatedMoney amount={s} currency={secondaryCurrency} />
           </p>
         )}

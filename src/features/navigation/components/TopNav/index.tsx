@@ -12,6 +12,8 @@ import { twMerge } from 'tailwind-merge';
 
 import { NAV_ITEMS, ROUTES } from '@constants';
 
+import PrivacyToggle from '@features/privacy/PrivacyToggle';
+
 import { useCommandPalette } from '@components/CommandPalette/CommandPaletteProvider';
 import Logo from '@components/Logo';
 import ThemeToggle from '@components/ThemeToggle';
@@ -58,6 +60,7 @@ const TopNav: FC = () => {
 
           {/* Right side - user menu */}
           <div className="flex items-center gap-3">
+            <PrivacyToggle />
             {/* User Menu */}
             <div ref={menuRef} className="relative z-50">
               <button

@@ -22,8 +22,8 @@ import DeleteConfirmModal from '@components/DeleteConfirmModal';
 import PageHeader from '@components/PageHeader';
 import Pulse from '@components/Skeleton';
 
-import { useCurrency } from '@hooks/use-currency';
 import { useDeleteConfirmation } from '@hooks/use-delete-confirmation';
+import { useMoneyText } from '@hooks/use-money-text';
 
 import { useDrawerStore } from '@stores/drawer';
 import { useToast } from '@stores/toast';
@@ -52,7 +52,7 @@ const DebtsPage = () => {
   const t = useTranslations('pages.debts');
   const queryClient = useQueryClient();
   const { showToast } = useToast();
-  const { formatFull } = useCurrency();
+  const { formatFull } = useMoneyText();
 
   // States — which debt each of the two settle-flow modals is open for.
   const [debtToSettle, setDebtToSettle] = useState<Debt | null>(null);

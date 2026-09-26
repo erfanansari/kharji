@@ -16,7 +16,7 @@ import { ArrowRight, CheckCircle2, Loader2, RefreshCw } from 'lucide-react';
 import Button from '@components/Button';
 import Modal from '@components/Modal';
 
-import { useCurrency } from '@hooks/use-currency';
+import { useMoneyText } from '@hooks/use-money-text';
 
 import { useToast } from '@stores/toast';
 
@@ -41,7 +41,7 @@ const RevalueModal = ({ isOpen, onClose }: RevalueModalProps) => {
   const tCommon = useTranslations('common');
   const queryClient = useQueryClient();
   const { showToast } = useToast();
-  const { format } = useCurrency();
+  const { format } = useMoneyText();
 
   const { mutateAsync } = useMutation<RevalueAssetsResponse, Error, RevalueAssetsRequestData>({
     mutationKey: revalueAssetsKeyGenerator(),

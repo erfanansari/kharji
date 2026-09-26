@@ -9,8 +9,10 @@ import { Drawer } from 'vaul';
 
 import { formatMoney } from '@features/ExchangeRate/utils/currency';
 import { useRecurrenceSummary } from '@features/expenses/utils/use-recurrence-summary';
+import { usePrivacy } from '@features/privacy/PrivacyProvider';
 
 import CategoryBadge from '@components/CategoryBadge';
+import MaskedAmount from '@components/MaskedAmount';
 import Money from '@components/Money';
 
 import { useAppDate } from '@hooks/use-app-date';
@@ -95,6 +97,24 @@ const ExpenseDetailsDrawer = ({ expense, isOpen, onClose, onEdit, onDelete }: Ex
 
   // Currency context (for the exchange-rate cell)
   const { primaryCurrency, secondaryCurrency, convert } = useCurrency();
+  const { hidden } = usePrivacy();
+
+  // The raw stored delta in its stored currency, deliberately not <Money>: this
+  // answers "what actually left the account", and that is the number a reversal
+  // will use. A re-conversion could show a figure the balance never moved by.
+  // Masked like any other amount; the peek hands back this exact figure.
+  const paidFromRaw =
+    expense?.paidFromDelta != null && expense.paidFromCurrency != null ? (
+      <span className="block tabular-nums">
+        {formatMoney(expense.paidFromDelta, expense.paidFromCurrency, { locale })}
+      </span>
+    ) : undefined;
+  const paidFromDelta =
+    paidFromRaw && hidden && expense?.paidFromCurrency ? (
+      <MaskedAmount currency={expense.paidFromCurrency} className="block tabular-nums" peek={paidFromRaw} />
+    ) : (
+      paidFromRaw
+    );
 
   // References
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -276,17 +296,7 @@ const ExpenseDetailsDrawer = ({ expense, isOpen, onClose, onEdit, onDelete }: Ex
                       icon={<Landmark className="text-text-muted h-3 w-3" />}
                       label={t('pages.expenses.details.paidFrom')}
                       primary={expense.paidFrom.name}
-                      // The raw stored delta in its stored currency, deliberately
-                      // not <Money>: this answers "what actually left the
-                      // account", and that is the number a reversal will use. A
-                      // re-conversion could show a figure the balance never moved by.
-                      secondary={
-                        expense.paidFromDelta !== null && expense.paidFromCurrency !== null ? (
-                          <span className="block tabular-nums">
-                            {formatMoney(expense.paidFromDelta, expense.paidFromCurrency, { locale })}
-                          </span>
-                        ) : undefined
-                      }
+                      secondary={paidFromDelta}
                     />
                   )}
                 </section>

@@ -12,7 +12,7 @@ import type { Debt } from '@types';
 import Button from '@components/Button';
 import Modal from '@components/Modal';
 
-import { useCurrency } from '@hooks/use-currency';
+import { useMoneyText } from '@hooks/use-money-text';
 
 import { useToast } from '@stores/toast';
 
@@ -36,7 +36,7 @@ const UnsettleDebtModal = ({ debt, isOpen, onClose }: UnsettleDebtModalProps) =>
   const tCommon = useTranslations('common');
   const queryClient = useQueryClient();
   const { showToast } = useToast();
-  const { formatFull } = useCurrency();
+  const { formatFull } = useMoneyText();
 
   const unsettleMutation = useMutation<unknown, Error, UnsettleDebtRequestData>({
     mutationKey: unsettleDebtKeyGenerator(),

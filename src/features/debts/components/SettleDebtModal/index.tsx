@@ -20,7 +20,7 @@ import Button from '@components/Button';
 import Modal from '@components/Modal';
 import Money from '@components/Money';
 
-import { useCurrency } from '@hooks/use-currency';
+import { useMoneyText } from '@hooks/use-money-text';
 
 import { useToast } from '@stores/toast';
 
@@ -47,7 +47,7 @@ const SettleDebtModal = ({ debt, isOpen, onClose }: SettleDebtModalProps) => {
   const tForms = useTranslations('forms.debt');
   const queryClient = useQueryClient();
   const { showToast } = useToast();
-  const { formatFull } = useCurrency();
+  const { formatFull } = useMoneyText();
 
   const [accountId, setAccountId] = useState<number | null>(null);
 

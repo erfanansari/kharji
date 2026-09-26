@@ -981,3 +981,34 @@ input[class*='dummyInput'] {
   position: static !important;
   grid-area: auto !important;
 }
+
+/* Privacy mode — the dots a withheld amount is drawn with. They drop into
+   place one after another so the flip reads as a deliberate act rather than a
+   failed render. */
+@keyframes kh-mask-dot-in {
+  from {
+    transform: translateY(0.2em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(-0.07em);
+    opacity: 1;
+  }
+}
+
+/* Smaller than the figure it replaces, and nudged up: a bullet centres on its
+   own x-height, so at 0.78em it otherwise sits below the currency word's
+   optical middle. Inline rather than flex — see MaskedAmount. */
+.kh-mask-dot {
+  display: inline-block;
+  font-size: 0.78em;
+  letter-spacing: 0.14em;
+  transform: translateY(-0.07em);
+  animation: kh-mask-dot-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kh-mask-dot {
+    animation: none;
+  }
+}

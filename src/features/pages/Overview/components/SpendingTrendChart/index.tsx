@@ -19,6 +19,7 @@ import DateRangeSelector, {
   filterExpensesByDateRange,
   getChartGranularity,
 } from '@features/expenses/components/DateRangeSelector';
+import { usePrivacy } from '@features/privacy/PrivacyProvider';
 
 import Button from '@components/Button';
 import ChartTooltip from '@components/ChartTooltip';
@@ -27,6 +28,7 @@ import EmptyState from '@components/EmptyState';
 import { useCurrency } from '@hooks/use-currency';
 import type { MoneyItem } from '@hooks/use-currency';
 import { useLocalePreferences } from '@hooks/use-locale-preferences';
+import { useMoneyText } from '@hooks/use-money-text';
 
 import { useDrawerStore } from '@stores/drawer';
 
@@ -58,7 +60,7 @@ function SpendingTooltip({
   const locale = useLocale() as 'en' | 'fa';
   const { prefs } = useLocalePreferences();
   const calendar = resolveCalendar(prefs.calendar, locale);
-  const { sumDisplay } = useCurrency();
+  const { sumDisplay } = useMoneyText();
   if (!active || !payload?.length) return null;
   const { primary, secondary } = sumDisplay(payload[0].payload?.items ?? [], { compact: true });
   return (
@@ -83,6 +85,7 @@ const SpendingTrendChart = ({ expenses }: SpendingTrendChartProps) => {
   const calendar = resolveCalendar(localePrefs.calendar, locale);
   const openExpenseDrawer = useDrawerStore((state) => state.openExpenseDrawer);
   const { sumTo, primaryCurrency } = useCurrency();
+  const { hidden } = usePrivacy();
   // States
   const [dateRange, setDateRange] = useState<DateRange>('30D');
 
@@ -195,7 +198,7 @@ const SpendingTrendChart = ({ expenses }: SpendingTrendChartProps) => {
                 axisLine={{ stroke: 'var(--color-border-subtle)' }}
                 tickLine={{ stroke: 'var(--color-border-subtle)' }}
                 width="auto"
-                tickFormatter={(value: number) => formatAxisNumber(value, locale)}
+                tickFormatter={(value: number) => (hidden ? '' : formatAxisNumber(value, locale))}
               />
               <RechartsTooltip
                 content={(props) => <SpendingTooltip {...props} granularity={granularity} />}

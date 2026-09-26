@@ -10,6 +10,7 @@ import AnimatedMoney from '@components/AnimatedMoney';
 import StatZeroState from '@components/StatZeroState';
 
 import { useCurrency } from '@hooks/use-currency';
+import { useMoneyText } from '@hooks/use-money-text';
 
 import { ROUTES } from '@/constants/routes';
 
@@ -25,7 +26,6 @@ interface StatCardProps {
   emptyCaption: string;
   primaryCurrency: string;
   secondaryCurrency: string | null;
-  formatFull: (value: number, currency: string) => string;
   /**
    * Overrides the default "both totals are zero" emptiness heuristic. Needed
    * because that heuristic is wrong for net worth once debts exist: payables
@@ -43,7 +43,6 @@ const StatCard: FC<StatCardProps> = ({
   emptyCaption,
   primaryCurrency,
   secondaryCurrency,
-  formatFull,
   isEmpty: isEmptyOverride,
   footnote,
 }) => {
@@ -65,11 +64,11 @@ const StatCard: FC<StatCardProps> = ({
         <StatZeroState caption={emptyCaption} />
       ) : (
         <>
-          <p className={figureClass} title={formatFull(p, primaryCurrency)}>
+          <p className={figureClass}>
             <AnimatedMoney amount={p} currency={primaryCurrency} />
           </p>
           {secondaryCurrency && (
-            <p className={secondaryClass} title={formatFull(s, secondaryCurrency)}>
+            <p className={secondaryClass}>
               <AnimatedMoney amount={s} currency={secondaryCurrency} />
             </p>
           )}
@@ -83,13 +82,16 @@ const StatCard: FC<StatCardProps> = ({
 const OverviewStats = ({ summary }: OverviewStatsProps) => {
   const t = useTranslations('pages.overview.stats');
   const tZero = useTranslations('onboarding.zeroCaptions');
-  const { formatFull, primaryCurrency: ctxPrimary, secondaryCurrency: ctxSecondary } = useCurrency();
+  const { primaryCurrency: ctxPrimary, secondaryCurrency: ctxSecondary } = useCurrency();
+  // The footnote spells the debt totals out in a sentence, so it needs the
+  // privacy-aware formatter rather than the raw one.
+  const { formatFull } = useMoneyText();
 
   // Totals arrive already converted (per-record, historical). Fall back to the
   // context currencies while the summary is still loading.
   const primaryCurrency = summary?.primaryCurrency ?? ctxPrimary;
   const secondaryCurrency = summary?.secondaryCurrency ?? ctxSecondary;
-  const shared = { primaryCurrency, secondaryCurrency, formatFull };
+  const shared = { primaryCurrency, secondaryCurrency };
 
   // Net worth stopped meaning "gross assets" in 1.7.0. The three debt-era
   // fields are optional in the response schema for one release (a cached client

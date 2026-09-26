@@ -9,6 +9,7 @@ import { ArrowRight } from 'lucide-react';
 import { applyDelta, reverseDelta, roundToCurrency, wouldOverdraw } from '@core/accounts/balance';
 
 import { useCurrency } from '@hooks/use-currency';
+import { useMoneyText } from '@hooks/use-money-text';
 
 import type { Asset } from '@/@types/asset';
 
@@ -41,7 +42,8 @@ interface AccountBalancePreviewProps {
 const AccountBalancePreview = ({ assetId, amount, currency, flow = 'out' }: AccountBalancePreviewProps) => {
   const t = useTranslations('forms.expense');
   const { data: assets = [] } = useQuery<Asset[]>({ queryKey: getAssetListKeyGenerator() });
-  const { convert, formatFull } = useCurrency();
+  const { convert } = useCurrency();
+  const { formatFull } = useMoneyText();
 
   const asset = assetId === null ? undefined : assets.find((a) => a.id === assetId);
   if (!asset || !amount || amount <= 0) return null;

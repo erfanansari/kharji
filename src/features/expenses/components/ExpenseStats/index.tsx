@@ -18,7 +18,7 @@ interface ExpenseStatsProps {
 const ExpenseStats = ({ expenses }: ExpenseStatsProps) => {
   const t = useTranslations('pages.expenses.stats');
   const tZero = useTranslations('onboarding.zeroCaptions');
-  const { primaryCurrency, secondaryCurrency, sumTo, formatFull } = useCurrency();
+  const { primaryCurrency, secondaryCurrency, sumTo } = useCurrency();
 
   // Sum each expense converted at ITS OWN date — historically accurate & stable.
   const items = expenses.map((e) => ({ amount: e.amount, currency: e.currency, date: e.date, entryRate: e.entryRate }));
@@ -53,18 +53,12 @@ const ExpenseStats = ({ expenses }: ExpenseStatsProps) => {
           {expenses.length === 0 ? (
             <StatZeroState caption={tZero('expensesTotal')} />
           ) : (
-            <p
-              className="text-text-primary text-2xl font-semibold tabular-nums sm:text-3xl"
-              title={formatFull(totalPrimary, primaryCurrency)}
-            >
+            <p className="text-text-primary text-2xl font-semibold tabular-nums sm:text-3xl">
               <AnimatedMoney amount={totalPrimary} currency={primaryCurrency} />
             </p>
           )}
           {showSecondary && expenses.length > 0 && (
-            <p
-              className="text-text-secondary mt-1.5 text-sm font-medium"
-              title={formatFull(totalSecondary, secondaryCurrency)}
-            >
+            <p className="text-text-secondary mt-1.5 text-sm font-medium">
               <AnimatedMoney amount={totalSecondary} currency={secondaryCurrency} />
             </p>
           )}
@@ -107,18 +101,12 @@ const ExpenseStats = ({ expenses }: ExpenseStatsProps) => {
           {expenses.length === 0 ? (
             <StatZeroState caption={tZero('expensesDailyAverage')} />
           ) : (
-            <p
-              className="text-text-primary text-2xl font-semibold tabular-nums sm:text-3xl"
-              title={formatFull(totalPrimary / div, primaryCurrency)}
-            >
+            <p className="text-text-primary text-2xl font-semibold tabular-nums sm:text-3xl">
               <AnimatedMoney amount={totalPrimary / div} currency={primaryCurrency} />
             </p>
           )}
           {showSecondary && expenses.length > 0 && (
-            <p
-              className="text-text-secondary mt-1.5 text-sm font-medium"
-              title={formatFull(totalSecondary / div, secondaryCurrency)}
-            >
+            <p className="text-text-secondary mt-1.5 text-sm font-medium">
               <AnimatedMoney amount={totalSecondary / div} currency={secondaryCurrency} />
             </p>
           )}

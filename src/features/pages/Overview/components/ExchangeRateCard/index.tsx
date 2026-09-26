@@ -152,7 +152,7 @@ const ExchangeRateCard = () => {
       <div>
         <p className="text-text-muted mb-2 text-xs font-medium tracking-wider uppercase">1 {def.code} =</p>
         <p className="text-text-primary text-2xl font-semibold tabular-nums sm:text-3xl">
-          <AnimatedMoney amount={rate} currency={quoteDef.code} compact={false} />
+          <AnimatedMoney amount={rate} currency={quoteDef.code} compact={false} sensitive={false} />
         </p>
         <div className="mt-1.5 flex items-center justify-between gap-2">
           <span className="text-text-secondary text-sm font-medium">{def.label}</span>

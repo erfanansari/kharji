@@ -20,12 +20,15 @@ import {
   YAxis,
 } from 'recharts';
 
+import { usePrivacy } from '@features/privacy/PrivacyProvider';
+
 import CategoryBadge from '@components/CategoryBadge';
 import ChartTooltip from '@components/ChartTooltip';
 
 import { useCurrency } from '@hooks/use-currency';
 import type { MoneyItem } from '@hooks/use-currency';
 import { useLocalePreferences } from '@hooks/use-locale-preferences';
+import { useMoneyText } from '@hooks/use-money-text';
 
 import {
   formatAxisNumber,
@@ -79,7 +82,7 @@ const AreaTooltip = ({
   const locale = useLocale() as 'en' | 'fa';
   const { prefs } = useLocalePreferences();
   const calendar = resolveCalendar(prefs.calendar, locale);
-  const { sumDisplay } = useCurrency();
+  const { sumDisplay } = useMoneyText();
   if (!active || !payload?.length) return null;
   const { primary, secondary } = sumDisplay(payload[0].payload?.items ?? [], { compact: true });
   return (
@@ -100,7 +103,9 @@ export function ExpenseCharts({ expenses, granularity = 'daily' }: ExpenseCharts
   const locale = useLocale() as 'en' | 'fa';
   const { prefs: localePrefs } = useLocalePreferences();
   const calendar = resolveCalendar(localePrefs.calendar, locale);
-  const { sumTo, format: fmtMoney, primaryCurrency, secondaryCurrency } = useCurrency();
+  const { sumTo, primaryCurrency, secondaryCurrency } = useCurrency();
+  const { format: fmtMoney } = useMoneyText();
+  const { hidden } = usePrivacy();
   const showSecondary = !!secondaryCurrency && secondaryCurrency !== primaryCurrency;
 
   // Aggregate per category. Each expense converts at its OWN date; `value` is
@@ -240,7 +245,7 @@ export function ExpenseCharts({ expenses, granularity = 'daily' }: ExpenseCharts
             <BarChart data={categoryTotals} layout="vertical" margin={{ left: 0, right: 20 }}>
               <XAxis
                 type="number"
-                tickFormatter={(value: number) => formatAxisNumber(value, locale)}
+                tickFormatter={(value: number) => (hidden ? '' : formatAxisNumber(value, locale))}
                 stroke="var(--color-border-subtle)"
                 tick={{ fill: 'var(--color-text-muted)', fontSize: 12, fontWeight: 500 }}
                 axisLine={{ stroke: 'var(--color-border-subtle)' }}
@@ -314,7 +319,7 @@ export function ExpenseCharts({ expenses, granularity = 'daily' }: ExpenseCharts
                 axisLine={{ stroke: 'var(--color-border-subtle)' }}
                 tickLine={{ stroke: 'var(--color-border-subtle)' }}
                 width="auto"
-                tickFormatter={(value: number) => formatAxisNumber(value, locale)}
+                tickFormatter={(value: number) => (hidden ? '' : formatAxisNumber(value, locale))}
               />
               <Tooltip
                 content={(props) => <AreaTooltip {...props} granularity={granularity} />}

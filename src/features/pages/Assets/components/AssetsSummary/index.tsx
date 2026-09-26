@@ -29,7 +29,7 @@ const AssetsSummary = ({ assetsByCategory }: AssetsSummaryProps) => {
   const t = useTranslations('pages.assets.stats');
   const tZero = useTranslations('onboarding.zeroCaptions');
   const categoryLabel = useAssetCategoryLabel();
-  const { primaryCurrency, secondaryCurrency, sumTo, formatFull } = useCurrency();
+  const { primaryCurrency, secondaryCurrency, sumTo } = useCurrency();
   const showSecondary = !!secondaryCurrency && secondaryCurrency !== primaryCurrency;
 
   const allAssets = Object.values(assetsByCategory).flatMap((d) => d.assets);
@@ -46,11 +46,11 @@ const AssetsSummary = ({ assetsByCategory }: AssetsSummaryProps) => {
 
   const renderPair = (p: number, s: number) => (
     <>
-      <p className="text-text-primary text-2xl font-semibold tabular-nums" title={formatFull(p, primaryCurrency)}>
+      <p className="text-text-primary text-2xl font-semibold tabular-nums">
         <AnimatedMoney amount={p} currency={primaryCurrency} />
       </p>
       {showSecondary && secondaryCurrency && (
-        <p className="text-text-muted text-xs" title={formatFull(s, secondaryCurrency)}>
+        <p className="text-text-muted text-xs">
           <AnimatedMoney amount={s} currency={secondaryCurrency} />
         </p>
       )}

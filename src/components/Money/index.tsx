@@ -2,6 +2,10 @@
 
 import type { FC } from 'react';
 
+import { usePrivacy } from '@features/privacy/PrivacyProvider';
+
+import MaskedAmount from '@components/MaskedAmount';
+
 import { useCurrency } from '@hooks/use-currency';
 
 interface MoneyProps {
@@ -42,8 +46,33 @@ const Money: FC<MoneyProps> = ({
   inline = false,
 }) => {
   const { displayItem, convertItem, formatFull, primaryCurrency, secondaryCurrency } = useCurrency();
+  const { hidden } = usePrivacy();
   const item = { amount, currency, date, entryRate };
   const { primary, secondary } = displayItem(item);
+  const hasSecondary = !!secondary && !!secondaryCurrency && secondaryCurrency !== primaryCurrency;
+
+  if (hidden) {
+    // No title, and the real strings never rendered — a mask that only covers
+    // the digits still hands them back on hover, to a screen reader, or to a
+    // copy-paste.
+    const masked = (
+      <>
+        <MaskedAmount currency={primaryCurrency} className={primaryClassName} />
+        {hasSecondary && (
+          <MaskedAmount
+            currency={secondaryCurrency}
+            dots={4}
+            className={inline ? `ms-1.5 ${secondaryClassName}` : secondaryClassName}
+          />
+        )}
+      </>
+    );
+    return inline ? (
+      <span className={className}>{masked}</span>
+    ) : (
+      <span className={`flex flex-col ${className}`}>{masked}</span>
+    );
+  }
 
   // Always expose the exact full value on hover, even when shown compact.
   const pNum = convertItem(item, primaryCurrency);
