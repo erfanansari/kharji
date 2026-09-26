@@ -83,7 +83,7 @@ not rendered at all. This covers three leaks a purely visual mask would not:
 
 Stored in a cookie, written client-side exactly the way `src/components/LocaleToggle`
 writes `LOCALE_COOKIE` (`path=/`, `SameSite=Lax`, `Secure` off localhost, ~1 year), and
-read on the server in the root layout, which passes it down as the store's initial value.
+read on the server in the root layout, which passes it down as the provider's initial value.
 
 The server read is the point. With localStorage the server renders the real numbers, they
 paint, and JS replaces them a frame later — a visible flash of exactly the data the
