@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.8.1](https://github.com/erfanansari/kharji/compare/v1.8.0...v1.8.1) (2026-09-26)
+
+### Bug Fixes
+
+- keep the currency word joined when amounts are hidden ([d978ccd](https://github.com/erfanansari/kharji/commit/d978ccde6528167d90c03d0587acf7b4939efc56))
+
 ## [1.8.0](https://github.com/erfanansari/kharji/compare/v1.7.2...v1.8.0) (2026-09-26)
 
 ### Features
