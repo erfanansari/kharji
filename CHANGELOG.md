@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.9.0](https://github.com/erfanansari/kharji/compare/v1.8.1...v1.9.0) (2026-10-01)
+
+### Features
+
+- add navigate link from report to expenses page with filters ([3a355a8](https://github.com/erfanansari/kharji/commit/3a355a86514d110db236c2575f94a131b21f3bac))
+- add total expenses ([2ed60ee](https://github.com/erfanansari/kharji/commit/2ed60ee9d776777a32f30ba1fa21027cff1a1e29))
+
+### Bug Fixes
+
+- address review notes on the expenses total ([c93dda3](https://github.com/erfanansari/kharji/commit/c93dda30f9eb28ae603247ffd307bafd5277a680))
+
 ## [1.8.1](https://github.com/erfanansari/kharji/compare/v1.8.0...v1.8.1) (2026-09-26)
 
 ### Bug Fixes
