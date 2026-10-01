@@ -14,7 +14,7 @@ interface ExpensesTotalProps {
 
 const ExpensesTotal = ({ summary }: ExpensesTotalProps) => {
   const t = useTranslations('pages.expenses.stats');
-  const { primaryCurrency, secondaryCurrency, sumTo, formatFull } = useCurrency();
+  const { primaryCurrency, secondaryCurrency, sumTo } = useCurrency();
   const showSecondary = !!secondaryCurrency && secondaryCurrency !== primaryCurrency;
   const totalPrimary = sumTo(summary.items, primaryCurrency);
   const totalSecondary = showSecondary ? sumTo(summary.items, secondaryCurrency) : 0;
@@ -31,17 +31,12 @@ const ExpensesTotal = ({ summary }: ExpensesTotalProps) => {
           <p className="text-text-muted text-2xl font-semibold tabular-nums">—</p>
         ) : (
           <>
-            <p
-              className="text-text-primary truncate text-2xl font-semibold tabular-nums"
-              title={formatFull(totalPrimary, primaryCurrency)}
-            >
+            {/* No `title` here: AnimatedMoney owns the exact-value hover and withholds it in privacy mode. */}
+            <p className="text-text-primary truncate text-2xl font-semibold tabular-nums">
               <AnimatedMoney amount={totalPrimary} currency={primaryCurrency} compact={false} />
             </p>
             {showSecondary && secondaryCurrency && (
-              <p
-                className="text-text-muted mt-0.5 truncate text-xs font-medium tabular-nums"
-                title={formatFull(totalSecondary, secondaryCurrency)}
-              >
+              <p className="text-text-muted mt-0.5 truncate text-xs font-medium tabular-nums">
                 <AnimatedMoney amount={totalSecondary} currency={secondaryCurrency} compact={false} />
               </p>
             )}

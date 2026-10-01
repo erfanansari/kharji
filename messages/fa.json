@@ -876,7 +876,7 @@
         "count": "تعداد هزینه‌ها",
         "dailyAverage": "میانگین روزانه",
         "viewExpenses": "مشاهده هزینه‌ها",
-        "ledgerCount": "{count} هزینه"
+        "ledgerCount": "{count, number} هزینه"
       },
       "details": {
         "title": "جزئیات هزینه",
