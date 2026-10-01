@@ -1,9 +1,10 @@
-import type { ExpenseFilters } from '@api/getExpenseListQuery';
+import type { ExpenseFilters, ExpenseSummary } from '@api/getExpenseListQuery';
 
 import type { Expense } from '@types';
 
 export interface ExpensesTableProps {
   expenses: Expense[];
+  summary: ExpenseSummary;
   isLoading: boolean;
   error: Error | null;
   filters: ExpenseFilters;
