@@ -11,11 +11,17 @@ import en from '../../messages/en.json';
 /**
  * Fresh client per render so cache/mutation defaults never bleed across tests.
  * Grab the returned client to register test-specific query/mutation defaults.
+ *
+ * In the app every query key gets its fetcher from `client.registerEndpoint`.
+ * Tests render components without that registry, so unmocked queries get a
+ * fetcher that never settles (stays loading) instead of React Query logging
+ * "No queryFn was passed" on every mount. Seed data with `setQueryData`, or
+ * register your own default with `setQueryDefaults`, as before.
  */
 export function makeTestQueryClient() {
   return new QueryClient({
     defaultOptions: {
-      queries: { retry: false },
+      queries: { retry: false, queryFn: () => new Promise<never>(() => {}) },
       mutations: { retry: false },
     },
   });

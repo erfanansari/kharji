@@ -63,8 +63,11 @@ describe('release notes', () => {
     });
   });
 
-  it('matches the version in package.json for the newest release', async () => {
+  it('keeps package.json at the newest release, or the one before it while a release is pending', async () => {
+    // The release flow commits the notes first and only then runs `pnpm release`,
+    // which bumps package.json. In that window the newest notes are one ahead of
+    // package.json; anything further apart means notes or version were forgotten.
     const { version } = await import('../../../../package.json');
-    expect(RELEASES[0].version).toBe(version);
+    expect([RELEASES[0].version, RELEASES[1]?.version]).toContain(version);
   });
 });

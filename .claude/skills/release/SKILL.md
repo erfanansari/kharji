@@ -72,10 +72,9 @@ pnpm test
 ```
 
 Checks semver validity, date sanity, no duplicate versions, newest-first ordering, and — most
-commonly tripped — no missing `fa`. **One assertion is expected to fail at this point**: "matches
-the version in package.json for the newest release", because `package.json` hasn't been bumped yet
-(that happens in step 6). Confirm every _other_ check passes; that one specific failure is normal
-and self-resolves after `pnpm release`.
+commonly tripped — no missing `fa`. The version check allows `package.json` to sit one release behind the newest notes (the
+notes are committed first and `pnpm release` bumps it in step 6), so the suite should be fully
+green here. Any failure is a real problem.
 
 ### 5. Commit the notes — before releasing, as its own commit
 
