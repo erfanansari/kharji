@@ -3,28 +3,28 @@
   "date": "2026-08-10",
   "title": {
     "en": "Farsi by default",
-    "fa": "خرجی از این به بعد فارسیه"
+    "fa": "خرجی حالا فارسیه"
   },
   "highlights": [
     {
       "type": "feature",
       "en": "Kharji now opens in Persian for everyone — right-to-left, with a proper Persian font. Prefer English? Switch any time from Settings, or from the language toggle on the login page.",
-      "fa": "خرجی حالا برای همه فارسی باز می‌شه — راست‌به‌چپ و با فونت فارسی درست‌وحسابی. انگلیسی رو بیشتر دوست داری؟ هر وقت خواستی از تنظیمات یا از کلید زبان توی صفحهٔ ورود عوضش کن."
+      "fa": "خرجی حالا برای همه فارسی باز می‌شه، راست‌به‌چپ و با فونت فارسی. انگلیسی رو ترجیح می‌دی؟ هر وقت خواستی از تنظیمات یا با کلید زبان توی صفحهٔ ورود عوضش کن."
     },
     {
       "type": "improvement",
       "en": "The language you signed up in is saved to your account, so a new phone or browser opens in the same language instead of falling back to English.",
-      "fa": "زبانی که باهاش ثبت‌نام کردی حالا روی حسابت ذخیره می‌شه، پس روی گوشی یا مرورگر جدید هم با همون زبان باز می‌شه و دیگه برنمی‌گرده به انگلیسی."
+      "fa": "زبانی که باهاش ثبت‌نام کردی روی حسابت ذخیره می‌شه. پس روی گوشی یا مرورگر جدید هم با همون زبان باز می‌شه و دیگه به انگلیسی برنمی‌گرده."
     },
     {
       "type": "improvement",
       "en": "New accounts get their starter categories named in Persian.",
-      "fa": "حساب‌های جدید، دسته‌بندی‌های اولیه‌شون رو با اسم فارسی تحویل می‌گیرن."
+      "fa": "حساب‌های جدید دسته‌بندی‌های اولیه‌شون رو با اسم فارسی می‌گیرن."
     },
     {
       "type": "improvement",
       "en": "The demo account is fully in Persian now — categories, tags, expenses, income and assets.",
-      "fa": "حساب دمو کامل فارسی شد — دسته‌بندی‌ها، برچسب‌ها، خرج‌ها، درآمد و دارایی‌ها."
+      "fa": "حساب دمو هم کامل فارسی شد: دسته‌بندی‌ها، برچسب‌ها، هزینه‌ها، درآمد و دارایی‌ها."
     }
   ]
 }

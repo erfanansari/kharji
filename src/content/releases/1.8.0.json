@@ -7,28 +7,28 @@
   },
   "summary": {
     "en": "Adding one expense at a café shouldn't show everyone around you what you're worth. There's a new eye button up top: tap it and every amount in the app turns into dots.",
-    "fa": "ثبت یه خرج تو کافه نباید به همهٔ دور و برت نشون بده چقدر داری. یه دکمهٔ چشم بالا اضافه شده: بزنش، همهٔ مبلغ‌های برنامه می‌شن نقطه."
+    "fa": "ثبت یه خرج توی کافه نباید به همهٔ دور و برت نشون بده چقدر داری. یه دکمهٔ چشم بالا اضافه شده: بزنش تا همهٔ مبلغ‌های برنامه تبدیل به نقطه بشن."
   },
   "highlights": [
     {
       "type": "feature",
       "en": "A new button next to your profile hides every amount at once — net worth, income, expenses, account balances, the lot. Everything else stays readable, so you can still add an expense or find a transaction with the numbers covered.",
-      "fa": "یه دکمهٔ جدید کنار پروفایلت همهٔ مبلغ‌ها رو یهو پنهان می‌کنه — دارایی خالص، درآمد، خرج‌ها، موجودی حساب‌ها، همه. بقیهٔ چیزها سر جاشون می‌مونن، پس با عددهای پوشیده هم می‌تونی خرج ثبت کنی یا دنبال یه تراکنش بگردی."
+      "fa": "یه دکمهٔ جدید کنار پروفایلت همهٔ مبلغ‌ها رو یکجا پنهان می‌کنه: دارایی خالص، درآمد، هزینه‌ها، موجودی حساب‌ها و بقیه. بقیهٔ چیزها سر جاشون می‌مونن، پس با مبلغ‌های پوشیده هم می‌تونی هزینه ثبت کنی یا دنبال یه تراکنش بگردی."
     },
     {
       "type": "feature",
       "en": "Need to check just one number? Press and hold it and only that one shows, until you let go.",
-      "fa": "فقط یه عدد رو لازم داری ببینی؟ انگشتت رو روش نگه دار تا همون یکی نشون داده بشه، تا وقتی که ولش کنی."
+      "fa": "فقط یه عدد رو لازم داری؟ انگشتت رو روش نگه دار تا همون یکی نشون داده بشه، تا وقتی که ولش کنی."
     },
     {
       "type": "improvement",
       "en": "Charts keep their shape while hidden — you still see the trend, just without any readable figures on the axis or in the tooltips.",
-      "fa": "نمودارها موقع پنهان بودن شکلشون رو حفظ می‌کنن — روند رو می‌بینی، فقط عدد خوانا روی محور و توی راهنماها نیست."
+      "fa": "نمودارها وقتی مبلغ‌ها پنهانن شکلشون رو حفظ می‌کنن. روند رو می‌بینی، فقط عددی که روی محور یا توی کادر راهنما بشه خوند نیست."
     },
     {
       "type": "improvement",
       "en": "Your choice is remembered per device, so the app opens the way you left it. The exchange rate stays visible either way — it's public information and says nothing about you.",
-      "fa": "انتخابت روی هر دستگاه جدا یادش می‌مونه، پس برنامه همون‌جوری که ولش کردی باز می‌شه. نرخ ارز در هر حالت پیداست — اطلاعات عمومیه و چیزی از تو لو نمی‌ده."
+      "fa": "انتخابت روی هر دستگاه جدا یادش می‌مونه، پس برنامه همون‌طور باز می‌شه که ولش کردی. نرخ ارز در هر حالت دیده می‌شه، چون اطلاعات عمومیه و چیزی از تو لو نمی‌ده."
     }
   ]
 }

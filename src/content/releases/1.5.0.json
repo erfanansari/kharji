@@ -7,43 +7,43 @@
   },
   "summary": {
     "en": "Tell Kharji which account an expense came out of and it lowers that balance for you — no more logging the expense and then editing your bank account by hand.",
-    "fa": "به خرجی بگو هزینه از کدوم حساب رفته، خودش موجودی رو کم می‌کنه — دیگه لازم نیست هزینه رو ثبت کنی و بعد دستی بری موجودی بانکت رو عوض کنی."
+    "fa": "به خرجی بگو هزینه از کدوم حساب رفته تا خودش موجودی رو کم کنه. دیگه لازم نیست هزینه رو ثبت کنی و بعد دستی موجودی بانکت رو عوض کنی."
   },
   "highlights": [
     {
       "type": "feature",
       "en": "Every expense now has a \"paid from\" field under the amount. Pick the account and the money comes off that balance the moment you save.",
-      "fa": "هر هزینه حالا زیر مبلغش یه فیلد «پرداخت از» داره. حساب رو انتخاب کن، همون لحظه که ذخیره می‌کنی پول از موجودیش کم می‌شه."
+      "fa": "زیر مبلغ هر هزینه حالا یه فیلد «پرداخت از» هست. حساب رو انتخاب کن تا همون لحظه که ذخیره می‌کنی، پول از موجودیش کم بشه."
     },
     {
       "type": "feature",
       "en": "The field remembers the account you used last, so most of the time it's already filled in. If you only have one cash or bank account, it's always picked for you.",
-      "fa": "این فیلد یادش می‌مونه دفعهٔ قبل از کدوم حساب پرداخت کردی، برای همین بیشتر وقت‌ها از قبل پره. اگه فقط یه حساب نقدی یا بانکی داری، همیشه خودش انتخاب می‌شه."
+      "fa": "این فیلد یادش می‌مونه دفعهٔ قبل از کدوم حساب پرداخت کردی، برای همین بیشتر وقت‌ها از قبل پر شده. اگه فقط یه حساب نقدی یا بانکی داری، همیشه همون خودکار انتخاب می‌شه."
     },
     {
       "type": "feature",
       "en": "You see the balance change before you commit to it: the account's current amount, an arrow, and what it becomes. If it would go below zero, Kharji says so and still lets you save it.",
-      "fa": "قبل از ثبت، تغییر موجودی رو می‌بینی: مبلغ فعلی حساب، یه فلش، و چیزی که قراره بشه. اگه منفی بشه، خرجی بهت می‌گه ولی باز هم می‌ذاره ثبتش کنی."
+      "fa": "قبل از ثبت، تغییر موجودی رو می‌بینی: مبلغ فعلی حساب، یه فلش، و مبلغی که قراره بشه. اگه از صفر پایین‌تر بره، خرجی بهت می‌گه ولی باز هم می‌ذاره ثبتش کنی."
     },
     {
       "type": "feature",
       "en": "Repeating expenses carry the account too. Rent posts itself on the first and takes itself out of your bank account, without you opening the app.",
-      "fa": "هزینه‌های تکرارشونده هم حساب رو با خودشون می‌برن. اجاره اول ماه خودش ثبت می‌شه و خودش هم از حساب بانکیت کم می‌شه، بدون اینکه اپ رو باز کنی."
+      "fa": "هزینه‌های تکرارشونده هم حساب رو با خودشون می‌برن. اجاره اول ماه خودش ثبت می‌شه و از حساب بانکیت هم کم می‌شه، بدون اینکه اپ رو باز کنی."
     },
     {
       "type": "improvement",
       "en": "Changing your mind is safe. Edit the amount, switch to another account, or set it back to \"don't track\" — and deleting the expense puts the money back exactly, to the last digit.",
-      "fa": "نظرت عوض شد؟ مشکلی نیست. مبلغ رو عوض کن، حساب دیگه‌ای انتخاب کن، یا برش گردون روی «ثبت نشه» — و اگه هزینه رو پاک کنی، پول دقیقاً تا آخرین رقم برمی‌گرده سر جاش."
+      "fa": "نظرت عوض شد؟ مشکلی نیست. مبلغ رو عوض کن، حساب دیگه‌ای انتخاب کن یا بزن «ثبت نشه». اگه هزینه رو هم پاک کنی، پول تا آخرین رقم برمی‌گرده سر جاش."
     },
     {
       "type": "improvement",
       "en": "Because each payment is recorded against the account, your net worth chart now drops as you spend instead of waiting for you to update it.",
-      "fa": "چون هر پرداخت روی حساب ثبت می‌شه، نمودار دارایی خالصت همزمان با خرج کردنت پایین می‌آد، نه وقتی که یادت بیفته دستی به‌روزش کنی."
+      "fa": "چون هر پرداخت روی حساب ثبت می‌شه، نمودار دارایی خالصت همزمان با خرج کردنت پایین میاد و لازم نیست یادت بیفته دستی به‌روزش کنی."
     },
     {
       "type": "fix",
       "en": "Fixed a case where editing an asset could leave its current value and its history disagreeing about when it was last valued, which could make the assets page and the net-worth chart report slightly different totals.",
-      "fa": "مشکلی که موقع ویرایش یه دارایی، مقدار فعلی و تاریخچه‌اش سر تاریخ آخرین ارزش‌گذاری با هم جور درنمی‌اومدن برطرف شد — همین باعث می‌شد صفحهٔ دارایی‌ها و نمودار دارایی خالص گاهی عددهای کمی متفاوت نشون بدن."
+      "fa": "یه مشکل موقع ویرایش دارایی برطرف شد: مقدار فعلی و تاریخچهٔ دارایی گاهی دربارهٔ تاریخ آخرین ارزش‌گذاری با هم یکی نبودن. همین باعث می‌شد صفحهٔ دارایی‌ها و نمودار دارایی خالص گاهی عددهای کمی متفاوت نشون بدن."
     }
   ]
 }

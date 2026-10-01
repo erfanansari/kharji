@@ -9,7 +9,7 @@
     {
       "type": "fix",
       "en": "With amounts hidden, the word «تومان» next to the dots had its letters pulled apart instead of joined up. It reads properly again.",
-      "fa": "وقتی مبلغ‌ها پنهان بودن، حرف‌های کلمهٔ «تومان» کنار نقطه‌ها به‌هم نمی‌چسبید و از هم وا می‌رفت. حالا دوباره درست نوشته می‌شه."
+      "fa": "وقتی مبلغ‌ها پنهان بودن، حروف کلمهٔ «تومان» کنار نقطه‌ها به هم نمی‌چسبید و از هم جدا می‌افتاد. حالا دوباره درست نوشته می‌شه."
     }
   ]
 }

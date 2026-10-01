@@ -3,42 +3,42 @@
   "date": "2026-08-21",
   "title": {
     "en": "Numbers that agree",
-    "fa": "عددهایی که با هم می‌خونن"
+    "fa": "عددها حالا با هم جور درمیان"
   },
   "summary": {
     "en": "Your assets total and your net-worth chart now show the same figure, chart axes are drawn in your own currency, and a category looks the same wherever you run into it.",
-    "fa": "مجموع دارایی‌هات و نمودار دارایی خالص حالا یه عدد نشون می‌دن، محور نمودارها با ارز خودت کشیده می‌شه، و هر دسته‌بندی هر جا ببینی‌ش یه شکله."
+    "fa": "جمع دارایی‌ها و نمودار دارایی خالص حالا یه عدد رو نشون می‌دن، محور نمودارها با ارز خودت کشیده می‌شه و هر دسته‌بندی هر جا که ببینی‌ش شکل یکسانی داره."
   },
   "highlights": [
     {
       "type": "fix",
       "en": "The assets page and the net-worth chart report the same total again. The two could drift apart after you edited an asset's valuation date, because each ended up using the exchange rate from a different day.",
-      "fa": "صفحهٔ دارایی‌ها و نمودار دارایی خالص دوباره یه عدد رو گزارش می‌دن. قبلاً اگه تاریخ ارزش‌گذاری یه دارایی رو عوض می‌کردی این دوتا از هم فاصله می‌گرفتن، چون هر کدوم آخرش با نرخ ارز یه روز متفاوت حساب می‌کرد."
+      "fa": "صفحهٔ دارایی‌ها و نمودار دارایی خالص دوباره یه عدد رو نشون می‌دن. قبلاً اگه تاریخ ارزش‌گذاری یه دارایی رو عوض می‌کردی، این دوتا فرق پیدا می‌کردن چون هر کدوم آخرش با نرخ ارز یه روز دیگه حساب می‌کرد."
     },
     {
       "type": "fix",
       "en": "Chart axes are drawn in your primary currency. If you'd set yours to pounds or dollars, the numbers down the side were still toman-sized while the tooltip showed the right amount.",
-      "fa": "محور نمودارها با ارز اصلی خودت کشیده می‌شه. اگه ارزت رو پوند یا دلار گذاشته بودی، عددهای کنار نمودار هنوز در مقیاس تومن بودن، در حالی که تولتیپ مبلغ درست رو نشون می‌داد."
+      "fa": "محور نمودارها حالا با ارز اصلی خودت کشیده می‌شه. اگه ارزت پوند یا دلار بود، عددهای کنار نمودار هنوز در مقیاس تومان بودن، در حالی که کادر راهنما مبلغ درست رو نشون می‌داد."
     },
     {
       "type": "fix",
       "en": "Persian chart labels read the number first — «۱۴ میلیارد», not «میلیارد ۱۴» — so the axis and the tooltip beside it finally say the same thing the same way.",
-      "fa": "برچسب‌های فارسی نمودار اول عدد رو می‌آرن — «۱۴ میلیارد»، نه «میلیارد ۱۴» — تا محور و تولتیپ کنارش بالاخره یه چیز رو یه جور بگن."
+      "fa": "برچسب‌های فارسی نمودار حالا اول عدد رو می‌گن: «۱۴ میلیارد»، نه «میلیارد ۱۴». محور و کادر راهنمای کنارش بالاخره یه چیز رو یه جور می‌گن."
     },
     {
       "type": "improvement",
       "en": "The tags field on the expense form has a proper label and hint like every other field, and a tag you create shows up the moment you type it instead of waiting on the server.",
-      "fa": "فیلد برچسب‌ها توی فرم هزینه مثل بقیهٔ فیلدها عنوان و راهنما داره، و برچسبی که می‌سازی همون لحظه که می‌نویسی‌ش ظاهر می‌شه، نه وقتی سرور جواب داد."
+      "fa": "فیلد برچسب‌ها توی فرم هزینه مثل بقیهٔ فیلدها عنوان و راهنما داره. برچسبی هم که می‌سازی همون لحظه که تایپش می‌کنی ظاهر می‌شه و منتظر جواب سرور نمی‌مونه."
     },
     {
       "type": "improvement",
       "en": "A category looks the same everywhere you meet it — same icon, same colour — including the report legend and the expense and report filters, which used to show nothing but the name.",
-      "fa": "هر دسته‌بندی هر جا ببینی‌ش یه شکله — همون آیکون، همون رنگ — از جمله راهنمای نمودار گزارش‌ها و فیلترهای هزینه‌ها و گزارش‌ها که قبلاً فقط اسم رو نشون می‌دادن."
+      "fa": "هر دسته‌بندی هر جا که ببینی‌ش یه شکله، با همون آیکون و همون رنگ. این شامل راهنمای نمودار گزارش‌ها و فیلترهای هزینه‌ها و گزارش‌ها هم می‌شه که قبلاً فقط اسم رو نشون می‌دادن."
     },
     {
       "type": "fix",
       "en": "Buttons show a pointer cursor again when you hover them.",
-      "fa": "دکمه‌ها وقتی موس روشون می‌ره دوباره نشانگر دست رو نشون می‌دن."
+      "fa": "وقتی موس رو دکمه‌ها می‌بری، دوباره نشانگر دست نشون داده می‌شه."
     }
   ]
 }

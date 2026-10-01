@@ -3,22 +3,22 @@
   "date": "2026-10-01",
   "title": {
     "en": "See what you've spent, at a glance",
-    "fa": "یه نگاه، کل خرجت"
+    "fa": "جمع خرج‌هات رو یه‌جا ببین"
   },
   "summary": {
     "en": "The Expenses page now adds it all up for you, and the Reports page takes you straight to the expenses behind a number.",
-    "fa": "حالا صفحهٔ هزینه‌ها خودش جمع می‌زنه، و از گزارش‌ها می‌تونی مستقیم بری سراغ هزینه‌هایی که پشت یه عدد هستن."
+    "fa": "صفحهٔ هزینه‌ها حالا خودش جمع می‌زنه، و از گزارش‌ها می‌تونی مستقیم بری سراغ هزینه‌هایی که پشت یه عدد هستن."
   },
   "highlights": [
     {
       "type": "feature",
       "en": "A new total sits above the expenses table. It adds up everything that matches your search and filters — not just the rows loaded on screen — in your main currency, with your second currency underneath.",
-      "fa": "یه جمع کل جدید بالای جدول هزینه‌ها اومده. هر چی با جستجو و فیلترهات جور باشه جمع می‌زنه — نه فقط ردیف‌هایی که رو صفحه لود شدن — به ارز اصلیت، و ارز دومت زیرش."
+      "fa": "یه جمع کل جدید بالای جدول هزینه‌ها اومده. هر چی با جستجو و فیلترهات جور باشه جمع می‌شه، نه فقط ردیف‌هایی که الان رو صفحه‌ان. جمع به ارز اصلیت نشون داده می‌شه و ارز دومت زیرش."
     },
     {
       "type": "improvement",
       "en": "Old expenses keep the exchange rate they were recorded with, so a total in another currency stays honest instead of shifting with today's rate.",
-      "fa": "هزینه‌های قدیمی همون نرخی رو نگه می‌دارن که موقع ثبت داشتن، پس جمع به ارز دیگه با نرخ امروز عوض نمی‌شه و درست می‌مونه."
+      "fa": "هزینه‌های قدیمی نرخ ارز همون روز ثبت رو نگه می‌دارن، پس جمع به ارز دیگه با نرخ امروز عوض نمی‌شه و درست می‌مونه."
     },
     {
       "type": "feature",
@@ -28,7 +28,7 @@
     {
       "type": "feature",
       "en": "On Reports, tap the Total Expenses card to jump to the expenses behind it, already filtered to the same dates, categories and tags.",
-      "fa": "تو گزارش‌ها، رو کارت مجموع هزینه‌ها بزن تا مستقیم بری سراغ هزینه‌هایی که پشتشن، با همون بازهٔ زمانی، دسته‌بندی‌ها و برچسب‌هایی که انتخاب کردی."
+      "fa": "توی گزارش‌ها، روی کارت مجموع هزینه‌ها بزن تا مستقیم بری سراغ هزینه‌هایی که پشتشن، با همون بازهٔ زمانی، دسته‌بندی‌ها و برچسب‌هایی که انتخاب کرده بودی."
     }
   ]
 }
