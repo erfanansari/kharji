@@ -24,11 +24,18 @@ function renderButton() {
 describe('GoogleSignInButton', () => {
   it('starts the Google flow in a real browser', async () => {
     setUserAgent(CHROME_ANDROID);
+    // The button navigates to the OAuth URL, which jsdom can't do. Hide only that notice.
+    const consoleError = console.error;
+    jest.spyOn(console, 'error').mockImplementation((...args) => {
+      if (String(args[0]).includes('Not implemented: navigation')) return;
+      consoleError(...args);
+    });
     const { mutationFn } = renderButton();
 
     await userEvent.click(screen.getByRole('button', { name: /Continue with Google/ }));
 
     expect(mutationFn).toHaveBeenCalled();
+    jest.mocked(console.error).mockRestore();
   });
 
   it('explains the problem instead of redirecting inside an in-app browser', async () => {
