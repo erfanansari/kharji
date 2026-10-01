@@ -33,13 +33,17 @@ import ExpensesTable from './components/ExpensesTable';
 
 const ITEMS_PER_PAGE = 20;
 
-const ExpensesPage = () => {
+interface ExpensesPageProps {
+  initialFilters?: ExpenseFilters;
+}
+
+const ExpensesPage = ({ initialFilters = {} }: ExpensesPageProps) => {
   // Customs
   const t = useTranslations('pages.expenses');
 
   // States
-  const [filters, setFilters] = useState<ExpenseFilters>({});
-  const [descInput, setDescInput] = useState('');
+  const [filters, setFilters] = useState<ExpenseFilters>(initialFilters);
+  const [descInput, setDescInput] = useState(initialFilters.description ?? '');
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -89,6 +93,7 @@ const ExpensesPage = () => {
 
   // Variables
   const expenses: Expense[] = data?.pages.flatMap((p) => p.expenses) ?? [];
+  const summary = data?.pages[0]?.summary ?? { count: 0, items: [] };
 
   // Effects
   useEffect(() => {
@@ -126,6 +131,7 @@ const ExpensesPage = () => {
         {/* Expenses Table */}
         <ExpensesTable
           expenses={expenses}
+          summary={summary}
           isLoading={isLoading}
           error={error}
           filters={filters}
