@@ -7,43 +7,43 @@
   },
   "summary": {
     "en": "Kharji gets a cobalt-blue accent, cleaner light and dark themes, and a redrawn icon set — same app, less noise.",
-    "fa": "خرجی آبی کبالت شد، تم روشن و تیره‌اش تمیزتر شد و آیکون‌هاش از نو کشیده شدن — همون اپ، فقط شلوغی‌اش کمتر."
+    "fa": "خرجی آبی کبالتی شد، تم روشن و تیره‌اش تمیزتر شدن و آیکون‌ها از نو کشیده شدن. همون اپ قبلیه، فقط شلوغی‌اش کمتره."
   },
   "highlights": [
     {
       "type": "feature",
       "en": "A fresh look across the whole app: one confident blue for anything you can tap, over calmer neutrals. Colour now means something — money in, money out, a warning — instead of just decorating the page.",
-      "fa": "کل اپ ظاهر تازه گرفت: یه آبی مطمئن برای هر چیزی که می‌تونی بزنی روش، روی خاکستری‌های آرام‌تر. رنگ حالا معنی داره — پول تو، پول بیرون، هشدار — نه اینکه فقط صفحه رو تزئین کنه."
+      "fa": "ظاهر کل اپ عوض شد: یه آبی مطمئن برای هر چیزی که می‌شه زدش، روی رنگ‌های خاکستری آروم‌تر. حالا رنگ‌ها معنی دارن (پول اومده، پول رفته، هشدار) و فقط برای تزئین نیستن."
     },
     {
       "type": "feature",
       "en": "The bolt logo got a new coat of paint, and every icon built from it was redrawn — browser tab, home-screen icon, and the launch screens when you open Kharji as an app.",
-      "fa": "لوگوی رعدوبرق رنگ تازه گرفت و هر آیکونی که ازش ساخته می‌شد از نو کشیده شد — تب مرورگر، آیکون صفحهٔ خانه و صفحه‌های شروع وقتی خرجی رو مثل اپ باز می‌کنی."
+      "fa": "رنگ لوگوی رعدوبرق عوض شد و همهٔ آیکون‌هایی که ازش ساخته می‌شن دوباره کشیده شدن: تب مرورگر، آیکون صفحهٔ اصلی گوشی و صفحه‌های شروع، وقتی خرجی رو مثل اپ باز می‌کنی."
     },
     {
       "type": "improvement",
       "en": "Dark mode is a neutral charcoal now instead of a tinted grey, so the colours in your charts and category tags actually stand out instead of blending into the background.",
-      "fa": "تم تیره حالا خاکستری خنثاست، نه خاکستری رنگی. یعنی رنگ نمودارها و برچسب‌های دسته‌بندی واضح‌تر دیده می‌شن و با پس‌زمینه قاطی نمی‌شن."
+      "fa": "تم تیره حالا خاکستری ساده‌ست، نه خاکستریِ رنگ‌دار. برای همین رنگ نمودارها و برچسب دسته‌بندی‌ها بهتر دیده می‌شن و با پس‌زمینه قاطی نمی‌شن."
     },
     {
       "type": "improvement",
       "en": "Buttons, badges and tags are pill-shaped, and cards and dialogs have softer corners.",
-      "fa": "دکمه‌ها، نشان‌ها و برچسب‌ها قرص‌شکل شدن و گوشهٔ کارت‌ها و پنجره‌ها نرم‌تره."
+      "fa": "دکمه‌ها، نشان‌ها و برچسب‌ها گرد شدن و گوشهٔ کارت‌ها و پنجره‌ها نرم‌تر شده."
     },
     {
       "type": "improvement",
       "en": "Every text and colour pairing was checked against both themes, so labels, amounts and muted captions are easier to read than before.",
-      "fa": "همهٔ ترکیب‌های متن و رنگ توی هر دو تم بررسی شدن، پس خوندن عنوان‌ها، مبلغ‌ها و نوشته‌های کم‌رنگ راحت‌تر از قبله."
+      "fa": "ترکیب متن و رنگ توی هر دو تم یکی‌یکی بررسی شد. حالا خوندن عنوان‌ها، مبلغ‌ها و نوشته‌های کم‌رنگ راحت‌تره."
     },
     {
       "type": "improvement",
       "en": "Your report and account emails match the new look.",
-      "fa": "ایمیل‌های گزارش و حسابت هم با ظاهر جدید هم‌رنگ شدن."
+      "fa": "ایمیل‌های گزارش و حساب هم با ظاهر جدید هماهنگ شدن."
     },
     {
       "type": "fix",
       "en": "In dark mode, the bar at the top of your mobile browser no longer sits on a mismatched strip of colour.",
-      "fa": "توی تم تیره، نوار بالای مرورگر موبایل دیگه روی یه نوار رنگ ناجور نمی‌نشینه."
+      "fa": "توی تم تیره، نوار بالای مرورگر موبایل دیگه روی یه نوار رنگیِ بی‌ربط نمی‌شینه."
     },
     {
       "type": "fix",
@@ -53,7 +53,7 @@
     {
       "type": "fix",
       "en": "The full-page error screen follows your dark-mode preference instead of flashing white.",
-      "fa": "صفحهٔ خطای تمام‌صفحه حالا تم تیره‌ات رو رعایت می‌کنه و دیگه سفید نمی‌زنه."
+      "fa": "صفحهٔ خطای تمام‌صفحه حالا از تم تیره‌ات پیروی می‌کنه و یهو سفید نمی‌شه."
     }
   ]
 }

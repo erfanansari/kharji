@@ -3,18 +3,18 @@
   "date": "2026-07-27",
   "title": {
     "en": "Emails that look right",
-    "fa": "ایمیل‌ها درست‌وحسابی شدن"
+    "fa": "ایمیل‌ها حالا درست دیده می‌شن"
   },
   "highlights": [
     {
       "type": "fix",
       "en": "The Kharji logo now shows up in every email instead of a broken image.",
-      "fa": "لوگوی خرجی حالا توی همهٔ ایمیل‌ها درست میاد و دیگه عکس شکسته نمی‌بینی."
+      "fa": "لوگوی خرجی حالا توی همهٔ ایمیل‌ها میاد و دیگه عکس خراب نمی‌بینی."
     },
     {
       "type": "improvement",
       "en": "Persian emails now use the same font as the app, and pick a proper Persian typeface in mail apps that don't allow custom fonts.",
-      "fa": "ایمیل‌های فارسی حالا با همون فونت خود اپ میان، و توی ایمیل‌خون‌هایی که فونت دلخواه رو قبول نمی‌کنن هم یه فونت فارسی درست‌وحسابی انتخاب می‌شه."
+      "fa": "ایمیل‌های فارسی با همون فونت خود اپ میان. توی برنامه‌های ایمیلی که فونت دلخواه رو قبول نمی‌کنن هم، یه فونت فارسی مناسب انتخاب می‌شه."
     },
     {
       "type": "improvement",

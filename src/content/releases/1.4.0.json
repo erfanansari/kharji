@@ -7,33 +7,33 @@
   },
   "summary": {
     "en": "Rent, subscriptions, the gym — set the repeat once and Kharji keeps logging it for you, on whichever calendar it actually follows.",
-    "fa": "اجاره، اشتراک‌ها، باشگاه — یه بار تکرارش رو تنظیم کن، خرجی خودش برات ثبتش می‌کنه، اونم روی همون تقویمی که واقعاً دنبال می‌کنه."
+    "fa": "اجاره، اشتراک‌ها، باشگاه: تکرارشون رو یه بار تنظیم کن تا خرجی خودش ثبتشون کنه، اونم روی تقویمی که واقعاً دنبالش می‌کنن."
   },
   "highlights": [
     {
       "type": "feature",
       "en": "Every expense now has a repeat option under its date: every day, week, month or year. Set it once and it posts itself on schedule — no more typing in the rent on the first of every month.",
-      "fa": "هر هزینه حالا زیر تاریخش یه گزینهٔ تکرار داره: هر روز، هر هفته، هر ماه یا هر سال. یه بار تنظیمش کن، خودش سر وقت ثبت می‌شه — دیگه لازم نیست اول هر ماه اجاره رو دستی وارد کنی."
+      "fa": "حالا زیر تاریخ هر هزینه یه گزینهٔ تکرار هست: هر روز، هر هفته، هر ماه یا هر سال. یه بار که تنظیمش کنی، خودش سر وقت ثبت می‌شه و دیگه لازم نیست اول هر ماه اجاره رو دستی وارد کنی."
     },
     {
       "type": "feature",
       "en": "Monthly and yearly repeats follow the calendar you pick, Jalali or Gregorian. Rent due on 1 Farvardin keeps landing on 1 Farvardin, while a dollar subscription stays on its Gregorian date.",
-      "fa": "تکرارهای ماهانه و سالانه از تقویمی که خودت انتخاب می‌کنی پیروی می‌کنن، شمسی یا میلادی. اجاره‌ای که اول فروردینه، اول فروردین می‌مونه، و اشتراک دلاری هم سر تاریخ میلادی خودش."
+      "fa": "تکرار ماهانه و سالانه از تقویمی که انتخاب می‌کنی پیروی می‌کنه، شمسی یا میلادی. اجاره‌ای که اول فروردینه همیشه اول فروردین ثبت می‌شه و اشتراک دلاری هم سر تاریخ میلادی خودش."
     },
     {
       "type": "feature",
       "en": "Something less regular? Custom lets you repeat every few days, weeks, months or years, and set a date for it to stop.",
-      "fa": "یه چیز نامنظم‌تر می‌خوای؟ با «دلخواه» می‌تونی هر چند روز، هفته، ماه یا سال یه بار تکرار کنی و یه تاریخ پایان هم براش بذاری."
+      "fa": "برنامهٔ نامنظم‌تری داری؟ با «دلخواه» می‌تونی هر چند روز، هفته، ماه یا سال یه بار تکرار کنی و حتی تاریخ پایان بذاری."
     },
     {
       "type": "improvement",
       "en": "Away for a while? Everything that came due while you were gone is logged at the exchange rate of the day it was actually due, so catching up on three months still adds up correctly.",
-      "fa": "یه مدت سر نزدی؟ هر چی توی این مدت موعدش رسیده با نرخ ارز همون روزی که موعدش بوده ثبت می‌شه، پس جبران سه ماه هم درست درمی‌آد."
+      "fa": "یه مدت سر نزدی؟ هر چی تو این مدت موعدش رسیده، با نرخ ارز همون روزی که موعدش بوده ثبت می‌شه. پس حتی اگه سه ماه نیومده باشی، جمع‌ها درست درمیان."
     },
     {
       "type": "improvement",
       "en": "Stopping a repeat is just picking \"doesn't repeat\" on the expense. Everything it already logged stays exactly where it is — that's money you actually spent.",
-      "fa": "برای متوقف کردنش کافیه روی همون هزینه «تکرار نشه» رو انتخاب کنی. هر چی تا حالا ثبت شده سر جاش می‌مونه — اون پولیه که واقعاً خرج کردی."
+      "fa": "برای متوقف کردن تکرار، روی همون هزینه «تکرار نشه» رو انتخاب کن. هر چی تا حالا ثبت شده سر جاش می‌مونه، چون پولیه که واقعاً خرج کردی."
     }
   ]
 }

@@ -7,13 +7,13 @@
   },
   "summary": {
     "en": "The expenses, income and assets tables used to slide sideways on a small screen and take the amount, the date and the edit button off the edge with them. They're lists now — everything that matters fits, and every row has its own menu.",
-    "fa": "جدول‌های هزینه، درآمد و دارایی تو صفحهٔ کوچیک به پهلو می‌لغزیدن و مبلغ و تاریخ و دکمهٔ ویرایش رو با خودشون می‌بردن بیرون از صفحه. حالا لیست شدن — هرچی مهمه جا می‌شه و هر ردیف منوی خودش رو داره."
+    "fa": "جدول‌های هزینه، درآمد و دارایی روی صفحهٔ کوچیک به پهلو سر می‌خوردن و مبلغ و تاریخ و دکمهٔ ویرایش رو با خودشون می‌بردن بیرون از صفحه. حالا لیست شدن: هر چی مهمه جا می‌شه و هر ردیف منوی خودش رو داره."
   },
   "highlights": [
     {
       "type": "fix",
       "en": "You can edit and delete from your phone again. The buttons were always there, just far off the side of the screen where nothing hinted they existed.",
-      "fa": "دوباره می‌تونی از گوشیت ویرایش و حذف کنی. دکمه‌ها همیشه بودن، فقط اون‌قدر کنار صفحه بودن که هیچ نشونه‌ای ازشون نبود."
+      "fa": "دوباره می‌تونی از گوشیت ویرایش و حذف کنی. دکمه‌ها همیشه بودن، فقط اون‌قدر کنار صفحه بودن که هیچ نشونه‌ای ازشون پیدا نبود."
     },
     {
       "type": "improvement",
@@ -23,12 +23,12 @@
     {
       "type": "improvement",
       "en": "Every card has a ⋮ button that opens its actions. Same gesture on expenses, income and assets.",
-      "fa": "هر کارت یه دکمهٔ ⋮ داره که کاراش رو باز می‌کنه. تو هزینه‌ها، درآمد و دارایی‌ها هم دقیقاً همین‌طوریه."
+      "fa": "هر کارت یه دکمهٔ ⋮ داره که کاراش رو باز می‌کنه. تو هزینه‌ها، درآمد و دارایی‌ها هم دقیقاً همین‌طوره."
     },
     {
       "type": "improvement",
       "en": "Tapping an expense to read its details now lets you act on it — edit and delete sit at the bottom of that panel instead of leaving you to close it and hunt for the row again.",
-      "fa": "وقتی روی یه هزینه می‌زنی تا جزئیاتش رو ببینی، حالا می‌تونی همون‌جا کاری هم باهاش بکنی — ویرایش و حذف ته همون پنل هستن، دیگه لازم نیست ببندیش و دوباره دنبال ردیفش بگردی."
+      "fa": "وقتی روی یه هزینه می‌زنی تا جزئیاتش رو ببینی، حالا همون‌جا می‌تونی کاری هم باهاش بکنی. ویرایش و حذف ته همون پنل هستن و لازم نیست ببندیش و دوباره دنبال ردیفش بگردی."
     }
   ]
 }

@@ -9,7 +9,7 @@
     {
       "type": "fix",
       "en": "Typing 900k in an amount field now works while your keyboard is set to Persian. The k, m, b and t shortcuts go by the key you press, so they do the same thing whatever alphabet your keyboard is in.",
-      "fa": "نوشتن ۹۰۰k توی فیلد مبلغ حالا وقتی کیبوردت روی فارسیه هم کار می‌کنه. میان‌برهای k و m و b و t به کلیدی که می‌زنی نگاه می‌کنن، پس با هر کیبوردی همون کار رو می‌کنن."
+      "fa": "نوشتن ۹۰۰k توی فیلد مبلغ حالا با کیبورد فارسی هم کار می‌کنه. میان‌برهای k و m و b و t به کلیدی که می‌زنی نگاه می‌کنن، پس با هر کیبوردی همون کار رو می‌کنن."
     }
   ]
 }
