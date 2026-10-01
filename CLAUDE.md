@@ -953,8 +953,9 @@ cutting a release. The essentials:
   git push --follow-tags      # triggers .github/workflows/release.yml
   ```
 
-- `package.json` version must equal the newest entry in `src/content/releases/` - a test enforces
-  this.
+- `package.json` version must equal the newest entry in `src/content/releases/`, or the one before
+  it while a release is pending (notes are committed first, then `pnpm release` bumps it) - a test
+  enforces this.
 - Adding a release requires **no** database work; release notes are static files.
 
 ## Component Patterns
