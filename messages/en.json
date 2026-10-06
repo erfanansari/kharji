@@ -618,7 +618,8 @@
       "titleLine2": "finally clear.",
       "subtitle": "A calm personal-finance app for people who think in more than one currency. Track expenses, manage income, and watch your assets grow.",
       "getStarted": "Get started",
-      "tryDemo": "Try the demo"
+      "tryDemo": "Try the demo",
+      "tryDemoFailed": "Could not start the demo. Please sign in with the demo account."
     },
     "features": {
       "title": "Everything you need, nothing you don't.",

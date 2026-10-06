@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 import Button from '@components/Button';
+import TryDemoButton from '@components/LandingPage/TryDemoButton';
 
 const Hero = () => {
   const t = useTranslations('landing.hero');
@@ -36,11 +37,9 @@ const Hero = () => {
             </span>
           </Button>
         </Link>
-        <Link href="/login" className="w-full sm:w-auto">
-          <Button variant="outline" className="w-full px-6 py-3 sm:w-auto">
-            {t('tryDemo')}
-          </Button>
-        </Link>
+        <div className="w-full sm:w-auto">
+          <TryDemoButton />
+        </div>
       </div>
     </section>
   );
