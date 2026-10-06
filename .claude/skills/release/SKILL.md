@@ -52,9 +52,8 @@ after step 5 and the filename now):
   with no user-visible effect can still get a one-line entry if it fixes something users would have
   noticed (e.g. "the app was rendering in the wrong font") — the bar is "would a user notice or
   care", not "is this a `feat:`".
-- Persian copy: casual Blu-style voice matching `messages/fa.json` (see
-  [Farsi Tone Guide](../../../memory/farsi-tone-guide.md) if unsure), not the formal register used
-  on legal pages. Both `en` and `fa` are mandatory per entry — the test suite fails hard on a
+- Persian copy: casual spoken voice matching `messages/fa.json` (and the Farsi in the
+  existing `src/content/releases/*.json`), not the formal register used on legal pages. Both `en` and `fa` are mandatory per entry — the test suite fails hard on a
   missing `fa`.
 - `summary` and `title.summary` are optional; `highlights` needs at least one entry.
 
@@ -89,17 +88,21 @@ committed at the tag, the GitHub Release loses its Highlights section.
 ### 6. Preview, then cut
 
 ```bash
-pnpm release:dry    # confirm it reports <version> and the changelog looks right
-pnpm release         # the real thing — non-interactive: pipe `yes |` if it prompts for the commit message
+pnpm exec release-it --dry-run --ci   # confirm it reports <version> and the changelog looks right
+pnpm exec release-it --ci             # the real thing
 ```
+
+Always pass `--ci`. Without it `release-it` stops on an interactive "Commit?" prompt, which hangs
+forever in a non-interactive session (`pnpm release:dry` does exactly that). `--ci` takes the
+defaults, which is what you want. `release-it` also enforces `requireBranch: main`, so run it from
+an up-to-date `main`.
 
 `pnpm release:dry` skips `pnpm check` (lint/format/typecheck) — it only previews the version and
 changelog, it does **not** prove the release will succeed. `pnpm release` runs the real thing: bumps
 `package.json`, regenerates `CHANGELOG.md`, commits as `chore(release): v<version>`, creates an
 annotated tag. **Nothing leaves the machine yet** — this step is still fully undoable.
 
-If `pnpm release` hangs on an interactive commit-message prompt in a non-interactive session, run
-`yes | pnpm release --ci` instead.
+The real run executes `pnpm check` first (lint, format, typecheck), so it takes about a minute.
 
 ### 7. Confirm, then push — ask the user first
 
@@ -111,6 +114,22 @@ everything checked out clean. Show them: the commits, the tag, the new `package.
 git push --follow-tags
 ```
 
+**In a sandboxed or cloud session** the git proxy usually refuses pushes to `main` and tag pushes
+(HTTP 403), and `gh` isn't installed. Then do this instead:
+
+1. Push the release commits to your working branch and open a PR to `main` with the GitHub tools.
+   Merge it with a **merge commit, not squash**, so the `chore(release)` commit the tag points at
+   stays reachable from `main`.
+2. Hand the user the tag command (the SHA is the `chore(release): v<version>` commit):
+
+   ```bash
+   git fetch origin && git checkout main && git pull
+   git tag -a v<version> <release-commit-sha> -m "Release v<version>"
+   git push origin v<version>
+   ```
+
+The workflow only triggers on a pushed tag; it has no manual dispatch.
+
 `--follow-tags` is the part that actually publishes anything — pushing the branch alone does not
 trigger a release. The tag push fires `.github/workflows/release.yml`, which builds the GitHub
 Release in ~10s. Vercel deploys from the same push independently.
@@ -121,6 +140,9 @@ Release in ~10s. Vercel deploys from the same push independently.
 gh run list --workflow=release.yml --limit 3   # workflow succeeded
 gh release view v<version>                      # Highlights section present, notes correct
 ```
+
+Without `gh` (cloud sessions), use the GitHub tools: `get_release_by_tag` for the release body and
+`actions_list` (`list_workflow_runs`, `release.yml`) for the run.
 
 Confirm the release commit's diff is only what you intended (`package.json` + `CHANGELOG.md` +
 whatever notes files you added) — `pnpm release` amends nothing else.
