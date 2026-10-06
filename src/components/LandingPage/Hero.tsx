@@ -5,6 +5,8 @@ import { ArrowRight } from 'lucide-react';
 
 import Button from '@components/Button';
 
+import DemoButton from './DemoButton';
+
 const Hero = () => {
   const t = useTranslations('landing.hero');
   return (
@@ -36,11 +38,7 @@ const Hero = () => {
             </span>
           </Button>
         </Link>
-        <Link href="/login" className="w-full sm:w-auto">
-          <Button variant="outline" className="w-full px-6 py-3 sm:w-auto">
-            {t('tryDemo')}
-          </Button>
-        </Link>
+        <DemoButton />
       </div>
     </section>
   );
