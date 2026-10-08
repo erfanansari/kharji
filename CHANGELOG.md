@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.9.1](https://github.com/erfanansari/kharji/compare/v1.9.0...v1.9.1) (2026-10-06)
+
+### Bug Fixes
+
+- slim Sentry to production errors only ([d95b257](https://github.com/erfanansari/kharji/commit/d95b257a1842a228e3df14f795f7afba56e4fea7))
+
 ## [1.9.0](https://github.com/erfanansari/kharji/compare/v1.8.1...v1.9.0) (2026-10-01)
 
 ### Features

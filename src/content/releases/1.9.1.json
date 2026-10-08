@@ -1,0 +1,15 @@
+{
+  "version": "1.9.1",
+  "date": "2026-10-06",
+  "title": {
+    "en": "Lighter behind the scenes",
+    "fa": "سبک‌تر از پشت صحنه"
+  },
+  "highlights": [
+    {
+      "type": "fix",
+      "en": "Background error reporting was heavier than it needed to be. We slimmed it down, so the app now reports only real errors from the live site and runs lighter.",
+      "fa": "گزارش‌گیری خطا در پس‌زمینه سنگین‌تر از چیزی بود که لازم داشتیم. سبکش کردیم و حالا فقط خطاهای واقعی سایت اصلی گزارش می‌شه و برنامه سبک‌تر کار می‌کنه."
+    }
+  ]
+}
