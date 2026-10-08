@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_COMMIT_SHA: getCommitSha(),
   },
   devIndicators: false,
+  // Unmatched URLs render src/app/global-not-found.tsx; a root not-found.tsx
+  // would pull per-request locale lookups into every statically rendered route.
+  experimental: { globalNotFound: true },
   // next-intl and its deps ship ESM-only; next/jest reads this list to
   // transform them in tests.
   transpilePackages: [

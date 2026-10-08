@@ -14,8 +14,9 @@ const LABELS: Record<AppLocale, string> = { en: 'فارسی', fa: 'English' };
  * Language switcher for logged-out surfaces (landing, auth pages) where there's
  * no session to persist a preference against — it just sets the locale cookie
  * directly (same cookie the signed-in Settings toggle writes) and refreshes.
+ * Pass `hardReload` on prerendered pages.
  */
-const LocaleToggle = ({ className }: { className?: string }) => {
+const LocaleToggle = ({ className, hardReload = false }: { className?: string; hardReload?: boolean }) => {
   const locale = useLocale() as AppLocale;
   const router = useRouter();
   const next: AppLocale = locale === 'fa' ? 'en' : 'fa';
@@ -23,7 +24,10 @@ const LocaleToggle = ({ className }: { className?: string }) => {
   const handleClick = () => {
     const secure = window.location.protocol === 'https:' ? '; Secure' : '';
     document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
-    router.refresh();
+    // Prerendered pages (the landing) are keyed by language, so a refresh would
+    // re-use the cached variant; reload lets the proxy pick the new one.
+    if (hardReload) window.location.reload();
+    else router.refresh();
   };
 
   return (

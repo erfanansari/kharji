@@ -30,7 +30,7 @@ const LandingFooter = () => {
           <Link href={ROUTES.CHANGELOG} className="text-text-muted hover:text-text-primary text-xs transition-colors">
             {t('changelog')}
           </Link>
-          <LocaleToggle />
+          <LocaleToggle hardReload />
         </div>
 
         <Link

@@ -109,6 +109,21 @@ the cron fires still sees today's rent. They can race safely — the partial uni
   the schedule alone; editing frequency/interval/calendar/date re-baselines `postedCount` via
   `countOccurrencesBefore` so rescheduling never retro-posts history.
 
+### Rendering model — landing is static, the app is not
+
+`src/app` has **two root layouts and no top-level `layout.tsx`**:
+
+- `(app)/layout.tsx` — everything else. Reads the locale and privacy cookies, so every route under it
+  renders per request.
+- `(marketing)/[locale]/` — the landing page, prerendered once for `en` and once for `fa` and served from
+  the CDN. `proxy.ts` rewrites `/` to `/en` or `/fa` from the locale cookie, so the URL never changes.
+
+Both share `src/app/_shell` (fonts, metadata, providers). **Never read `cookies()`/`headers()` — or call
+`getLocale()` without `setRequestLocale` — anywhere under `(marketing)`**, or the landing page silently
+goes back to a function invocation on every hit (this was the Vercel CPU overage). `next build` lists
+`/en` and `/fa` as `●`; if they turn `ƒ`, something dynamic leaked in. A root `app/not-found.tsx` does
+exactly that, which is why 404s live in `(app)/not-found.tsx` and `global-not-found.tsx`.
+
 ### Tag Management System
 
 Hybrid approach with two interfaces:
