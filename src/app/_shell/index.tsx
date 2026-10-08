@@ -1,21 +1,19 @@
 import type { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
-import { getLocale } from 'next-intl/server';
+import type { AbstractIntlMessages } from 'next-intl';
 import localFont from 'next/font/local';
-import { cookies } from 'next/headers';
 
 import { SerwistProvider } from '@serwist/next/react';
 import { Analytics } from '@vercel/analytics/next';
 import { GeistSans as geistSans } from 'geist/font/sans';
 import { twMerge } from 'tailwind-merge';
 
-import { isPrivacyHidden, PRIVACY_COOKIE } from '@core/privacy/cookie';
-
 import Providers from '@features/Providers';
 
 import UpdatePrompt from '@components/UpdatePrompt';
 
 import { DEFAULT_LOCALE } from '@/i18n/config';
+import type { AppLocale } from '@/i18n/config';
 import '@/styles/globals.css';
 
 import AppleSplashScreens from './AppleSplashScreens';
@@ -37,7 +35,7 @@ import AppleSplashScreens from './AppleSplashScreens';
 // bumping the `vazirmatn` dependency and re-copying that one file; see the
 // comment on `persianFont` below.
 const persianFont = localFont({
-  src: '../assets/fonts/Vazirmatn-Variable.woff2',
+  src: '../../assets/fonts/Vazirmatn-Variable.woff2',
   display: 'swap',
   variable: '--font-persian',
   // A single variable file covering the whole weight axis, unlike the five
@@ -63,8 +61,7 @@ const LOCALIZED_META = {
   },
 } as const;
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getLocale();
+export function buildMetadata(locale: string): Metadata {
   const m = LOCALIZED_META[locale as keyof typeof LOCALIZED_META] ?? LOCALIZED_META[DEFAULT_LOCALE];
 
   return {
@@ -109,7 +106,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const viewport: Viewport = {
+export const rootViewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -126,16 +123,24 @@ export const viewport: Viewport = {
   ],
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const locale = await getLocale();
-  // Resolved here rather than in the client so the first painted frame is
-  // already masked — reading it after hydration would flash the real figures.
-  const privacyHidden = isPrivacyHidden((await cookies()).get(PRIVACY_COOKIE)?.value);
+// Frozen at build for prerendered pages (no relative-time formatting there).
+const BUILD_TIME = new Date();
 
+interface RootShellProps {
+  children: React.ReactNode;
+  locale: AppLocale;
+  /** Privacy mode as resolved from the cookie. Static pages pass false. */
+  privacyHidden: boolean;
+  /**
+   * Static trees hand the client provider its config directly. Left to itself it
+   * resolves locale/messages/now through next-intl's request config, which can
+   * opt the whole route into dynamic rendering.
+   */
+  staticIntl?: { messages: AbstractIntlMessages };
+}
+
+/** The <html>/<body> + provider stack shared by every root layout. */
+export function RootShell({ children, locale, privacyHidden, staticIntl }: RootShellProps) {
   return (
     <html
       lang={locale}
@@ -152,7 +157,15 @@ export default async function RootLayout({
         <AppleSplashScreens />
       </head>
       <body className="bg-background antialiased">
-        <NextIntlClientProvider>
+        <NextIntlClientProvider
+          {...(staticIntl && {
+            locale,
+            messages: staticIntl.messages,
+            formats: {},
+            now: BUILD_TIME,
+            timeZone: 'UTC',
+          })}
+        >
           <SerwistProvider swUrl="/sw.js" disable={process.env.NODE_ENV === 'development'}>
             <Providers privacyHidden={privacyHidden}>
               {children}
