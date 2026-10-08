@@ -2,6 +2,10 @@
   "buildCommand": "pnpm build",
   "crons": [
     {
+      "path": "/api/cron/refresh-rates",
+      "schedule": "0 8 * * *"
+    },
+    {
       "path": "/api/cron/reports",
       "schedule": "0 9 * * *"
     },

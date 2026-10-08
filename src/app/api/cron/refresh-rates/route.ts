@@ -14,3 +14,6 @@ export async function POST(request: NextRequest) {
   await ensureFreshRates(process.env.NAVASAN_API_KEY);
   return NextResponse.json({ ok: true });
 }
+
+// Vercel Cron Jobs send GET requests — alias POST so both work
+export const GET = POST;
