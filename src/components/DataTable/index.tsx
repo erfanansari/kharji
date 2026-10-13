@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { useTranslations } from 'next-intl';
 
@@ -11,10 +11,12 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getSortedRowModel,
   type RowData,
+  type SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { Inbox, MoreVertical, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, Inbox, MoreVertical, X } from 'lucide-react';
 
 import DatePicker from '@components/DatePicker';
 import EmptyState from '@components/EmptyState';
@@ -28,6 +30,8 @@ declare module '@tanstack/react-table' {
     filter?: FilterConfig;
     align?: 'start' | 'end' | 'center';
     widthClass?: string;
+    /** Opt in to click-to-sort on this column's header. Off by default. */
+    sortable?: boolean;
   }
 
   interface FilterFns {
@@ -238,12 +242,27 @@ const DataTable = <TData extends RowData>({
   const tTables = useTranslations('tables');
   const [filterState, setFilterState] = useState<FilterState>({});
   const [actionRow, setActionRow] = useState<TData | null>(null);
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  // Sorting is opt-in per column via `meta.sortable`; TanStack's default is on.
+  const sortableColumns = useMemo(
+    () =>
+      columns.map((col) => ({
+        ...col,
+        enableSorting: !!(col.meta as ColumnMeta<TData, unknown> | undefined)?.sortable,
+      })) as ColumnDef<TData, unknown>[],
+    [columns]
+  );
 
   const table = useReactTable({
     data,
-    columns,
+    columns: sortableColumns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    state: { sorting },
+    onSortingChange: setSorting,
+    enableSortingRemoval: true,
     filterFns: {
       dateRange: dateRangeFilter as FilterFn<TData>,
     },
@@ -352,12 +371,41 @@ const DataTable = <TData extends RowData>({
                     const meta = hdr.column.columnDef.meta as ColumnMeta<TData, unknown> | undefined;
                     const align = meta?.align ?? 'start';
                     const widthClass = meta?.widthClass ?? '';
+                    const sortable = !!meta?.sortable && !hdr.isPlaceholder;
+                    const direction = hdr.column.getIsSorted();
+                    const content = hdr.isPlaceholder
+                      ? null
+                      : flexRender(hdr.column.columnDef.header, hdr.getContext());
+                    let SortIcon = ArrowUpDown;
+                    if (direction === 'asc') SortIcon = ArrowUp;
+                    else if (direction === 'desc') SortIcon = ArrowDown;
+                    let ariaSort: 'ascending' | 'descending' | 'none' | undefined;
+                    if (sortable) {
+                      if (direction === 'asc') ariaSort = 'ascending';
+                      else if (direction === 'desc') ariaSort = 'descending';
+                      else ariaSort = 'none';
+                    }
                     return (
                       <th
                         key={hdr.id}
+                        aria-sort={ariaSort}
                         className={`bg-background-secondary text-text-muted px-4 py-3 text-xs font-semibold tracking-wider uppercase sm:px-6 sm:py-4 ${widthClass} text-${align}`}
                       >
-                        {hdr.isPlaceholder ? null : flexRender(hdr.column.columnDef.header, hdr.getContext())}
+                        {sortable ? (
+                          <button
+                            type="button"
+                            onClick={hdr.column.getToggleSortingHandler()}
+                            className="hover:text-text-primary focus-visible:ring-accent -mx-1 inline-flex items-center gap-1 rounded px-1 uppercase transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                          >
+                            {content}
+                            <SortIcon
+                              aria-hidden="true"
+                              className={`h-3 w-3 ${direction ? 'text-text-primary' : 'opacity-60'}`}
+                            />
+                          </button>
+                        ) : (
+                          content
+                        )}
                       </th>
                     );
                   })}
