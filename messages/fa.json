@@ -932,7 +932,8 @@
         "range3M": "۳ ماه",
         "range6M": "۶ ماه",
         "range1Y": "۱ سال",
-        "rangeAll": "از اول"
+        "rangeAll": "از اول",
+        "currencyToggleLabel": "نمایش نمودار با واحد"
       },
       "revalue": {
         "button": "بروزرسانی ارزش‌ها",

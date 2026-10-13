@@ -932,7 +932,8 @@
         "range3M": "3 Months",
         "range6M": "6 Months",
         "range1Y": "1 Year",
-        "rangeAll": "All Time"
+        "rangeAll": "All Time",
+        "currencyToggleLabel": "Show chart in"
       },
       "revalue": {
         "button": "Update Values",
