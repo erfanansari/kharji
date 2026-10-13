@@ -97,7 +97,7 @@ export function buildAssetColumns(
       id: 'name',
       accessorKey: 'name',
       header: t('assets.asset'),
-      meta: { widthClass: ASSETS_COLUMN_WIDTHS.name },
+      meta: { widthClass: ASSETS_COLUMN_WIDTHS.name, sortable: true },
       cell: ({ row }) => {
         const asset = row.original;
         return (
@@ -112,7 +112,7 @@ export function buildAssetColumns(
       id: 'quantity',
       accessorKey: 'quantity',
       header: t('assets.quantity'),
-      meta: { widthClass: ASSETS_COLUMN_WIDTHS.quantity },
+      meta: { widthClass: ASSETS_COLUMN_WIDTHS.quantity, sortable: true },
       cell: ({ row }) => {
         const asset = row.original;
         return (
