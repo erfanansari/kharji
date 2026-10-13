@@ -33,6 +33,8 @@ import { type NetWorthRange, useNetWorthHistory } from '@hooks/use-net-worth-his
 
 import { formatAxisNumber, formatChartAxisDate, formatChartTooltipDate, resolveCalendar } from '@utils';
 
+const USD_CURRENCY = 'USD';
+
 const RANGE_KEYS: { value: NetWorthRange; key: 'range1M' | 'range3M' | 'range6M' | 'range1Y' | 'rangeAll' }[] = [
   { value: '1M', key: 'range1M' },
   { value: '3M', key: 'range3M' },
@@ -48,8 +50,11 @@ const RANGE_KEYS: { value: NetWorthRange; key: 'range1M' | 'range3M' | 'range6M'
 function NetWorthTooltip({
   active,
   payload,
+  currency,
 }: {
   active?: boolean;
+  /** Set when the chart is pinned to a currency other than the user's primary. */
+  currency?: string;
   payload?: ReadonlyArray<{
     payload: { date: string; items: MoneyItem[] };
   }>;
@@ -57,10 +62,13 @@ function NetWorthTooltip({
   const locale = useLocale() as 'en' | 'fa';
   const { prefs } = useLocalePreferences();
   const calendar = resolveCalendar(prefs.calendar, locale);
-  const { sumDisplay } = useMoneyText();
+  const { sumDisplay, format } = useMoneyText();
+  const { sumTo } = useCurrency();
   if (!active || !payload?.length) return null;
   const point = payload[0].payload;
-  const { primary, secondary } = sumDisplay(point.items ?? [], { compact: true });
+  const { primary, secondary } = currency
+    ? { primary: format(sumTo(point.items ?? [], currency), currency, { compact: true }), secondary: null }
+    : sumDisplay(point.items ?? [], { compact: true });
   return (
     <ChartTooltip
       primary={primary}
@@ -73,8 +81,7 @@ function NetWorthTooltip({
 // ─── Delta badge ─────────────────────────────────────────────────────────────
 // Shows only the absolute change over the range. A percentage would conflate
 // asset contributions with performance — snapshots can't tell them apart.
-function DeltaBadge({ data }: { data: Array<{ value: number }> }) {
-  const { primaryCurrency } = useCurrency();
+function DeltaBadge({ data, currency }: { data: Array<{ value: number }>; currency: string }) {
   const { delta, isPositive } = useMemo(() => {
     if (data.length < 2) return { delta: 0, isPositive: true };
     const d = data[data.length - 1].value - data[0].value;
@@ -89,7 +96,7 @@ function DeltaBadge({ data }: { data: Array<{ value: number }> }) {
   return (
     <span className={`text-sm font-medium ${color}`}>
       {sign}
-      <AnimatedMoney amount={Math.abs(delta)} currency={primaryCurrency} />
+      <AnimatedMoney amount={Math.abs(delta)} currency={currency} />
     </span>
   );
 }
@@ -104,6 +111,13 @@ const NetWorthChart = () => {
   const { data, isLoading, isError, error, refetch } = useNetWorthHistory(range);
   const { sumTo, primaryCurrency } = useCurrency();
   const { hidden } = usePrivacy();
+
+  // A rising toman curve can just be the rial falling. Letting the chart be
+  // read in USD separates real growth from currency drift. Moot (so hidden)
+  // when USD is already the primary currency.
+  const [showUsd, setShowUsd] = useState(false);
+  const canToggleUsd = primaryCurrency !== USD_CURRENCY;
+  const chartCurrency = canToggleUsd && showUsd ? USD_CURRENCY : primaryCurrency;
 
   const isShortRange = range === '1M' || range === '3M';
 
@@ -147,9 +161,9 @@ const NetWorthChart = () => {
           date: i.valuedAt,
           entryRate: i.entryRate,
         }));
-        return { date: p.date, items, value: sumTo(items, primaryCurrency), timestamp: parseISO(p.date).getTime() };
+        return { date: p.date, items, value: sumTo(items, chartCurrency), timestamp: parseISO(p.date).getTime() };
       }),
-    [data, sumTo, primaryCurrency]
+    [data, sumTo, chartCurrency]
   );
 
   const xDomain = useMemo<[number, number] | undefined>(() => {
@@ -201,7 +215,35 @@ const NetWorthChart = () => {
         </div>
         <h2 className="text-text-primary text-lg font-semibold">{t('title')}</h2>
       </div>
-      <Select value={range} onChange={(val) => setRange(val as NetWorthRange)} options={rangeOptions} />
+      <div className="flex items-center gap-2">
+        {canToggleUsd && (
+          <div
+            role="group"
+            aria-label={t('currencyToggleLabel')}
+            className="border-border-subtle bg-background-secondary inline-flex rounded-full border p-0.5"
+          >
+            {[primaryCurrency, USD_CURRENCY].map((code) => {
+              const active = chartCurrency === code;
+              return (
+                <button
+                  key={code}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setShowUsd(code === USD_CURRENCY)}
+                  className={`focus:ring-accent rounded-full px-3 py-1 text-xs font-medium transition-colors focus:ring-2 focus:outline-none ${
+                    active
+                      ? 'bg-button-primary-bg text-button-primary-text'
+                      : 'text-text-secondary hover:text-text-primary'
+                  }`}
+                >
+                  {code}
+                </button>
+              );
+            })}
+          </div>
+        )}
+        <Select value={range} onChange={(val) => setRange(val as NetWorthRange)} options={rangeOptions} />
+      </div>
     </div>
   );
 
@@ -242,7 +284,7 @@ const NetWorthChart = () => {
       {/* Delta badge */}
       {hasData && (
         <div className="mb-4">
-          <DeltaBadge data={chartData} />
+          <DeltaBadge data={chartData} currency={chartCurrency} />
         </div>
       )}
 
@@ -299,7 +341,7 @@ const NetWorthChart = () => {
                 tickFormatter={(value: number) => (hidden ? '' : formatAxisNumber(value, locale))}
               />
               <RechartsTooltip
-                content={<NetWorthTooltip />}
+                content={<NetWorthTooltip currency={chartCurrency === primaryCurrency ? undefined : chartCurrency} />}
                 cursor={{ stroke: 'var(--color-success)', strokeWidth: 1, strokeDasharray: '4 4' }}
               />
               <Area
