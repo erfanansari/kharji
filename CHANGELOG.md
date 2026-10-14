@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.10.0](https://github.com/erfanansari/kharji/compare/v1.9.1...v1.10.0) (2026-10-14)
+
+### Features
+
+- let table columns opt in to click-to-sort ([6353ba9](https://github.com/erfanansari/kharji/commit/6353ba9f98bf47c9774823a3fd5c4edbdd48a814))
+- log visitors straight into the demo from the landing page ([46764c1](https://github.com/erfanansari/kharji/commit/46764c111d03f2518363502b55c3c8a456af5ef7))
+- read the net worth chart in USD ([d5792d4](https://github.com/erfanansari/kharji/commit/d5792d4eeb59668619b544e0dabcc1de2789e627))
+- send a Content-Security-Policy header ([821d432](https://github.com/erfanansari/kharji/commit/821d432e7fed0c4ee70860d4b5442938eca0ab4a))
+
+### Bug Fixes
+
+- **cron:** schedule refresh-rates daily and accept Vercel's GET ([#28](https://github.com/erfanansari/kharji/issues/28)) ([19b4464](https://github.com/erfanansari/kharji/commit/19b4464420a605ed3f9b8dd6c20645a7e2840d40))
+
+### Performance Improvements
+
+- prerender the landing page per language so it stops costing a function call ([4954197](https://github.com/erfanansari/kharji/commit/49541974e55f20256f4bfccf645e00c8e91bebcd))
+
 ## [1.9.1](https://github.com/erfanansari/kharji/compare/v1.9.0...v1.9.1) (2026-10-06)
 
 ### Bug Fixes
