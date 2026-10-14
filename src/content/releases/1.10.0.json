@@ -1,0 +1,35 @@
+{
+  "version": "1.10.0",
+  "date": "2026-10-14",
+  "title": {
+    "en": "Demo in one click, sortable tables",
+    "fa": "دمو با یک کلیک، جدول‌های قابل مرتب‌سازی"
+  },
+  "highlights": [
+    {
+      "type": "feature",
+      "en": "Try Kharji instantly: the landing page now has a button that logs you straight into the demo.",
+      "fa": "حالا می‌تونی کارخرجی رو سریع امتحان کنی: توی صفحه اول یه دکمه هست که مستقیم واردِ دمو می‌شی."
+    },
+    {
+      "type": "feature",
+      "en": "The net worth chart can now be read in USD as well as Toman.",
+      "fa": "نمودار ارزش خالص رو حالا می‌تونی به دلار هم ببینی، نه فقط تومان."
+    },
+    {
+      "type": "improvement",
+      "en": "Click a column header in your tables to sort by it.",
+      "fa": "روی عنوان ستون جدول‌ها کلیک کن تا بر اساس همون ستون مرتب بشه."
+    },
+    {
+      "type": "improvement",
+      "en": "The landing page now loads faster, and the site got stricter security headers.",
+      "fa": "صفحه اول سریع‌تر باز می‌شه و امنیت سایت هم با هدرهای سخت‌گیرانه‌تر بالا رفته."
+    },
+    {
+      "type": "fix",
+      "en": "Exchange rates now refresh reliably every day.",
+      "fa": "نرخ ارز حالا هر روز مرتب به‌روز می‌شه."
+    }
+  ]
+}
