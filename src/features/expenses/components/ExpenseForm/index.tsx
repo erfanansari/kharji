@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useTranslations } from 'next-intl';
 
@@ -71,6 +71,13 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit, setIsDirty 
   // States — TagInput works with Tag objects; tagIds are derived on submit.
   const [selectedTags, setSelectedTags] = useState<Tag[]>(editingExpense?.tags || []);
 
+  // References — whether the account picker has been touched for the entry
+  // currently in the form. An empty `paidFromAssetId` can't tell "never chosen"
+  // apart from an explicit "Don't track", so without this the pre-select effect
+  // re-filled the field the instant it was cleared and the option could never
+  // be picked at all. Reset wherever the form goes back to a blank entry.
+  const accountTouched = useRef(false);
+
   // Variables
   const defaultFormData: CreateExpenseSchema = useMemo(
     () => ({
@@ -136,6 +143,7 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit, setIsDirty 
   // Effects — resync when the drawer switches to a different expense.
   useEffect(() => {
     if (editingFormData) {
+      accountTouched.current = false;
       reset(editingFormData);
       setSelectedTags(editingExpense?.tags || []);
     }
@@ -147,10 +155,12 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit, setIsDirty 
 
   // Pre-select the account so logging an expense stays one motion. Editing is
   // excluded outright: an existing expense's account is a record of what
-  // happened, and a default must never quietly rewrite it. Only fills an empty
-  // field, so an explicit "Don't track" survives a re-render.
+  // happened, and a default must never quietly rewrite it. It also stands down
+  // the moment the user touches the picker — the field is a dependency of this
+  // effect, so choosing "Don't track" re-runs it with an empty field, and
+  // without `accountTouched` it would just put the account straight back.
   useEffect(() => {
-    if (editingExpense || paidFromAssetId != null || !hasAccounts) return;
+    if (accountTouched.current || editingExpense || paidFromAssetId != null || !hasAccounts) return;
 
     const single = accounts.length === 1 ? accounts[0].id : null;
     const remembered = accounts.some((a) => a.id === lastAccountId) ? lastAccountId : null;
@@ -202,6 +212,7 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit, setIsDirty 
       // doesn't move the default for next time.
       rememberAccount(dataToSubmit.paidFromAssetId ?? null);
 
+      accountTouched.current = false;
       reset(defaultFormData);
       setSelectedTags([]);
       onExpenseAdded();
@@ -212,6 +223,7 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit, setIsDirty 
   };
 
   const handleCancel = () => {
+    accountTouched.current = false;
     reset(defaultFormData);
     if (onCancelEdit) onCancelEdit();
   };
@@ -313,7 +325,14 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit, setIsDirty 
             control={methods.control}
             render={({ field }) => (
               <>
-                <AccountSelect inputId="paidFromAssetId" value={field.value ?? null} onChange={field.onChange} />
+                <AccountSelect
+                  inputId="paidFromAssetId"
+                  value={field.value ?? null}
+                  onChange={(assetId) => {
+                    accountTouched.current = true;
+                    field.onChange(assetId);
+                  }}
+                />
                 <AccountBalancePreview assetId={field.value ?? null} amount={amount} currency={currency} />
               </>
             )}
