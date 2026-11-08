@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.10.1](https://github.com/erfanansari/kharji/compare/v1.10.0...v1.10.1) (2026-11-08)
+
+### Bug Fixes
+
+- **expenses:** let "Don't track" actually stick in the expense form ([72849c4](https://github.com/erfanansari/kharji/commit/72849c48e304bd41a08572a9eed44f4351982b73))
+
 ## [1.10.0](https://github.com/erfanansari/kharji/compare/v1.9.1...v1.10.0) (2026-10-14)
 
 ### Features

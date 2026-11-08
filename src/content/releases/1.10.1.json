@@ -1,0 +1,15 @@
+{
+  "version": "1.10.1",
+  "date": "2026-11-08",
+  "title": {
+    "en": "\"Don't track\" stays put",
+    "fa": "«ثبت نشه» سر جاش می‌مونه"
+  },
+  "highlights": [
+    {
+      "type": "fix",
+      "en": "Choosing \"Don't track\" for the account an expense is paid from now sticks. If you had a single cash or bank account — or one Kharji remembered from last time — it was being put back the moment you picked \"Don't track\", so the option was impossible to choose.",
+      "fa": "وقتی برای «پرداخت از» گزینهٔ «ثبت نشه» رو انتخاب می‌کنی، دیگه می‌مونه. اگه فقط یه حساب نقدی یا بانکی داشتی — یا کارخرجی حسابِ دفعهٔ قبلت رو یادش بود — تا «ثبت نشه» رو می‌زدی همون لحظه حساب برمی‌گشت سر جاش و عملاً نمی‌شد انتخابش کرد."
+    }
+  ]
+}
