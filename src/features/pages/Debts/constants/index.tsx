@@ -132,8 +132,7 @@ export function buildDebtRowActions(
   onUnsettle: (debt: Debt) => void,
   handleEdit: (debt: Debt) => void,
   openDeleteModal: (debt: Debt) => void,
-  deletingId: number | null,
-  settlingId: number | null
+  deletingId: number | null
 ) {
   return (debt: Debt): RowAction[] => [
     debt.settledAt === null
@@ -141,14 +140,12 @@ export function buildDebtRowActions(
           id: 'settle',
           icon: CheckCircle2,
           label: t('debts.settle'),
-          busy: settlingId === debt.id,
           onSelect: () => onSettle(debt),
         }
       : {
           id: 'unsettle',
           icon: RotateCcw,
           label: t('debts.unsettle'),
-          busy: settlingId === debt.id,
           onSelect: () => onUnsettle(debt),
         },
     { id: 'edit', icon: Edit2, label: t('edit'), onSelect: () => handleEdit(debt) },
@@ -171,8 +168,7 @@ export function buildDebtColumns(
   onUnsettle: (debt: Debt) => void,
   handleEdit: (debt: Debt) => void,
   openDeleteModal: (debt: Debt) => void,
-  deletingId: number | null,
-  settlingId: number | null
+  deletingId: number | null
 ): ColumnDef<Debt, unknown>[] {
   return [
     {
@@ -240,7 +236,8 @@ export function buildDebtColumns(
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                settled ? onUnsettle(debt) : onSettle(debt);
+                if (settled) onUnsettle(debt);
+                else onSettle(debt);
               }}
               className="text-action-default hover:bg-action-save-bg-hover hover:text-action-save-text-hover rounded-lg p-2 transition-all duration-200"
               title={settled ? t('debts.unsettle') : t('debts.settle')}

@@ -69,6 +69,7 @@ const JalaliCustomInput = forwardRef<HTMLInputElement, JalaliCustomInputProps>(
     return <input ref={ref} value={jalaliDisplayValue} readOnly {...rest} />;
   }
 );
+JalaliCustomInput.displayName = 'JalaliCustomInput';
 
 const DatePicker = forwardRef<ReactDatePickerType, DatePickerProps>(
   ({ id, value, onChange, required, placeholder, isClearable, wrapperClassName }, ref) => {
@@ -97,7 +98,7 @@ const DatePicker = forwardRef<ReactDatePickerType, DatePickerProps>(
     const pickerRef = useRef<ReactDatePickerType>(null);
     const closeRef = useRef(() => pickerRef.current?.setOpen(false));
 
-    useImperativeHandle(ref, () => pickerRef.current!);
+    useImperativeHandle(ref, () => pickerRef.current as ReactDatePickerType);
 
     // Effects
     useEffect(() => {

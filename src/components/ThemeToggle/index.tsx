@@ -46,7 +46,8 @@ const ThemeToggle: FC<ThemeToggleProps> = ({ onSelect, className }) => {
   const isDark = resolvedTheme === 'dark';
   // Neutral glyph before mount: rendering either Sun or Moon would be a coin
   // flip that visibly corrects itself on hydration.
-  const Icon = !mounted ? SunMoon : isDark ? Sun : Moon;
+  const themedIcon = isDark ? Sun : Moon;
+  const Icon = mounted ? themedIcon : SunMoon;
 
   return (
     <button
