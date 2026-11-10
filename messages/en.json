@@ -886,6 +886,24 @@
         "exchangeRate": "Exchange rate",
         "paidFrom": "Paid from",
         "created": "Created"
+      },
+      "quickAdd": {
+        "button": "Quick Add",
+        "buttonTitle": "Add several expenses by typing or pasting text",
+        "title": "Quick add expenses",
+        "hint": "One expense per line: what it was, then how much. Dates and #tags are optional.",
+        "placeholder": "lunch 250k\ntaxi 85,000 yesterday\nnetflix $12 #subscription",
+        "previewLabel": "Expenses found in your text",
+        "pickCategory": "Pick a category",
+        "suggested": "Suggested from your past expenses",
+        "reasonNoAmount": "No amount found on this line",
+        "reasonNoDescription": "Add what this was for",
+        "missingCategory": "{count} {count, plural, one {expense needs} other {expenses need}} a category.",
+        "save": "Add {count} {count, plural, one {expense} other {expenses}}",
+        "saveEmpty": "Add expenses",
+        "saving": "Adding {done} of {total}...",
+        "saved": "{count} {count, plural, one {expense} other {expenses}} added!",
+        "partialError": "{count} added, then it stopped: {error}"
       }
     },
     "income": {

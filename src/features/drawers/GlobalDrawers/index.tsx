@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import AssetForm from '@features/assets/components/AssetForm';
 import DebtForm from '@features/debts/components/DebtForm';
 import ExpenseForm from '@features/expenses/components/ExpenseForm';
+import QuickAddModal from '@features/expenses/components/QuickAddModal';
 import FeedbackModal from '@features/feedback/components/FeedbackModal';
 import IncomeForm from '@features/income/components/IncomeForm';
 
@@ -93,6 +94,7 @@ const GlobalDrawers = () => {
         />
       </FormDrawer>
 
+      <QuickAddModal />
       <FeedbackModal />
     </>
   );

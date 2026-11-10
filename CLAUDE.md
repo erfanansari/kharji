@@ -109,6 +109,21 @@ the cron fires still sees today's rent. They can race safely — the partial uni
   the schedule alone; editing frequency/interval/calendar/date re-baselines `postedCount` via
   `countOccurrencesBefore` so rescheduling never retro-posts history.
 
+### Quick Add
+
+`QuickAddModal` (Expenses header, command palette `Q`) turns typed or pasted lines into expenses:
+`ناهار ۲۵۰ هزار`, `taxi 85k yesterday`, `netflix $12 #subscription`. The text box is the only input —
+the preview re-parses on every keystroke.
+
+- `src/core/quick-add/parse.ts` — the line grammar. Pure: "today" and the default currency are
+  arguments. The amount is the **last** number on a line; a date-only line dates the lines under it.
+- `src/core/quick-add/suggest-category.ts` — pre-selects a category from the user's own history
+  (exact description first, then distinctive words). No model, no network.
+
+Both are well covered by tests; extend them when touching the grammar. Saving goes through the
+ordinary `POST /api/expenses`, one row at a time, so a failure part-way leaves the unsaved lines in
+the box rather than risking duplicates.
+
 ### Rendering model — landing is static, the app is not
 
 `src/app` has **two root layouts and no top-level `layout.tsx`**:
