@@ -45,5 +45,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.[\\w]+$).*)'],
+  // opengraph-image is a prerendered PNG with no extension to match on; without
+  // naming it, every link unfurl would wake the proxy to serve a static file.
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|opengraph-image|.*\\.[\\w]+$).*)'],
 };

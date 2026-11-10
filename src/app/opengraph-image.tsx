@@ -1,6 +1,9 @@
 import { ImageResponse } from 'next/og';
 
-export const runtime = 'edge';
+// No `runtime = 'edge'` here on purpose. Nothing in this image depends on the
+// request, so Next prerenders it once at build time and the CDN serves the PNG.
+// Opting into the edge runtime forces a fresh Satori render for every crawler
+// and link unfurl instead — pure function CPU for a picture that never changes.
 export const alt = 'Kharji – Personal Finance Tracker';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
