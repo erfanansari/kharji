@@ -46,3 +46,8 @@ public/swe-worker-*.js
 next-env.d.ts
 .env*.local
 .superpowers/
+
+# local SQLite database (pnpm db:setup)
+*.db
+*.db-shm
+*.db-wal

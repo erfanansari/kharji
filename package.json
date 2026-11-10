@@ -20,6 +20,7 @@
     "prepare": "husky",
     "migrate": "tsx src/core/database/migrate.ts",
     "email:dev": "email dev --dir src/emails --port 3001",
+    "db:setup": "tsx src/core/database/setup-local.ts",
     "db:seed": "tsx src/core/database/seed-user.ts",
     "db:test": "tsx src/core/database/test-connection.ts",
     "db:seed-demo": "tsx src/core/database/seed-demo.ts",
