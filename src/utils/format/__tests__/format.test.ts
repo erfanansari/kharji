@@ -1,9 +1,26 @@
-import { formatAxisNumber, formatNumber } from '../index';
+import { formatAxisNumber, formatNumber, formatQuantity } from '../index';
 
 // U+2067 RLI / U+2069 PDI — the isolate formatAxisNumber wraps fa labels in.
 const RLI = '\u2067';
 const PDI = '\u2069';
 const stripIsolate = (s: string) => s.replaceAll(RLI, '').replaceAll(PDI, '');
+
+describe('formatQuantity', () => {
+  it('keeps fractions instead of rounding them away', () => {
+    expect(formatQuantity(0.52)).toBe('0.52');
+    expect(formatQuantity(0.00012345)).toBe('0.00012345');
+  });
+
+  it('does not pad whole numbers', () => {
+    expect(formatQuantity(2)).toBe('2');
+    expect(formatQuantity(2800)).toBe('2,800');
+  });
+
+  it('uses Persian digits and separators for fa', () => {
+    expect(formatQuantity(0.52, 'fa')).toBe('۰٫۵۲');
+    expect(formatQuantity(2800, 'fa')).toBe('۲٬۸۰۰');
+  });
+});
 
 describe('formatNumber', () => {
   it('formats integers with commas', () => {
