@@ -1,0 +1,35 @@
+{
+  "version": "1.11.0",
+  "date": "2026-11-10",
+  "title": {
+    "en": "Quick Add: type it, done",
+    "fa": "ثبت سریع: بنویس و تمام"
+  },
+  "highlights": [
+    {
+      "type": "feature",
+      "en": "Quick Add: type or paste a few lines like \"lunch 250k\" or \"taxi 85,000 yesterday\" and add them all at once. Kharji picks the category from how you've filed similar expenses before.",
+      "fa": "ثبت سریع: چند خط مثل «ناهار ۲۵۰ هزار» یا «دیروز تاکسی ۸۵ هزار» بنویس یا پیست کن و همه رو یک‌جا ثبت کن. خرجی دسته‌بندی رو از روی هزینه‌های قبلیت حدس می‌زنه."
+    },
+    {
+      "type": "fix",
+      "en": "\"Update Values\" now also brings assets you valued in Toman up to today's rate, so their dollar value no longer stays stuck at the day you last edited them.",
+      "fa": "«بروزرسانی ارزش‌ها» حالا دارایی‌هایی که به تومان ثبت کردی رو هم با نرخ امروز حساب می‌کنه؛ دیگه ارزش دلاری‌شون روی روزِ آخرین ویرایش گیر نمی‌کنه."
+    },
+    {
+      "type": "improvement",
+      "en": "Asset quantities now use Persian digits in the Farsi app, like every other number.",
+      "fa": "مقدار دارایی‌ها حالا توی نسخه فارسی مثل بقیه عددها با رقم فارسی نشون داده می‌شه."
+    },
+    {
+      "type": "improvement",
+      "en": "The expense count card now shows how many expenses a day that works out to.",
+      "fa": "کارت تعداد هزینه‌ها حالا نشون می‌ده به‌طور میانگین روزی چندتا هزینه داشتی."
+    },
+    {
+      "type": "improvement",
+      "en": "Link previews of Kharji load faster.",
+      "fa": "پیش‌نمایش لینک خرجی توی پیام‌رسان‌ها سریع‌تر باز می‌شه."
+    }
+  ]
+}
