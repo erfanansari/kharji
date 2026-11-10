@@ -877,7 +877,8 @@
         "count": "Expenses",
         "dailyAverage": "Daily Average",
         "viewExpenses": "View expenses",
-        "ledgerCount": "Across {count, plural, one {# expense} other {# expenses}}"
+        "ledgerCount": "Across {count, plural, one {# expense} other {# expenses}}",
+        "countPerDay": "{value} a day on average"
       },
       "details": {
         "title": "Expense Details",

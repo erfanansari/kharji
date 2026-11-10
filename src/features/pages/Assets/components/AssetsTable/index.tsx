@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { ASSET_CATEGORY_COLOR_FALLBACK, ASSET_CATEGORY_COLORS } from '@constants/assets';
 import { Wallet } from 'lucide-react';
@@ -68,17 +68,18 @@ const AssetsTable = ({
   onRetry,
 }: AssetsTableProps) => {
   const tTables = useTranslations('tables');
+  const locale = useLocale() as 'en' | 'fa';
   const tOnboarding = useTranslations('onboarding.emptyStates');
   const t = useTranslations('pages.assets');
   const categoryLabel = useAssetCategoryLabel();
   const openAssetDrawer = useDrawerStore((state) => state.openAssetDrawer);
   // Memos
   const assetColumns = useMemo(
-    () => buildAssetColumns(tTables, categoryLabel, onEdit, onDelete, deletingId),
-    [tTables, categoryLabel, onEdit, onDelete, deletingId]
+    () => buildAssetColumns(tTables, categoryLabel, onEdit, onDelete, deletingId, locale),
+    [tTables, categoryLabel, onEdit, onDelete, deletingId, locale]
   );
 
-  const assetMobileCard = useMemo(() => buildAssetMobileCard(tTables), [tTables]);
+  const assetMobileCard = useMemo(() => buildAssetMobileCard(tTables, locale), [tTables, locale]);
 
   const assetRowActions = useMemo(
     () => buildAssetRowActions(tTables, onEdit, onDelete, deletingId),

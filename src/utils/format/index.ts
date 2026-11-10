@@ -11,6 +11,13 @@ export function formatNumber(num: number, locale: NumberLocale = 'en'): string {
   return new Intl.NumberFormat(toIntlLocale(locale)).format(Math.round(num));
 }
 
+// Format a held quantity (0.52 BTC, 15 g, 2 coins). Unlike formatNumber it keeps
+// the fraction — rounding half a bitcoin to "1" would be a lie — and trims it
+// to what the number actually has, so whole counts stay "2" not "2.00".
+export function formatQuantity(quantity: number, locale: NumberLocale = 'en'): string {
+  return new Intl.NumberFormat(toIntlLocale(locale), { maximumFractionDigits: 8 }).format(quantity);
+}
+
 // Format a plain calendar year — Persian digits for fa, but no thousands grouping
 // ("1405" not "1,405"; "2026" not "2,026"), unlike formatNumber.
 export function formatYear(year: number, locale: NumberLocale = 'en'): string {
