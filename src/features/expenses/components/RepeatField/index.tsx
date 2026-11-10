@@ -52,7 +52,8 @@ const RepeatField = ({ date, value, onChange }: RepeatFieldProps) => {
   // A repeat needs the custom controls once it stops being expressible as a
   // one-click preset — i.e. any interval but 1, or an end date.
   const isCustom = !!value && (value.intervalCount !== 1 || !!value.endDate);
-  const selectValue = value ? (isCustom ? CUSTOM : value.frequency) : NONE;
+  const presetValue = isCustom ? CUSTOM : value?.frequency;
+  const selectValue = presetValue ?? NONE;
 
   const handleSelect = (next: string) => {
     if (next === NONE) return onChange(null);

@@ -82,7 +82,6 @@ const DebtsTable = ({
   onDelete,
   onRetry,
   deletingId,
-  settlingId,
 }: DebtsTableProps) => {
   const tTables = useTranslations('tables');
   const tOnboarding = useTranslations('onboarding.emptyStates');
@@ -91,13 +90,13 @@ const DebtsTable = ({
 
   // Memos
   const columns = useMemo(
-    () => buildDebtColumns(tTables, onSettle, onUnsettle, onEdit, onDelete, deletingId, settlingId),
-    [tTables, onSettle, onUnsettle, onEdit, onDelete, deletingId, settlingId]
+    () => buildDebtColumns(tTables, onSettle, onUnsettle, onEdit, onDelete, deletingId),
+    [tTables, onSettle, onUnsettle, onEdit, onDelete, deletingId]
   );
   const mobileCard = useMemo(() => buildDebtMobileCard(tTables), [tTables]);
   const rowActions = useMemo(
-    () => buildDebtRowActions(tTables, onSettle, onUnsettle, onEdit, onDelete, deletingId, settlingId),
-    [tTables, onSettle, onUnsettle, onEdit, onDelete, deletingId, settlingId]
+    () => buildDebtRowActions(tTables, onSettle, onUnsettle, onEdit, onDelete, deletingId),
+    [tTables, onSettle, onUnsettle, onEdit, onDelete, deletingId]
   );
 
   if (isLoading) return <DebtsSkeleton />;

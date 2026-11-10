@@ -99,10 +99,11 @@ const OverviewStats = ({ summary }: OverviewStatsProps) => {
   // back to the plain heuristic and show no footnote rather than invent zeros.
   const payable = summary?.total_payable;
   const receivable = summary?.total_receivable;
-  const hasDebtFigures = !!summary?.total_assets && !!payable && !!receivable;
+  const totalAssets = summary?.total_assets;
+  const hasDebtFigures = !!totalAssets && !!payable && !!receivable;
   const hasDebts = hasDebtFigures && (payable.primary > 0 || receivable.primary > 0);
   const netWorthIsEmpty = hasDebtFigures
-    ? summary.total_assets!.primary === 0 && payable.primary === 0 && receivable.primary === 0
+    ? totalAssets.primary === 0 && payable.primary === 0 && receivable.primary === 0
     : undefined;
 
   // Answers "why did my net worth drop?" where it gets asked, and keeps the
