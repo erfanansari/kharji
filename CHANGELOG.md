@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.11.0](https://github.com/erfanansari/kharji/compare/v1.10.1...v1.11.0) (2026-11-10)
+
+### Features
+
+- **expenses:** add several expenses at once from typed or pasted text ([43e1190](https://github.com/erfanansari/kharji/commit/43e119064911e812ed90241a72570aeae3f71b79)), references [#tags](https://github.com/erfanansari/kharji/issues/tags)
+
+### Bug Fixes
+
+- **assets:** bring Toman-valued assets forward when updating values ([eb6bdd2](https://github.com/erfanansari/kharji/commit/eb6bdd20db7567b2ae1eb9afa840bc78e4c1694f))
+- **ui:** localize asset quantities and drop a duplicated caption ([8d915f5](https://github.com/erfanansari/kharji/commit/8d915f509db2abe79eb46c6db410452492a325dc))
+
+### Performance Improvements
+
+- stop rendering the social preview image on every request ([70c416a](https://github.com/erfanansari/kharji/commit/70c416a39d6bc6705cce29c5ffce6af11bc9fd2f))
+
 ## [1.10.1](https://github.com/erfanansari/kharji/compare/v1.10.0...v1.10.1) (2026-11-08)
 
 ### Bug Fixes
