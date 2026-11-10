@@ -8,7 +8,9 @@ if (!process.env.RESEND_API_KEY) {
   console.warn('[email] RESEND_API_KEY is not set; emails will not be sent.');
 }
 
-export const resend = new Resend(process.env.RESEND_API_KEY);
+// The Resend constructor itself throws on a missing key, which would undo the
+// promise above the moment any page importing this module renders.
+export const resend = new Resend(process.env.RESEND_API_KEY || 're_missing_key');
 
 // Single sender for all email — reports, auth, and notifications alike.
 // support@ so replies naturally become support requests (REPLY_TO routes them).
