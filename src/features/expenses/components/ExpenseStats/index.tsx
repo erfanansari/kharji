@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 import { ArrowRight, BarChart3, Hash, TrendingUp } from 'lucide-react';
@@ -20,6 +20,7 @@ interface ExpenseStatsProps {
 const ExpenseStats = ({ expenses, totalHref }: ExpenseStatsProps) => {
   const t = useTranslations('pages.expenses.stats');
   const tZero = useTranslations('onboarding.zeroCaptions');
+  const locale = useLocale() as 'en' | 'fa';
   const { primaryCurrency, secondaryCurrency, sumTo } = useCurrency();
 
   // Sum each expense converted at ITS OWN date — historically accurate & stable.
@@ -39,6 +40,9 @@ const ExpenseStats = ({ expenses, totalHref }: ExpenseStatsProps) => {
     days = Math.max(1, Math.ceil((today.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24)) + 1);
   }
   const div = days || 1;
+  // The caption under the count used to repeat the card's own label. How often
+  // you spend is the figure that actually belongs beside how many times.
+  const perDayFormatter = new Intl.NumberFormat(locale === 'fa' ? 'fa-IR' : 'en-US', { maximumFractionDigits: 1 });
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
@@ -89,7 +93,9 @@ const ExpenseStats = ({ expenses, totalHref }: ExpenseStatsProps) => {
               <p className="text-text-primary text-2xl font-semibold tabular-nums sm:text-3xl">
                 <AnimatedCount value={expenses.length} />
               </p>
-              <p className="text-text-secondary mt-1.5 text-sm font-medium">{t('count')}</p>
+              <p className="text-text-secondary mt-1.5 text-sm font-medium">
+                {t('countPerDay', { value: perDayFormatter.format(expenses.length / div) })}
+              </p>
             </>
           )}
         </div>

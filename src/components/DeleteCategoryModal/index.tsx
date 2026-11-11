@@ -50,6 +50,7 @@ const DeleteCategoryModal = ({
   const hasUsage = category.usage_count > 0;
   const candidates = allCategories.filter((c) => c.id !== category.id);
   const canConfirm = hasUsage ? reassignToId !== null : true;
+  const confirmLabel = hasUsage ? t('reassignAndDelete') : t('delete');
 
   return (
     <Modal isOpen={isOpen} onClose={isDeleting ? () => {} : onCancel} showCloseButton={false}>
@@ -145,10 +146,8 @@ const DeleteCategoryModal = ({
                 <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
                 <span>{tCommon('deleting')}</span>
               </>
-            ) : hasUsage ? (
-              t('reassignAndDelete')
             ) : (
-              t('delete')
+              confirmLabel
             )}
           </Button>
         </div>

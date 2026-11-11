@@ -134,7 +134,6 @@ const DebtsPage = () => {
           onDelete={openDeleteModal}
           onRetry={() => refetch()}
           deletingId={deletingId}
-          settlingId={null}
         />
 
         <SettleDebtModal debt={debtToSettle} isOpen={debtToSettle !== null} onClose={() => setDebtToSettle(null)} />

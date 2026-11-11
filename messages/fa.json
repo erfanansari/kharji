@@ -877,7 +877,8 @@
         "count": "تعداد هزینه‌ها",
         "dailyAverage": "میانگین روزانه",
         "viewExpenses": "مشاهده هزینه‌ها",
-        "ledgerCount": "{count, number} هزینه"
+        "ledgerCount": "{count, number} هزینه",
+        "countPerDay": "میانگین روزی {value} تا"
       },
       "details": {
         "title": "جزئیات هزینه",
@@ -886,6 +887,24 @@
         "exchangeRate": "نرخ ارز",
         "paidFrom": "پرداخت از",
         "created": "تاریخ ثبت"
+      },
+      "quickAdd": {
+        "button": "ثبت سریع",
+        "buttonTitle": "چندتا هزینه رو با تایپ یا پیست کردن متن ثبت کن",
+        "title": "ثبت سریع هزینه‌ها",
+        "hint": "هر خط یه هزینه: چی بود و چقدر شد. تاریخ و #برچسب هم اگه خواستی بنویس.",
+        "placeholder": "ناهار ۲۵۰ هزار\nدیروز تاکسی ۸۵ هزار\nنتفلیکس ۱۲ دلار #اشتراک",
+        "previewLabel": "هزینه‌هایی که از متنت پیدا شد",
+        "pickCategory": "دسته‌بندی رو انتخاب کن",
+        "suggested": "از روی هزینه‌های قبلیت پیشنهاد شده",
+        "reasonNoAmount": "توی این خط مبلغی پیدا نشد",
+        "reasonNoDescription": "بنویس این هزینه بابت چی بوده",
+        "missingCategory": "{count} هزینه هنوز دسته‌بندی نداره.",
+        "save": "ثبت {count} هزینه",
+        "saveEmpty": "ثبت هزینه‌ها",
+        "saving": "در حال ثبت {done} از {total}...",
+        "saved": "{count} هزینه ثبت شد!",
+        "partialError": "{count} تا ثبت شد و بعد متوقف شد: {error}"
       }
     },
     "income": {
@@ -942,12 +961,11 @@
         "previewError": "نشد نرخ‌های امروز رو بگیریم.",
         "retry": "دوباره امتحان کن",
         "empty": "همه‌چیز با نرخ امروز بروزه، چیزی برای آپدیت نیست.",
-        "emptyManualNote": "{count} دارایی دستی هم داری که آپدیت خودکار نداره — برای تغییر ارزشش ویرایشش کن.",
         "ok": "باشه",
         "description": "{count} دارایی با نرخ امروز آپدیت می‌شه:",
         "skippedTitle": "آپدیت نمی‌شن",
         "unchangedCount": "{count} دارایی همین الان بروزه",
-        "reasonManual": "ارزشش رو دستی ثبت کردی",
+        "dateOnlyNote": "ارزشش همونه — با نرخ امروز تبدیل می‌شه",
         "reasonNoRate": "نرخی برای ارز این دارایی نداریم",
         "reasonNoPrice": "قیمتی براش نداریم",
         "reasonNoQuantity": "مقدارش ثبت نشده",

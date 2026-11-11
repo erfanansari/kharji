@@ -171,7 +171,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { reportType, year, month } = dispatch;
-  const periodKey = reportType === 'monthly' ? `${year}-${pad2(month!)}` : String(year);
+  const periodKey = reportType === 'monthly' && month != null ? `${year}-${pad2(month)}` : String(year);
 
   const users = await loadEligibleUsers(reportType);
   const summary: DispatchSummary = {

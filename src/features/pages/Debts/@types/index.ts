@@ -14,5 +14,4 @@ export interface DebtsTableProps {
   onDelete: (debt: Debt) => void;
   onRetry: () => void;
   deletingId: number | null;
-  settlingId: number | null;
 }

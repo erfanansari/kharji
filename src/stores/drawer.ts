@@ -32,6 +32,9 @@ interface DrawerState {
   feedbackOpen: boolean;
   openFeedbackModal: () => void;
   closeFeedbackModal: () => void;
+  quickAddOpen: boolean;
+  openQuickAdd: () => void;
+  closeQuickAdd: () => void;
 }
 
 const drawerStore = createStore<DrawerState>()(
@@ -44,6 +47,10 @@ const drawerStore = createStore<DrawerState>()(
 
     openFeedbackModal: () => set({ feedbackOpen: true }, undefined, 'openFeedbackModal'),
     closeFeedbackModal: () => set({ feedbackOpen: false }, undefined, 'closeFeedbackModal'),
+
+    quickAddOpen: false,
+    openQuickAdd: () => set({ quickAddOpen: true }, undefined, 'openQuickAdd'),
+    closeQuickAdd: () => set({ quickAddOpen: false }, undefined, 'closeQuickAdd'),
 
     openExpenseDrawer: (expense) =>
       set({ expense: { open: true, dirty: false, editing: expense } }, undefined, 'openExpenseDrawer'),

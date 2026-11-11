@@ -877,7 +877,8 @@
         "count": "Expenses",
         "dailyAverage": "Daily Average",
         "viewExpenses": "View expenses",
-        "ledgerCount": "Across {count, plural, one {# expense} other {# expenses}}"
+        "ledgerCount": "Across {count, plural, one {# expense} other {# expenses}}",
+        "countPerDay": "{value} a day on average"
       },
       "details": {
         "title": "Expense Details",
@@ -886,6 +887,24 @@
         "exchangeRate": "Exchange rate",
         "paidFrom": "Paid from",
         "created": "Created"
+      },
+      "quickAdd": {
+        "button": "Quick Add",
+        "buttonTitle": "Add several expenses by typing or pasting text",
+        "title": "Quick add expenses",
+        "hint": "One expense per line: what it was, then how much. Dates and #tags are optional.",
+        "placeholder": "lunch 250k\ntaxi 85,000 yesterday\nnetflix $12 #subscription",
+        "previewLabel": "Expenses found in your text",
+        "pickCategory": "Pick a category",
+        "suggested": "Suggested from your past expenses",
+        "reasonNoAmount": "No amount found on this line",
+        "reasonNoDescription": "Add what this was for",
+        "missingCategory": "{count} {count, plural, one {expense needs} other {expenses need}} a category.",
+        "save": "Add {count} {count, plural, one {expense} other {expenses}}",
+        "saveEmpty": "Add expenses",
+        "saving": "Adding {done} of {total}...",
+        "saved": "{count} {count, plural, one {expense} other {expenses}} added!",
+        "partialError": "{count} added, then it stopped: {error}"
       }
     },
     "income": {
@@ -942,12 +961,11 @@
         "previewError": "Couldn't fetch today's rates.",
         "retry": "Try Again",
         "empty": "Everything is already valued at today's rates.",
-        "emptyManualNote": "{count} manually-valued {count, plural, one {asset doesn't} other {assets don't}} auto-update — edit them to change their value.",
         "ok": "Got it",
         "description": "{count} {count, plural, one {asset} other {assets}} will be revalued at today's rates:",
         "skippedTitle": "Not updated",
         "unchangedCount": "{count} {count, plural, one {asset is} other {assets are}} already current",
-        "reasonManual": "manually valued",
+        "dateOnlyNote": "Value unchanged — converted at today's rate",
         "reasonNoRate": "no rate for its currency",
         "reasonNoPrice": "no price available",
         "reasonNoQuantity": "no quantity set",

@@ -90,7 +90,7 @@ Kharji isn't translated — it's written in Farsi. Full RTL layout, Persian digi
 
 - Node.js 22+
 - pnpm 10+
-- A free [Turso](https://turso.tech) database
+- A free [Turso](https://turso.tech) database — or nothing at all: a local SQLite file works too (see below)
 
 ### Setup
 
@@ -103,11 +103,12 @@ pnpm install
 # 2. Configure environment
 cp .env.local.example .env.local   # then fill in your values
 
-# 3. Run database migrations
-pnpm migrate
+# 3. Create the database schema
+pnpm db:setup                # local SQLite file (TURSO_DATABASE_URL=file:./local.db)
+pnpm migrate                 # …or bring an existing Turso database up to date
 
-# 4. (Optional) seed a demo user with sample data
-pnpm db:seed
+# 4. (Optional) seed sample data
+pnpm db:seed-demo            # demo account with five years of activity
 
 # 5. Start the dev server
 pnpm dev                     # http://localhost:3000

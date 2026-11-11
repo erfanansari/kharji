@@ -16,6 +16,7 @@ import { ArrowRight, CheckCircle2, Loader2, RefreshCw } from 'lucide-react';
 import Button from '@components/Button';
 import Modal from '@components/Modal';
 
+import { useCurrency } from '@hooks/use-currency';
 import { useMoneyText } from '@hooks/use-money-text';
 
 import { useToast } from '@stores/toast';
@@ -29,7 +30,6 @@ interface RevalueModalProps {
 
 // Skip reasons come dash-cased from the API; i18n keys are camelCase.
 const REASON_KEYS = {
-  manual: 'reasonManual',
   'no-rate': 'reasonNoRate',
   'no-price': 'reasonNoPrice',
   'no-quantity': 'reasonNoQuantity',
@@ -42,6 +42,10 @@ const RevalueModal = ({ isOpen, onClose }: RevalueModalProps) => {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const { format } = useMoneyText();
+  const { convert, primaryCurrency, secondaryCurrency } = useCurrency();
+  // A Toman-valued asset doesn't change in Toman when it's re-dated — what
+  // moves is its value in the other currency the user reads, so preview that.
+  const foreignCurrency = [primaryCurrency, secondaryCurrency].find((c) => c && c !== PIVOT_CURRENCY) ?? 'USD';
 
   const { mutateAsync } = useMutation<RevalueAssetsResponse, Error, RevalueAssetsRequestData>({
     mutationKey: revalueAssetsKeyGenerator(),
@@ -92,7 +96,6 @@ const RevalueModal = ({ isOpen, onClose }: RevalueModalProps) => {
   const changes = preview?.changes ?? [];
   const skipped = (preview?.skipped ?? []).filter((s) => s.reason !== 'unchanged');
   const unchangedCount = (preview?.skipped ?? []).filter((s) => s.reason === 'unchanged').length;
-  const manualCount = skipped.filter((s) => s.reason === 'manual').length;
 
   const pivotPair = (amount: number, entryRate: number) => amount * entryRate;
 
@@ -127,9 +130,6 @@ const RevalueModal = ({ isOpen, onClose }: RevalueModalProps) => {
               <p className="text-text-primary text-sm font-medium">{t('empty')}</p>
               {skipped.length > 0 && (
                 <div className="space-y-1 pt-1">
-                  {manualCount > 0 && (
-                    <p className="text-text-muted text-xs">{t('emptyManualNote', { count: manualCount })}</p>
-                  )}
                   {skipped.map((item) => (
                     <p key={item.id} className="text-text-muted text-xs">
                       <span className="text-text-secondary">{item.name}</span>
@@ -151,21 +151,37 @@ const RevalueModal = ({ isOpen, onClose }: RevalueModalProps) => {
             <p className="text-text-secondary text-sm">{t('description', { count: changes.length })}</p>
             <ul className="border-border-subtle divide-border-subtle divide-y rounded-lg border">
               {changes.map((change) => {
+                // Re-dated assets are compared in the foreign currency (their
+                // pivot value is identical by definition); the rest in the pivot.
+                const isDateOnly = change.kind === 'date';
+                const shownCurrency = isDateOnly ? foreignCurrency : PIVOT_CURRENCY;
                 const oldPivot = pivotPair(change.old.amount, change.old.entryRate);
                 const newPivot = pivotPair(change.next.amount, change.next.entryRate);
-                const pct = oldPivot > 0 ? ((newPivot - oldPivot) / oldPivot) * 100 : 0;
+                const oldShown = isDateOnly
+                  ? convert(oldPivot, PIVOT_CURRENCY, foreignCurrency, change.previousValuedAt || undefined)
+                  : oldPivot;
+                const newShown = isDateOnly ? convert(newPivot, PIVOT_CURRENCY, foreignCurrency) : newPivot;
+                const comparable = oldShown !== null && newShown !== null;
+                const pct = comparable && oldShown > 0 ? ((newShown - oldShown) / oldShown) * 100 : 0;
                 const amountChanged = change.next.amount !== change.old.amount;
                 return (
                   <li key={change.id} className="flex items-center justify-between gap-3 px-3 py-2.5">
                     <div className="min-w-0 flex-1">
                       <p className="text-text-primary truncate text-sm font-medium">{change.name}</p>
                       <p className="text-text-muted flex flex-wrap items-center gap-x-1.5 text-xs tabular-nums">
-                        <span>{format(oldPivot, PIVOT_CURRENCY, { compact: true })}</span>
-                        <ArrowRight className="h-3 w-3 shrink-0 rtl:rotate-180" aria-hidden="true" />
-                        <span className="text-text-secondary font-medium">
-                          {format(newPivot, PIVOT_CURRENCY, { compact: true })}
-                        </span>
+                        {comparable ? (
+                          <>
+                            <span>{format(oldShown, shownCurrency, { compact: true })}</span>
+                            <ArrowRight className="h-3 w-3 shrink-0 rtl:rotate-180" aria-hidden="true" />
+                            <span className="text-text-secondary font-medium">
+                              {format(newShown, shownCurrency, { compact: true })}
+                            </span>
+                          </>
+                        ) : (
+                          <span>{format(newPivot, PIVOT_CURRENCY, { compact: true })}</span>
+                        )}
                       </p>
+                      {isDateOnly && <p className="text-text-muted text-xs">{t('dateOnlyNote')}</p>}
                       {amountChanged && change.currency !== PIVOT_CURRENCY && (
                         <p className="text-text-muted flex flex-wrap items-center gap-x-1.5 text-xs tabular-nums">
                           <span>{format(change.old.amount, change.currency, { compact: true })}</span>

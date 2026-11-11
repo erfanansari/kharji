@@ -12,7 +12,7 @@ import type { ExpenseFilters, ExpensesPage as ExpensesPageData } from '@api/getE
 import { NET_WORTH_SCOPE } from '@api/getNetWorthHistoryQuery';
 import { SUMMARY_SCOPE } from '@api/getSummaryQuery';
 import { keepPreviousData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
+import { ListPlus, Plus } from 'lucide-react';
 
 import { type Expense } from '@types';
 
@@ -51,6 +51,7 @@ const ExpensesPage = ({ initialFilters = {} }: ExpensesPageProps) => {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const openExpenseDrawer = useDrawerStore((state) => state.openExpenseDrawer);
+  const openQuickAdd = useDrawerStore((state) => state.openQuickAdd);
 
   // Queries
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, error, refetch } = useInfiniteQuery<
@@ -121,10 +122,21 @@ const ExpensesPage = ({ initialFilters = {} }: ExpensesPageProps) => {
           title={t('title')}
           subtitle={t('subtitle')}
           action={
-            <Button variant="primary" onClick={() => openExpenseDrawer()}>
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">{t('addExpense')}</span>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={openQuickAdd}
+                aria-label={t('quickAdd.button')}
+                title={t('quickAdd.buttonTitle')}
+              >
+                <ListPlus className="h-4 w-4" aria-hidden="true" />
+                <span className="hidden sm:inline">{t('quickAdd.button')}</span>
+              </Button>
+              <Button variant="primary" onClick={() => openExpenseDrawer()}>
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline">{t('addExpense')}</span>
+              </Button>
+            </div>
           }
         />
 

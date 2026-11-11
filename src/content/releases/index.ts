@@ -20,6 +20,7 @@ import v1_9_0 from './1.9.0.json';
 import v1_9_1 from './1.9.1.json';
 import v1_10_0 from './1.10.0.json';
 import v1_10_1 from './1.10.1.json';
+import v1_11_0 from './1.11.0.json';
 
 /**
  * User-facing release notes, newest first.
@@ -32,6 +33,7 @@ import v1_10_1 from './1.10.1.json';
  * When cutting a release, add the file and one import line here. See RELEASING.md.
  */
 export const RELEASES: Release[] = [
+  v1_11_0 as Release,
   v1_10_1 as Release,
   v1_10_0 as Release,
   v1_9_1 as Release,

@@ -9,6 +9,9 @@ import ActionButtons from '@components/ActionButtons';
 import Money from '@components/Money';
 import type { RowAction } from '@components/RowActionSheet';
 
+import { formatQuantity } from '@utils';
+import type { NumberLocale } from '@utils';
+
 export const CATEGORY_ICONS: Record<AssetCategory, typeof Wallet> = {
   cash: Banknote,
   crypto: Bitcoin,
@@ -38,7 +41,7 @@ export const ASSETS_COLUMN_WIDTHS = {
 // as its heading, so the card drops the category caption the name column carries
 // and gives the row to name / value / quantity.
 
-export function buildAssetMobileCard(t: ReturnType<typeof useTranslations<'tables'>>) {
+export function buildAssetMobileCard(t: ReturnType<typeof useTranslations<'tables'>>, locale: NumberLocale) {
   return function AssetMobileCard(asset: Asset) {
     return (
       <div className="flex flex-col gap-2">
@@ -55,7 +58,7 @@ export function buildAssetMobileCard(t: ReturnType<typeof useTranslations<'table
           />
         </div>
         <span className="text-text-secondary text-xs">
-          {asset.quantity} {asset.unit || t('unit')}
+          {formatQuantity(asset.quantity, locale)} {asset.unit || t('unit')}
         </span>
       </div>
     );
@@ -90,7 +93,8 @@ export function buildAssetColumns(
   categoryLabel: (value: string) => string,
   handleEdit: (asset: Asset) => void,
   openDeleteModal: (asset: Asset) => void,
-  deletingId: number | null
+  deletingId: number | null,
+  locale: NumberLocale
 ): ColumnDef<Asset, unknown>[] {
   return [
     {
@@ -117,7 +121,7 @@ export function buildAssetColumns(
         const asset = row.original;
         return (
           <span className="text-text-secondary block truncate text-sm whitespace-nowrap">
-            {asset.quantity} {asset.unit || t('unit')}
+            {formatQuantity(asset.quantity, locale)} {asset.unit || t('unit')}
           </span>
         );
       },

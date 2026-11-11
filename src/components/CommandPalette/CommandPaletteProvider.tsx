@@ -25,6 +25,7 @@ import {
   HandCoins,
   Languages,
   LayoutDashboard,
+  ListPlus,
   MessageSquare,
   PieChart,
   Plus,
@@ -95,6 +96,7 @@ function CommandPalette({ toggleRef }: { toggleRef: ToggleRef }) {
   const openAssetDrawer = useDrawerStore((state) => state.openAssetDrawer);
   const openDebtDrawer = useDrawerStore((state) => state.openDebtDrawer);
   const openFeedbackModal = useDrawerStore((state) => state.openFeedbackModal);
+  const openQuickAdd = useDrawerStore((state) => state.openQuickAdd);
 
   const actions = useMemo<Action[]>(() => {
     const goTo = (name: string) => t('common.commandPalette.goTo', { name });
@@ -144,6 +146,15 @@ function CommandPalette({ toggleRef }: { toggleRef: ToggleRef }) {
         shortcut: ['KeyE'],
         keywords: 'add new expense spend افزودن هزینه خرج',
         perform: () => openExpenseDrawer(),
+      },
+      {
+        id: 'quick-add-expenses',
+        name: t('pages.expenses.quickAdd.button'),
+        section: t('common.commandPalette.sectionCreate'),
+        icon: <ListPlus className="h-4 w-4" />,
+        shortcut: ['KeyQ'],
+        keywords: 'quick add paste text import bulk several expenses سریع چندتا متن وارد کردن هزینه',
+        perform: () => openQuickAdd(),
       },
       {
         id: 'create-income',
@@ -239,6 +250,7 @@ function CommandPalette({ toggleRef }: { toggleRef: ToggleRef }) {
     currencyPrefs,
     mutateCurrency,
     openExpenseDrawer,
+    openQuickAdd,
     openIncomeDrawer,
     openAssetDrawer,
     openDebtDrawer,

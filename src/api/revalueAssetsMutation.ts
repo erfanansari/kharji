@@ -20,6 +20,8 @@ const responseSchema = z.object({
       name: z.string(),
       currency: z.string(),
       linkedItem: z.string().nullable(),
+      kind: z.enum(['price', 'rate', 'date']),
+      previousValuedAt: z.string(),
       old: revalueValuesSchema,
       next: revalueValuesSchema,
     })
@@ -28,7 +30,7 @@ const responseSchema = z.object({
     z.object({
       id: z.number(),
       name: z.string(),
-      reason: z.enum(['manual', 'no-rate', 'no-price', 'no-quantity', 'unchanged']),
+      reason: z.enum(['no-rate', 'no-price', 'no-quantity', 'unchanged']),
     })
   ),
 });
